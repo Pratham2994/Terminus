@@ -1,0 +1,599 @@
+#Beginner Problems
+@Fundamentals of Programming
+T|8|breaking-the-myth|Breaking The Myth
+T|32|programming-and-what-are-computers|Programming and What Are Computers?
+T|24|how-to-think-like-a-programmer|How to Think Like a Programmer
+T|34|flowcharts-and-pseudocode|Flowcharts and Pseudocode
+T|43|flowchart-problem-solving|Flowchart Problem-Solving
+T|21|dry-runs-edge-cases-and-debugging|Dry Runs, Edge Cases and Debugging
+T|39|programming-languages-and-choosing-a-path|Programming Languages and Choosing a Path
+@Language Basics
+T|106|learn-cpp|Learn C++
+T|186|learn-java|Learn Java
+T|118|learn-python|Learn Python
+@Logic Building (Patterns)
+T|47|easy-and-medium|Easy and Medium
+T|50|hard|Hard
+@Patterns
+P|13|pattern-1|Pattern 1
+P|3|pattern-2|Pattern 2
+P|2|pattern-3|Pattern 3
+P|2|pattern-4|Pattern 4
+P|4|pattern-5|Pattern 5
+P|3|pattern-6|Pattern 6
+P|6|pattern-7|Pattern 7
+P|5|pattern-8|Pattern 8
+P|3|pattern-9|Pattern 9
+P|2|pattern-10|Pattern 10
+P|4|pattern-11|Pattern 11
+P|5|pattern-12|Pattern 12
+P|2|pattern-13|Pattern 13
+P|5|pattern-14|Pattern 14
+P|4|pattern-15|Pattern 15
+P|3|pattern-16|Pattern 16
+P|7|pattern-17|Pattern 17
+P|4|pattern-18|Pattern 18
+P|8|pattern-19|Pattern 19
+P|4|pattern-20|Pattern 20
+P|3|pattern-21|Pattern 21
+P|9|pattern-22|Pattern 22
+@Time Complexity
+T|38|theory-with-examples|Theory with examples
+@Standard Libraries & Collections
+T|93|stl|STL
+T|75|java-collections|Java Collections
+T|73|python-libraries-part-1|Python Libraries Part 1
+T|59|python-libraries-part-2|Python Libraries Part 2
+@Concept Basics
+T|73|basic-maths|Basic Maths
+T|36|basic-arrays-hashing-and-strings|Basic Arrays
+T|94|basic-hashing|Basic Hashing
+T|14|basic-string|Basic String
+@Basic Maths
+P|8|count-all-digits-of-a-number|Count all Digits of a Number
+P|5|count-number-of-odd-digits-in-a-number|Count number of odd digits in a number
+P|7|reverse-a-number|Reverse a number
+P|4|palindrome-number|Palindrome Number
+P|3|return-the-largest-digit-in-a-number|Return the Largest Digit in a Number
+P|3|factorial-of-a-given-number-i|Factorial of a given number
+P|7|check-if-the-number-if-armstrong|Check if the Number is Armstrong
+P|10|check-for-perfect-number|Check for Perfect Number
+P|6|check-for-prime-number|Check for Prime Number
+P|3|count-of-prime-numbers-till-n|Count of Prime Numbers till N
+P|13|gcd-of-two-numbers|GCD of Two Numbers
+P|5|lcm-of-two-numbers|LCM of two numbers
+P|9|divisors-of-a-number|Divisors of a Number
+@Basic Arrays
+P|4|sum-of-array-elements|Sum of Array Elements
+P|3|count-of-odd-numbers-in-array|Count of odd numbers in Array
+P|6|check-if-the-array-is-sorted-i|Check if the Array is Sorted I
+P|14|reverse-an-array|Reverse an array
+@Basic Hashing
+P|14|highest-occurring-element-in-an-array|Highest Occurring Element in an Array
+P|16|second-highest-occurring-element|Second Highest Occurring Element
+P|9|sum-of-highest-and-lowest-frequency|Sum of Highest and Lowest Frequency
+@Basic Strings
+P|9|reverse-a-string-ii|Reverse a String II
+P|7|palindrome-check|Palindrome Check
+P|11|largest-odd-number-in-a-string|Largest Odd Number in a String
+P|11|longest-common-prefix|Longest Common Prefix
+P|16|isomorphic-string|Isomorphic Strings
+P|13|rotate-string|Rotate String
+P|8|valid-anagram|Valid Anagram
+P|12|sort-characters-by-frequency|Sort Characters by Frequency
+@Basic Recursion
+T|40|recursion-theory|Recursion Theory
+T|18|recursion-concepts-with-parameters|Recursion Concepts with Parameters
+P|16|sum-of-first-n-numbers|Sum of First N Numbers
+P|8|factorial-of-a-given-number-ii|Factorial of a Given Number
+P|7|sum-of-array-elements-ii|Sum of Array Elements II
+P|9|reverse-a-string-i|Reverse a String I
+P|10|check-if-string-is-palindrome-or-not-|Check if String is Palindrome or Not
+P|7|check-if-a-number-is-prime-or-not|Check if a Number is Prime or Not
+P|4|reverse-an-array-ii|Reverse an array 2
+P|7|check-if-the-array-is-sorted-ii|Check if the Array is Sorted II
+P|18|sum-of-digits-in-a-given-number|Sum of Digits in a Given Number
+P|20|fibonacci-number|Fibonacci Number
+#Sorting
+@Algorithms
+P|15|selection-sort|Selection Sort
+P|14|bubble-sort|Bubble Sort
+P|11|insertion-sorting|Insertion Sorting
+P|47|merge-sorting|Merge Sorting
+P|33|quick-sorting|Quick Sorting
+P|0|recursive-bubble-sort|Recursive Bubble Sort
+P|0|recursive-insertion-sort|Recursive Insertion Sort
+#Arrays
+@Fundamentals
+P|4|linear-search|Linear Search
+P|5|largest-element|Largest Element
+P|15|second-largest-element|Second Largest Element
+P|3|maximum-consecutive-ones|Maximum Consecutive Ones
+P|6|left-rotate-array-by-one|Left Rotate Array by One
+P|17|left-rotate-array|Left Rotate Array by K Places
+@Logic Building
+P|13|move-zeros-to-end|Move Zeros to End
+P|11|remove-duplicates-from-sorted-array|Remove duplicates from sorted array
+P|18|find-missing-number|Find missing number
+P|16|union-of-two-sorted-arrays|Union of two sorted arrays
+P|13|intersection-of-two-sorted-arrays|Intersection of two sorted arrays
+@FAQs(Medium)
+P|17|majority-element-i|Majority Element-I
+P|11|leaders-in-an-array|Leaders in an Array
+P|9|rearrange-array-elements-by-sign|Rearrange array elements by sign
+P|15|print-the-matrix-in-spiral-manner|Print the matrix in spiral manner
+P|10|pascals-triangle-i|Pascal's Triangle I
+P|9|pascals-triangle-ii|Pascal's Triangle II
+P|7|pascals-triangle-iii|Pascal's Triangle III
+P|17|rotate-matrix-by-90-degrees|Rotate matrix by 90 degrees
+P|0|set-matrix-zeroes|Set Matrix Zeroes
+P|17|two-sum|Two Sum
+P|37|3-sum|3 Sum
+P|27|4-sum|4 Sum
+P|24|sort-an-array-of-0's-1's-and-2's|Sort an array of 0's 1's and 2's
+P|19|kadane's-algorithm|Kadane's Algorithm
+P|26|next-permutation|Next Permutation
+@FAQs(Hard)
+P|25|majority-element-ii|Majority Element-II
+P|41|find-the-repeating-and-missing-number|Find the repeating and missing number
+P|23|count-inversions|Count Inversions
+P|31|reverse-pairs|Reverse Pairs
+P|18|maximum-product-subarray-in-an-array|Maximum Product Subarray in an Array
+P|32|merge-two-sorted-arrays-without-extra-space|Merge two sorted arrays without extra space
+#Hashing
+@Theory
+T|94|basic-hashing|Basic Hashing
+@FAQs
+P|22|longest-consecutive-sequence-in-an-array|Longest Consecutive Sequence in an Array
+P|40|longest-subarray-with-sum-k|Longest subarray with sum K
+P|0|largest-subarray-with-sum-0|Largest Subarray with Sum 0
+P|22|count-subarrays-with-given-sum|Count subarrays with given sum
+P|23|count-subarrays-with-given-xor-k|Count subarrays with given xor K
+#Binary Search
+@Fundamentals
+P|33|search-x-in-sorted-array|Search X in sorted array
+P|16|lower-bound-|Lower Bound
+P|4|upper-bound|Upper Bound
+@Logic Building
+P|3|search-insert-position|Search insert position
+P|6|floor-and-ceil-in-sorted-array|Floor and Ceil in Sorted Array
+P|22|first-and-last-occurrence|First and last occurrence
+P|15|search-in-rotated-sorted-array-i|Search in rotated sorted array-I
+P|12|search-in-rotated-sorted-array-2|Search in rotated sorted array-II
+P|15|find-minimum-in-rotated-sorted-array|Find minimum in Rotated Sorted Array
+P|4|find-out-how-many-times-the-array-is-rotated|Find out how many times the array is rotated
+P|22|single-element-in-sorted-array|Single element in sorted array
+P|0|count-occurrences-in-a-sorted-array|Count Occurrences in a Sorted Array
+@On answers
+P|17|find-square-root-of-a-number|Find square root of a number
+P|20|find-nth-root-of-a-number|Find Nth root of a number
+P|15|find-the-smallest-divisor|Find the smallest divisor
+P|20|koko-eating-bananas|Koko eating bananas
+P|25|minimum-days-to-make-m-bouquets|Minimum days to make M bouquets
+P|0|capacity-to-ship-packages-within-d-days|Capacity to Ship Packages Within D Days
+P|0|kth-missing-positive-number|Kth Missing Positive Number
+P|0|painters-partition|Painter's Partition
+@FAQs
+P|26|aggressive-cows|Aggressive Cows
+P|27|book-allocation-problem|Book Allocation Problem
+P|32|find-peak-element|Find peak element
+P|50|median-of-2-sorted-arrays|Median of 2 sorted arrays
+P|10|kth-element-of-2-sorted-arrays|Kth element of 2 sorted arrays
+P|58|minimise-max-distance-to-gas-stations|Minimize Max Distance to Gas Station
+P|11|split-array---largest-sum|Split array - largest sum
+@2D Arrays
+P|10|find-row-with-maximum-1's|Find row with maximum 1's
+P|15|search-in-a-2d-matrix|Search in a 2D Matrix
+P|15|search-in-2d-matrix-ii|Search in 2D matrix - II
+P|20|find-peak-element-ii|Find Peak Element - II
+P|23|matrix-median|Matrix Median
+#Strings (Basic and Medium)
+@Parentheses
+P|0|remove-outermost-parentheses|Remove Outermost Parentheses
+P|0|maximum-nesting-depth-of-the-parentheses|Maximum Nesting Depth of the Parentheses
+@String Conversions
+P|0|roman-to-integer|Roman to Integer
+P|0|string-to-integer-atoi|String to Integer (atoi)
+@Substring Problems
+P|0|count-number-of-substring|Count Number of Substrings
+P|0|longest-palindromic-substring|Longest Palindromic Substring
+P|0|sum-of-beauty-of-all-substrings|Sum of Beauty of All Substrings
+#Recursion
+@Implementation Problems
+P|23|pow(x,n)|Pow(x,n)
+P|22|generate-parentheses|Generate Parentheses
+P|20|power-set|Power Set
+P|0|count-good-numbers|Count Good Numbers
+P|0|reverse-a-stack|Reverse a Stack
+@Subsequence Pattern Problems
+T|0|learn-all-patterns-of-subsequences|Learn All Patterns of Subsequences (Theory)
+P|23|check-if-there-exists-a-subsequence-with-sum-k|Check if there exists a subsequence with sum K
+P|12|count-all-subsequences-with-sum-k|Count all subsequences with sum K
+P|0|generate-binary-strings-without-consecutive-1s|Generate Binary Strings Without Consecutive 1s
+@FAQs (Medium)
+P|16|combination-sum|Combination Sum
+P|15|combination-sum-ii|Combination Sum II
+P|7|subsets-i|Subsets I
+P|21|subsets-ii|Subsets II
+P|12|combination-sum-iii|Combination Sum III
+@Hard
+P|12|letter-combinations-of-a-phone-number|Letter Combinations of a Phone Number
+@FAQs (Hard)
+P|18|palindrome-partitioning|Palindrome partitioning
+P|19|word-search|Word Search
+P|24|n-queen|N Queen
+P|19|rat-in-a-maze|Rat in a Maze
+P|22|m-coloring-problem|M Coloring Problem
+P|31|sudoko-solver|Sudoku Solver
+P|0|expression-add-operators|Expression Add Operators
+#Linked-List
+@Fundamentals (Single LL)
+T|37|introduction-to-singly-linkedlist|Introduction to Singly LinkedList
+P|3|traversal-in-linked-list|Traversal in Linked List
+T|32|deletion-in-linked-list|Deletion in Linked List
+T|24|insertion-in-linked-list|Insertion in Linked List
+P|6|deletion-of-the-head-of-ll|Deletion of the head of LL
+P|10|deletion-of-the-tail-of-ll|Deletion of the tail of Linked List
+P|15|deletion-of-the-kth-element-of-ll|Deletion of the Kth element of Linked List
+P|2|delete-the-element-with-value-x|Delete the element with value X
+P|3|insertion-at-the-head-of-ll|Insertion at the head of Linked List
+P|4|insertion-at-the-tail-of-ll|Insertion at the tail of Linked List
+P|13|insertion-at-the-kth-position-of-ll|Insertion at the Kth position of Linked List
+P|4|insertion-before-the-value-x-in-ll|Insertion before the value X in Linked List
+P|0|find-the-length-of-the-linked-list|Find the length of the Linked List
+P|0|search-in-linked-list|Search in Linked List
+@Fundamentals (Doubly LL)
+T|4|introduction-to-doubly-ll|Introduction to Doubly LL
+T|30|deletion-in-doubly-ll|Deletion in Doubly LL
+T|15|insertion-in-dll|Insertion in DLL
+P|10|convert-array-to-dll|Convert Array to Doubly Linked List
+P|5|delete-tail-of-dll|Delete Tail of Doubly Linked List
+P|14|delete-kth-element-of-dll|Delete Kth Element of Doubly Linked List
+P|5|removing-given-node-in-dll|Removing given node in Doubly Linked List
+P|3|insert-node-before-head-in-dll|Insert node before head in Doubly Linked List
+P|5|insert-node-before-tail-in-dll|Insert node before tail in Doubly Linked List
+P|5|insert-node-before-kth-node-in-dll|Insert node before (kth node) in Doubly Linked List
+P|2|insert-before-given-node-in-dll|Insert before given node in Doubly Linked List
+P|6|delete-head-of-dll|Delete head of Doubly Linked List
+P|0|reverse-a-doubly-linked-list|Reverse a Doubly Linked List
+@Logic Building
+P|14|add-two-numbers-in-ll|Add two numbers in Linked List
+P|24|segregate-odd-and-even-nodes-in-ll|Segregate odd and even nodes in Linked List
+P|22|sort-a-ll-of-0's-1's-and-2's|Sort a Linked List of 0's 1's and 2's
+P|16|remove-nth-node-from-the-back-of-the-ll|Remove Nth node from the back of the LL
+P|32|reverse-a-ll|Reverse a LL
+@FAQs (Medium)
+P|24|add-one-to-a-number-represented-by-ll|Add one to a number represented by LL
+P|14|find-middle-of-linked-list|Find Middle of Linked List
+P|16|delete-the-middle-node-in-ll|Delete the middle node in LL
+P|20|check-if-ll-is-palindrome-or-not|Check if LL is palindrome or not
+P|32|find-the-intersection-point-of-y-ll|Find the intersection point of Y LL
+P|20|detect-a-loop-in-ll|Detect a loop in LL
+P|21|find-the-starting-point-in-ll|Find the starting point in LL
+P|14|length-of-loop-in-ll|Length of loop in LL
+@FAQs (Hard)
+P|24|reverse-ll-in-group-of-given-size-k|Reverse LL in group of given size K
+P|12|rotate-a-ll|Rotate a LL
+P|18|merge-sorted-lists-|Merge two Sorted Lists
+P|33|flattening-of-ll|Flattening of LL
+P|22|sort-ll|Sort LL
+P|33|clone-a-ll-with-random-and-next-pointer|Clone a LL with random and next pointer
+@FAQS (DLL)
+P|11|delete-all-occurrences-of-a-key-in-dll|Delete all occurrences of a key in DLL
+P|12|remove-duplicated-from-sorted-dll|Remove duplicates from sorted DLL
+P|0|find-pairs-with-given-sum-in-doubly-linked-list|Find Pairs with Given Sum in Doubly Linked List
+#Bit Manipulation
+@Theory
+T|80|introduction-to-bits-and-tricks|Introduction to Bits and Tricks
+@Bit Fundamentals
+P|0|check-if-the-i-th-bit-is-set-or-not|Check if the i-th bit is Set or Not
+P|0|check-if-a-number-is-odd-or-not|Check if a Number is Odd or Not
+P|0|check-if-a-number-is-power-of-2-or-not|Check if a Number is Power of 2 or Not
+P|0|count-the-number-of-set-bits|Count the Number of Set Bits
+P|0|set-the-rightmost-unset-bit|Set the Rightmost Unset Bit
+P|0|swap-two-numbers|Swap Two Numbers
+@Problems
+P|7|minimum-bit-flips-to-convert-number|Minimum Bit Flips to Convert Number
+P|7|single-number---i|Single Number - I
+P|30|single-number---ii|Single Number - II
+P|24|single-number---iii|Single Number - III
+P|19|divide-two-numbers-without-multiplication-and-division|Divide two numbers without multiplication and division
+P|12|power-set-bit-manipulation|Power Set Bit Manipulation
+P|5|xor-of-numbers-in-a-given-range|XOR of numbers in a given range
+#Greedy Algorithms
+@Easy
+P|10|assign-cookies|Assign Cookies
+P|9|lemonade-change|Lemonade Change
+P|0|fractional-knapsack|Fractional Knapsack
+P|10|jump-game---i|Jump Game - I
+@Scheduling and Interval Problems
+P|7|shortest-job-first|Shortest Job First
+P|16|job-sequencing-problem|Job sequencing Problem
+P|13|n-meetings-in-one-room|N meetings in one room
+P|8|non-overlapping-intervals|Non-overlapping Intervals
+P|13|insert-interval|Insert Interval
+P|0|merge-intervals|Merge Intervals
+P|18|minimum-number-of-platforms-required-for-a-railway|Minimum number of platforms required for a railway
+@Hard
+P|25|valid-paranthesis-checker|Valid Parenthesis Checker
+P|30|candy|Candy
+P|0|jump-game-ii|Jump Game II
+#Sliding Window / 2 Pointer
+@Pattern and Template
+T|36|theory|Theory
+@Constant Window
+P|11|maximum-points-you-can-obtain-from-cards-|Maximum Points You Can Obtain from Cards
+@Longest and Smallest Window Problems
+P|22|longest-substring-without-repeating-characters|Longest Substring Without Repeating Characters
+P|29|max-consecutive-ones-iii|Max Consecutive Ones III
+P|29|fruit-into-baskets|Fruit Into Baskets
+P|21|longest-substring-with-at-most-k-distinct-characters|Longest Substring With At Most K Distinct Characters
+P|25|longest-repeating-character-replacement|Longest Repeating Character Replacement
+P|26|minimum-window-substring-|Minimum Window Substring
+P|0|minimum-window-subsequence|Minimum Window Subsequence
+@Counting Subarrays / Substrings Problems
+P|19|number-of-substrings-containing-all-three-characters|Number of Substrings Containing All Three Characters
+P|20|binary-subarrays-with-sum|Binary Subarrays With Sum
+P|4|count-number-of-nice-subarrays|Count number of Nice subarrays
+P|0|subarrays-with-k-different-integers|Subarrays with K Different Integers
+#Stack / Queues
+@Implementation
+T|64|implementation-using-different-ds|Implementation using different DS
+P|8|implement-stack-using-arrays|Implement Stack using Arrays
+P|12|implement-queue-using-arrays|Implement Queue using Arrays
+P|6|implement-stack-using-queue|Implement Stack using Queue
+P|14|implement-queue-using-stack|Implement Queue using Stack
+P|7|implement-stack-using-linkedlist|Implement stack using Linkedlist
+P|7|implement-queue-using-linkedlist|Implement queue using Linkedlist
+P|12|balanced-paranthesis|Balanced Paranthesis
+@Prefix, Infix and Postfix Conversions
+P|0|infix-to-postfix-conversion|Infix to Postfix Conversion
+P|0|infix-to-prefix-conversion|Infix to Prefix Conversion
+P|0|prefix-to-infix-conversion|Prefix to Infix Conversion
+P|0|prefix-to-postfix-conversion|Prefix to Postfix Conversion
+P|0|postfix-to-infix-conversion|Postfix to Infix Conversion
+P|0|postfix-to-prefix-conversion|Postfix to Prefix Conversion
+@Monotonic Stack
+P|18|next-greater-element|Next Greater Element
+P|15|next-greater-element---2|Next Greater Element - 2
+P|17|asteroid-collision|Asteroid Collision
+P|23|sum-of-subarray-minimums|Sum of Subarray Minimums
+P|10|sum-of-subarray-ranges|Sum of Subarray Ranges
+P|15|remove-k-digits|Remove K Digits
+P|0|next-smaller-element|Next Smaller Element
+@FAQs
+P|21|implement-min-stack|Implement Min Stack
+P|20|sliding-window-maximum|Sliding Window Maximum
+P|29|trapping-rainwater|Trapping Rainwater
+P|31|largest-rectangle-in-a-histogram|Largest rectangle in a histogram
+P|12|maximum-rectangles|Maximum Rectangles
+P|19|stock-span-problem|Stock span problem
+P|16|celebrity-problem|Celebrity Problem
+P|25|lru-cache|LRU Cache
+P|0|lfu-cache|LFU Cache
+P|0|number-of-greater-elements-to-the-right|Number of Greater Elements to the Right
+#Binary Trees
+@Theory/Traversals
+T|32|introduction-|Introduction
+P|37|inorder-traversal|Inorder Traversal
+P|18|preorder-traversal|Preorder Traversal
+P|14|postorder-traversal|Postorder Traversal
+P|8|level-order-traversal|Level Order Traversal
+P|10|pre,-post,-inorder-in-one-traversal|Pre, Post, Inorder in one traversal
+@Medium Problems
+P|7|maximum-depth-in-bt|Maximum Depth in BT
+P|4|check-if-two-trees-are-identical-or-not|Check if two trees are identical or not
+P|12|check-for-balanced-binary-tree|Check for balanced binary tree
+P|13|diameter-of-binary-tree|Diameter of Binary Tree
+P|17|maximum-path-sum-|Maximum path sum
+P|8|check-for-symmetrical-bts|Check for symmetrical BTs
+P|0|children-sum-property-in-binary-tree|Children Sum Property in Binary Tree
+@FAQs
+P|8|zig-zag-or-spiral-traversal|Zig Zag or Spiral Traversal
+P|9|boundary-traversal|Boundary Traversal
+P|18|vertical-order-traversal|Vertical Order Traversal
+P|9|top-view-of-bt|Top View of BT
+P|12|bottom-view-of-bt|Bottom view of BT
+P|12|right-left-view-of-bt|Right/Left View of BT
+P|10|print-root-to-leaf-path-in-bt|Print root to leaf path in BT
+P|13|lca-in-bt|Lowest Common Ancestor in BT
+P|21|maximum-width-of-bt|Maximum Width of BT
+P|16|print-all-nodes-at-a-distance-of-k-in-bt|Print all nodes at a distance of K in BT
+P|17|minimum-time-taken-to-burn-the-bt-from-a-given-node|Minimum time taken to burn the BT from a given Node
+P|15|count-total-nodes-in-a-complete-bt|Count total nodes in a complete BT
+P|0|flatten-binary-tree-to-linked-list|Flatten Binary Tree to Linked List
+@Construction Problems
+P|7|requirements-needed-to-construct-a-unique-bt|Requirements needed to construct a unique BT
+P|18|construct-a-bt-from-preorder-and-inorder|Construct a BT from Preorder and Inorder
+P|19|construct-a-bt-from-postorder-and-inorder|Construct a BT from Postorder and Inorder
+P|16|serialize-and-de-serialize-bt|Serialize and De-serialize BT
+@Traversal in Constant Space
+P|19|morris-inorder-traversal-|Morris Inorder Traversal
+P|4|morris-preorder-traversal-|Morris Preorder Traversal
+#Binary Search Trees
+@Theory and Basics
+T|7|introduction-to-bst|Introduction to BST
+P|5|search-in-bst|Search in BST
+P|8|floor-and-ceil-in-a-bst|Floor and Ceil in a BST
+P|0|minimum-and-maximum-in-bst|Minimum and Maximum in BST
+@Medium
+P|7|insert-a-given-node-in-bst|Insert a given node in BST
+P|15|delete-a-node-in-bst|Delete a node in BST
+P|8|kth-smallest-and-largest-element-in-bst|Kth Smallest and Largest element in BST
+P|9|check-if-a-tree-is-a-bst-or-not|Check if a tree is a BST or not
+P|8|lca-in-bst|LCA in BST
+P|16|construct-a-bst-from-a-preorder-traversal|Construct a BST from a preorder traversal
+P|10|inorder-successor-and-predecessor-in-bst|Inorder successor and predecessor in BST
+@FAQs
+P|14|bst-iterator|BST iterator
+P|14|two-sum-in-bst|Two sum in BST
+P|16|correct-bst-with-two-nodes-swapped|Correct BST with two nodes swapped
+P|17|largest-bst-in-binary-tree|Largest BST in Binary Tree
+#Heaps
+@Theory and Implementation
+T|27|heaps-theory|Heaps (Theory Video)
+P|23|heapify-algorithm|Heapify Algorithm
+P|15|build-heap-from-a-given-array|Build heap from a given Array
+P|12|implement-min-heap|Implement Min Heap
+P|20|implement-max-heap|Implement Max Heap
+P|7|check-if-an-array-represents-a-min-heap-|Check if an array represents a min heap
+P|4|convert-min-heap-to-max-heap|Convert Min Heap to Max Heap
+P|30|heap-sort|Heap Sort
+P|44|k-th-largest-element-in-an-array|K-th Largest element in an array
+@FAQs
+P|16|kth-largest-element-in-a-stream-of-running-integers|Kth largest element in a stream of running integers
+P|0|sort-a-k-sorted-array|Sort a K-Sorted Array
+P|0|merge-k-sorted-lists|Merge K sorted Lists
+P|0|replace-elements-by-their-rank|Replace Elements by Their Rank
+P|0|task-scheduler|Task Scheduler
+P|0|hand-of-straights|Hand of Straights
+P|0|design-twitter|Design Twitter
+P|0|minimum-cost-to-connect-sticks|Minimum Cost to Connect Sticks
+P|0|maximum-sum-combination|Maximum Sum Combination
+P|0|find-median-from-data-stream|Find Median from Data Stream
+P|0|top-k-frequent-elements|Top K Frequent Elements
+#Graphs
+@Theory and traversals
+T|41|introduction-to-graph|Introduction to Graph
+P|39|traversal-techniques|Traversal Techniques
+P|7|connected-components|Connected Components
+@Traversal Problems
+P|15|number-of-provinces|Number of provinces
+P|24|number-of-islands|Number of islands
+P|20|flood-fill-algorithm|Flood fill algorithm
+P|15|number-of-enclaves|Number of enclaves
+P|22|rotten-oranges|Rotten Oranges
+P|20|distance-of-nearest-cell-having-one|Distance of nearest cell having one
+P|23|surrounded-regions|Surrounded Regions
+P|18|number-of-distinct-islands|Number of distinct islands
+@Cycles
+P|38|detect-a-cycle-in-an-undirected-graph|Detect a cycle in an undirected graph
+P|32|bipartite-graph|Bipartite graph
+P|26|topological-sort-or-kahns-algorithm|Topological sort or Kahn's algorithm
+P|23|detect-a-cycle-in-a-directed-graph|Detect a cycle in a directed graph
+@Hard Problems
+P|39|find-eventual-safe-states|Find eventual safe states
+P|11|course-schedule-i|Course Schedule I
+P|11|course-schedule-ii|Course Schedule II
+P|20|alient-dictionary|Alien Dictionary
+P|26|shortest-path-in-dag|Shortest path in DAG
+P|16|shortest-path-in-undirected-graph-with-unit-weights|Shortest path in undirected graph with unit weights
+P|28|word-ladder-i|Word ladder I
+P|48|word-ladder-ii|Word ladder II
+@Shortest Path Algorithms
+P|47|dijkstra's-algorithm|Dijkstra's algorithm
+P|19|print-shortest-path-|Print Shortest Path
+P|21|shortest-path-with-minimum-effort|Shortest Distance in a Binary Maze
+P|24|path-with-minimum-effort|Path with minimum effort
+P|23|cheapest-flight-within-k-stops|Cheapest flight within K stops
+P|19|minimum-multiplications-to-reach-end|Minimum multiplications to reach end
+P|23|number-of-ways-to-arrive-at-destination|Number of ways to arrive at destination
+P|27|bellman-ford-algorithm|Bellman ford algorithm
+P|30|floyd-warshall-algorithm|Floyd warshall algorithm
+P|12|find-the-city-with-the-smallest-number-of-neighbors|Find the city with the smallest number of neighbors
+P|0|network-delay-time|Network Delay Time
+P|0|swim-in-rising-water|Swim in Rising Water
+@Minimum Spanning Tree
+T|7|mst-theory|MST theory
+P|41|disjoint-set-|Disjoint Set
+P|31|find-the-mst-weight|Find the MST weight
+@Hard Problems II
+P|14|number-of-operations-to-make-network-connected|Number of operations to make network connected
+P|21|accounts-merge|Accounts merge
+P|25|number-of-islands-ii|Number of islands II
+P|26|making-a-large-island|Making a large island
+P|23|most-stones-removed-with-same-row-or-column|Most stones removed with same row or column
+@Additional Algorithms
+P|22|kosaraju's-algorithm|Kosaraju's algorithm
+P|23|bridges-in-graph|Bridges in graph
+P|21|articulation-point-in-graph|Articulation point in graph
+#Dynamic Programming
+@Introduction
+T|30|introduction-to-dp|Introduction to DP
+@1D DP
+P|13|climbing-stairs|Climbing stairs
+P|37|frog-jump|Frog Jump
+P|16|frog-jump-with-k-distances|Frog jump with K distances
+P|31|maximum-sum-of-non-adjacent-elements|Maximum sum of non adjacent elements
+P|9|house-robber|House robber
+@2D DP
+P|51|ninja's-training|Ninja's training
+@DP on grids
+P|44|grid-unique-paths|Grid unique paths
+P|12|unique-paths-ii|Unique paths II
+P|41|minimum-falling-path-sum|Minimum Falling Path Sum
+P|33|triangle|Triangle
+P|42|cherry-pickup-ii|Cherry pickup II
+P|0|count-square-submatrices-with-all-one|Count Square Submatrices with All Ones
+@DP on stocks
+P|7|best-time-to-buy-and-sell-stock|Best time to buy and sell stock
+P|35|best-time-to-buy-and-sell-stock-ii|Best time to buy and sell stock II
+P|25|best-time-to-buy-and-sell-stock-iii|Best time to buy and sell stock III
+P|12|best-time-to-buy-and-sell-stock-iv|Best time to buy and sell stock IV
+P|6|best-time-to-buy-and-sell-stock-with-cooldown-and-transaction-fees|Best time to buy and sell stock with transaction fees
+P|0|best-time-to-buy-and-sell-stock-with-cooldown|Best Time to Buy and Sell Stock with Cooldown
+@DP on subsequences
+P|35|subset-sum-equals-to-target|Subset sum equals to target
+P|7|partition-equal-subset-sum|Partition equal subset sum
+P|29|partition-a-set-into-two-subsets-with-minimum-absolute-sum-difference|Partition a set into two subsets with minimum absolute sum difference
+P|35|count-subsets-with-sum-k|Count subsets with sum K
+P|17|count-partitions-with-given-difference|Count partitions with given difference
+P|40|0-and-1-knapsack|0 and 1 Knapsack
+P|34|minimum-coins|Minimum coins
+P|8|target-sum|Target sum
+P|22|coin-change-ii|Coin change II
+P|22|unbounded-knapsack|Unbounded knapsack
+P|22|rod-cutting-problem|Rod cutting problem
+@LIS
+P|40|longest-increasing-subsequence|Longest Increasing Subsequence
+P|26|print-longest-increasing-subsequence|Print Longest Increasing Subsequence
+P|14|largest-divisible-subset|Largest Divisible Subset
+P|16|longest-string-chain|Longest String Chain
+P|13|longest-bitonic-subsequence|Longest Bitonic Subsequence
+P|20|number-of-longest-increasing-subsequences|Number of Longest Increasing Subsequences
+@DP on strings
+P|46|longest-common-subsequence|Longest common subsequence
+P|14|longest-common-substring|Longest common substring
+P|9|longest-palindromic-subsequence|Longest palindromic subsequence
+P|12|minimum-insertions-to-make-string-palindrome|Minimum insertions to make string palindrome
+P|7|minimum-insertions-or-deletions-to-convert-string-a-to-b|Minimum insertions or deletions to convert string A to B
+P|26|shortest-common-supersequence|Shortest common supersequence
+P|40|distinct-subsequences|Distinct subsequences
+P|37|edit-distance|Edit distance
+P|43|wildcard-matching|Wildcard matching
+P|0|word-break|Word Break
+P|0|count-palindromic-subsequences|Count Palindromic Subsequences
+@MCM DP
+P|61|matrix-chain-multiplication|Matrix chain multiplication
+P|33|burst-balloons|Burst balloons
+P|22|palindrome-partitioning-ii-|Palindrome partitioning II
+P|0|partition-array-for-maximum-sum|Partition Array for Maximum Sum
+P|28|minimum-cost-to-cut-the-stick|Minimum cost to cut the stick
+P|0|different-ways-to-evaluate-a-boolean-expression|Different Ways to Evaluate a Boolean Expression
+#Tries
+@Theory
+T|0|bit-prerequisites-for-trie-problems|Bit PreRequisites for TRIE Problems
+P|30|trie-implementation-and-operations|Trie Implementation and Operations
+P|22|trie-implementation-and-advanced-operations|Trie Implementation and Advanced Operations
+@Problems
+P|25|longest-word-with-all-prefixes|Longest Word with All Prefixes
+P|17|number-of-distinct-substrings-in-a-string|Number of distinct substrings in a string
+P|34|maximum-xor-of-two-numbers-in-an-array|Maximum XOR of two numbers in an array
+P|23|maximum-xor-with-an-element-from-an-array|Maximum Xor with an element from an array
+#Strings (Advanced Algo)
+@Medium Problems
+P|31|reverse-every-word-in-a-string|Reverse every word in a string
+P|20|minimum-number-of-bracket-reversals-to-make-an-expression-balanced|Minimum number of bracket reversals to make an expression balanced
+P|19|count-and-say|Count and say
+@Advanced Problems (Less asked)
+T|0|hashing-in-strings-theory|Hashing In Strings | Theory
+P|34|rabin-karp-algorithm|Rabin Karp Algorithm
+P|35|z-function|Z function
+P|29|kmp-algorithm-or-lps-array|KMP Algorithm or LPS array
+P|7|shortest-palindrome|Shortest Palindrome
+P|3|longest-happy-prefix|Longest happy prefix
+#Maths
+@Sieve of Eratosthenes
+P|18|print-all-primes-till-n|Print all primes till N
+P|15|prime-factorisation-of-a-number|Prime factorisation of a Number
+P|16|count-primes-in-range-l-to-r|Count primes in range L to R
