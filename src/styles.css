@@ -349,6 +349,63 @@ code,
   background: var(--ink-2);
   color: var(--paper);
   box-shadow: 0 12px 32px rgb(0 0 0 / 0.45);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: max-content;
+  animation: toast-in 180ms ease-out;
+}
+
+.toast-info {
+  border-color: var(--rule);
+}
+
+.toast-undo {
+  flex: none;
+  min-height: 36px;
+  padding: 0 0.75rem;
+  border: 0;
+  border-radius: var(--r-1);
+  background: transparent;
+  color: var(--led);
+  font: inherit;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.toast-undo:hover {
+  background: var(--ink-1);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+}
+
+.leave-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--bad) 50%, var(--rule));
+  border-radius: var(--r-2);
+  background: var(--ink-1);
+}
+
+.leave-bar div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-danger {
+  background: var(--bad);
+  border-color: var(--bad);
+  color: var(--ink-0);
 }
 
 /* ---------- Departures board ---------- */
@@ -1542,6 +1599,10 @@ td:first-child {
 @media (max-width: 720px) {
   .topbar {
     padding-block: 0.5rem;
+    /* A backdrop-filter makes the bar the containing block for fixed
+       children, which would pin the tab bar to the top bar, not the screen. */
+    backdrop-filter: none;
+    background: var(--ink-0);
   }
 
   .tabs {

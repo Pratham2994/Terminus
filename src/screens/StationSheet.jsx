@@ -13,7 +13,7 @@ const RESULT_TEXT = {
   struggled: 'Review: struggled',
 }
 
-export default function StationSheet({ item, state, actions, run, ride, onBoard, onClose }) {
+export default function StationSheet({ item, state, actions, run, say, ride, onBoard, onClose }) {
   const [history, setHistory] = useState(null)
   const [busy, setBusy] = useState(false)
   const panel = useRef(null)
@@ -39,10 +39,13 @@ export default function StationSheet({ item, state, actions, run, ride, onBoard,
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  const act = async (fn) => {
+  // Runs a change and offers Undo, which puts the old row back.
+  const act = async (fn, message) => {
+    const before = row
     setBusy(true)
-    await run(fn)
+    const ok = await run(fn)
     setBusy(false)
+    if (ok) say(message, () => actions.restore(item, before))
   }
 
   const start = (kind) => {
@@ -83,7 +86,12 @@ export default function StationSheet({ item, state, actions, run, ride, onBoard,
           </button>
         </header>
 
-        <p className="sheet-status">{status}</p>
+        <p className="sheet-status">
+          {status}
+          {(st === 'open' || st === 'due') && ride && (
+            <span className="muted"> Finish your current ride to start this one.</span>
+          )}
+        </p>
 
         <div className="sheet-actions">
           {(st === 'open' || st === 'due') && !ride && (
@@ -96,16 +104,16 @@ export default function StationSheet({ item, state, actions, run, ride, onBoard,
           </a>
           {st === 'open' && (
             <>
-              <button className="btn btn-quiet" disabled={busy} onClick={() => act(() => actions.mark(item, 'known'))}>
+              <button className="btn btn-quiet" disabled={busy} onClick={() => act(() => actions.mark(item, 'known'), 'Marked as known.')}>
                 I know this
               </button>
-              <button className="btn btn-quiet" disabled={busy} onClick={() => act(() => actions.mark(item, 'skipped'))}>
+              <button className="btn btn-quiet" disabled={busy} onClick={() => act(() => actions.mark(item, 'skipped'), 'Skipped.')}>
                 Skip
               </button>
             </>
           )}
           {(st === 'known' || st === 'skipped') && (
-            <button className="btn btn-quiet" disabled={busy} onClick={() => act(() => actions.clear(item))}>
+            <button className="btn btn-quiet" disabled={busy} onClick={() => act(() => actions.clear(item), 'Back on the line.')}>
               Undo, put it back on the line
             </button>
           )}
@@ -114,7 +122,7 @@ export default function StationSheet({ item, state, actions, run, ride, onBoard,
               className="btn btn-quiet"
               disabled={busy}
               title="Marks it as not done. Your notes stay."
-              onClick={() => act(() => actions.clear(item))}
+              onClick={() => act(() => actions.clear(item), 'Station reset. Your notes stay.')}
             >
               Reset station
             </button>
@@ -132,7 +140,9 @@ export default function StationSheet({ item, state, actions, run, ride, onBoard,
               {history.map((a) => (
                 <li key={a.id}>
                   <p className="h-top">
-                    <span className={`h-result r-${a.result}`}>{RESULT_TEXT[a.result]}</span>
+                    <span className={`h-result r-${a.result}`}>
+                      {item.lesson && a.kind === 'new' ? 'Lesson done' : RESULT_TEXT[a.result]}
+                    </span>
                     <span className="mono">
                       {new Date(a.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
                       {a.minutes ? ` • ${a.minutes} min` : ''}

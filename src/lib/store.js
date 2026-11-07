@@ -122,6 +122,13 @@ export function useTerminus(user) {
         })
       },
 
+      // Puts back a progress row as it was before (for Undo). No row = not done.
+      async restore(item, row) {
+        if (!row) return this.clear(item)
+        const { status, stage, next_review, done_at } = row
+        await putProgress(item.key, { status, stage, next_review, done_at })
+      },
+
       async finishNew(item, note) {
         const today = dayString()
         await addAttempt({ item_key: item.key, kind: 'new', ...note })

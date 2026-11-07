@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { ExternalLink, X } from 'lucide-react'
 import { ITEM_BY_KEY, strivLink } from '../lib/sheet'
+import { afterNewSolve, afterReview } from '../lib/schedule'
+import { dayString, prettyDay } from '../lib/dates'
 import { LineBadge, STAGE_TEXT, kindText } from './bits'
 
 // Stops on the solving line, in minutes.
@@ -59,11 +61,20 @@ function mmss(ms) {
   return `${String(m).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
 }
 
-export default function Ride({ ride, state, actions, run, onExit }) {
+// What the arrival toast says: when the station comes back next.
+function arrivalText(row) {
+  if (!row.next_review) return 'Arrived. This station is mastered.'
+  return `Arrived. Next review on ${prettyDay(row.next_review)}.`
+}
+
+export default function Ride({ ride, state, actions, run, say, onExit }) {
   const item = ITEM_BY_KEY.get(ride.key)
   const row = state.progress.get(item.key)
   const [now, setNow] = useState(Date.now())
   const [step, setStep] = useState('ride')
+  const [leaving, setLeaving] = useState(false)
+  // The note typed so far, kept when you go back to the timer.
+  const [draft, setDraft] = useState(null)
 
   useEffect(() => {
     if (step !== 'ride') return
@@ -89,17 +100,36 @@ export default function Ride({ ride, state, actions, run, onExit }) {
             {item.line.name} • {item.section} • {kindText(item)}
           </p>
         </div>
-        <button className="icon-btn" aria-label="Leave without saving" title="Leave without saving" onClick={onExit}>
+        <button
+          className="icon-btn"
+          aria-label="Leave without saving"
+          title="Leave without saving"
+          onClick={() => (elapsed < 60000 ? onExit() : setLeaving(true))}
+        >
           <X size={20} />
         </button>
       </header>
+
+      {leaving && (
+        <div className="leave-bar" role="alert">
+          <p>Leave this ride? The timer and anything you typed are lost.</p>
+          <div>
+            <button className="btn btn-quiet" onClick={() => setLeaving(false)}>
+              Keep riding
+            </button>
+            <button className="btn btn-danger" onClick={onExit}>
+              Leave
+            </button>
+          </div>
+        </div>
+      )}
 
       <a className="btn btn-line" href={strivLink(item)} target="_blank" rel="noopener noreferrer">
         Open on takeUforward <ExternalLink size={15} aria-hidden="true" />
       </a>
 
       {item.lesson ? (
-        <LessonDone item={item} actions={actions} run={run} onExit={onExit} minutes={Math.round(minutes)} />
+        <LessonDone item={item} actions={actions} run={run} say={say} onExit={onExit} minutes={Math.round(minutes)} />
       ) : step === 'ride' ? (
         <>
           <Track minutes={minutes} color={item.line.color} />
@@ -123,7 +153,12 @@ export default function Ride({ ride, state, actions, run, onExit }) {
           minutes={Math.max(1, Math.round(minutes))}
           actions={actions}
           run={run}
-          onBack={() => setStep('ride')}
+          say={say}
+          draft={draft}
+          onBack={(d) => {
+            setDraft(d)
+            setStep('ride')
+          }}
           onSaved={onExit}
         />
       )}
@@ -164,13 +199,14 @@ function Track({ minutes, color }) {
   )
 }
 
-function LessonDone({ item, actions, run, onExit, minutes }) {
+function LessonDone({ item, actions, run, say, onExit, minutes }) {
   const [busy, setBusy] = useState(false)
   const done = async () => {
     setBusy(true)
     const ok = await run(() => actions.finishNew(item, { result: 'alone', minutes }))
-    setBusy(false)
-    if (ok) onExit()
+    if (!ok) return setBusy(false)
+    say('Lesson done.')
+    onExit()
   }
   return (
     <div className="lesson">
@@ -182,9 +218,9 @@ function LessonDone({ item, actions, run, onExit, minutes }) {
   )
 }
 
-function NoteForm({ item, row, review, minutes, actions, run, onBack, onSaved }) {
-  const [result, setResult] = useState(null)
-  const [f, setF] = useState({ pattern: '', time: '', space: '', key_idea: '', mistake: '', minutes })
+function NoteForm({ item, row, review, minutes, actions, run, say, draft, onBack, onSaved }) {
+  const [result, setResult] = useState(draft?.result ?? null)
+  const [f, setF] = useState(() => ({ pattern: '', time: '', space: '', key_idea: '', mistake: '', ...draft?.f, minutes }))
   const [busy, setBusy] = useState(false)
   const [last, setLast] = useState(null)
   const set = (k) => (e) => setF((s) => ({ ...s, [k]: e.target.value }))
@@ -215,14 +251,42 @@ function NoteForm({ item, row, review, minutes, actions, run, onBack, onSaved })
       complexity: complexity.slice(0, 200) || null,
     }
     const ok = await run(() => (review ? actions.finishReview(item, row, note) : actions.finishNew(item, note)))
-    setBusy(false)
-    if (ok) onSaved()
+    if (!ok) return setBusy(false)
+    const today = dayString()
+    say(arrivalText(review ? afterReview(row, result, today) : afterNewSolve(item, today)))
+    onSaved()
   }
 
   const results = review ? REVIEW_RESULTS : NEW_RESULTS
 
   return (
     <form className="note" onSubmit={save}>
+      {last && (
+        <aside className="last-note">
+          <h3>Your note from last time</h3>
+          {last.pattern && (
+            <p>
+              <b>Pattern</b> {last.pattern}
+            </p>
+          )}
+          {last.key_idea && (
+            <p>
+              <b>Key idea</b> {last.key_idea}
+            </p>
+          )}
+          {last.mistake && (
+            <p>
+              <b>Mistake</b> {last.mistake}
+            </p>
+          )}
+          {last.complexity && (
+            <p>
+              <b>Complexity</b> {last.complexity}
+            </p>
+          )}
+        </aside>
+      )}
+
       <fieldset className="choice">
         <legend>How did it go?</legend>
         {results.map(([value, label, hint]) => (
@@ -280,34 +344,8 @@ function NoteForm({ item, row, review, minutes, actions, run, onBack, onSaved })
         <input type="number" min="0" max="1440" value={f.minutes} onChange={set('minutes')} />
       </label>
 
-      {last && (
-        <aside className="last-note">
-          <h3>Your note from last time</h3>
-          {last.pattern && (
-            <p>
-              <b>Pattern</b> {last.pattern}
-            </p>
-          )}
-          {last.key_idea && (
-            <p>
-              <b>Key idea</b> {last.key_idea}
-            </p>
-          )}
-          {last.mistake && (
-            <p>
-              <b>Mistake</b> {last.mistake}
-            </p>
-          )}
-          {last.complexity && (
-            <p>
-              <b>Complexity</b> {last.complexity}
-            </p>
-          )}
-        </aside>
-      )}
-
       <div className="form-actions">
-        <button type="button" className="btn btn-quiet" onClick={onBack}>
+        <button type="button" className="btn btn-quiet" onClick={() => onBack({ result, f })}>
           Back to the timer
         </button>
         <button type="submit" className="btn btn-go" disabled={!result || busy}>

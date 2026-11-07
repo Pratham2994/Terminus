@@ -5,7 +5,7 @@ import { strivLink } from '../lib/sheet'
 import { agoText, prettyDay } from '../lib/dates'
 import { Clock, LineBadge, STAGE_TEXT, kindText } from './bits'
 
-export default function Today({ state, actions, run, onBoard, today, extra, onMore }) {
+export default function Today({ state, actions, run, say, onBoard, today, extra, onMore }) {
   const [busyKey, setBusyKey] = useState(null)
   const plan = useMemo(
     () => planToday({ progress: state.progress, attempts: state.attempts, budget: state.budget, extra, today }),
@@ -110,8 +110,9 @@ export default function Today({ state, actions, run, onBoard, today, extra, onMo
                     disabled={busyKey === item.key}
                     onClick={async () => {
                       setBusyKey(item.key)
-                      await run(() => actions.mark(item, 'known'))
+                      const ok = await run(() => actions.mark(item, 'known'))
                       setBusyKey(null)
+                      if (ok) say(`${item.label} marked as known.`, () => actions.restore(item, null))
                     }}
                   >
                     <Check size={15} aria-hidden="true" /> I know this

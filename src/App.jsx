@@ -115,7 +115,7 @@ function Shell({ user }) {
 
   useEffect(() => {
     if (!toast) return
-    const t = setTimeout(() => setToast(null), 5000)
+    const t = setTimeout(() => setToast(null), toast.undo ? 7000 : 5000)
     return () => clearTimeout(t)
   }, [toast])
 
@@ -138,10 +138,24 @@ function Shell({ user }) {
       await fn()
       return true
     } catch (e) {
-      setToast(e.message || 'Something went wrong.')
+      setToast({ kind: 'error', text: e.message || 'Something went wrong.' })
       return false
     }
   }, [])
+
+  // A short message after an action. With `undo`, the toast has an Undo button.
+  const say = useCallback((text, undo) => setToast({ kind: 'info', text, undo }), [])
+
+  const undoToast = async () => {
+    const undo = toast?.undo
+    setToast(null)
+    if (undo && (await run(undo))) setToast({ kind: 'info', text: 'Undone.' })
+  }
+
+  const endRide = useCallback(() => {
+    setRide(null)
+    window.scrollTo(0, 0)
+  }, [setRide])
 
   const closeStation = useCallback(() => setStation(null), [])
 
@@ -163,9 +177,9 @@ function Shell({ user }) {
       </div>
     )
   else if (ride && tab === 'today')
-    body = <Ride ride={ride} state={state} actions={actions} run={run} onExit={() => setRide(null)} />
+    body = <Ride ride={ride} state={state} actions={actions} run={run} say={say} onExit={endRide} />
   else if (tab === 'today')
-    body = <Today state={state} actions={actions} run={run} onBoard={board} today={today} extra={extra} onMore={addExtra} />
+    body = <Today state={state} actions={actions} run={run} say={say} onBoard={board} today={today} extra={extra} onMore={addExtra} />
   else if (tab === 'map')
     body = <MapView state={state} today={today} line={mapLine} onLine={setMapLine} onStation={setStation} />
   else if (tab === 'kit') body = <Kit />
@@ -208,6 +222,7 @@ function Shell({ user }) {
           state={state}
           actions={actions}
           run={run}
+          say={say}
           ride={ride}
           onBoard={board}
           onClose={closeStation}
@@ -215,8 +230,13 @@ function Shell({ user }) {
       )}
 
       {toast && (
-        <div className="toast" role="alert">
-          {toast}
+        <div className={`toast toast-${toast.kind}`} role={toast.kind === 'error' ? 'alert' : 'status'}>
+          <span>{toast.text}</span>
+          {toast.undo && (
+            <button className="toast-undo" onClick={undoToast}>
+              Undo
+            </button>
+          )}
         </div>
       )}
     </div>
