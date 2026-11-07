@@ -57,7 +57,7 @@ export function LinkSet({ item, hideOwn = false }) {
               ? `${item.judge.site} has a free, similar version: it ${item.judge.similar}.`
               : `Solve the same problem free on ${item.judge.site}.`
             : hasEditorial(item.key)
-            ? 'The Terminus editorial explains it and names a free place to practise.'
+            ? 'No free judge has it, so the Terminus editorial is your judge: tests and a self-check program you run in a free online compiler.'
             : item.editorial
               ? 'The free editorial has the full statement.'
               : item.video

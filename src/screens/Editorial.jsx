@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ChevronLeft } from 'lucide-react'
+import { Check, ChevronLeft, Copy } from 'lucide-react'
 import { ITEM_BY_KEY } from '../lib/sheet'
 import { loadEditorial, parseMarkdown } from '../lib/editorials'
 import { LineBadge, LinkSet, kindText } from './bits'
@@ -24,6 +24,101 @@ function Inline({ text }) {
   }
   out.push(text.slice(last))
   return out
+}
+
+// A code block with a Copy button, so code can go straight into an online compiler.
+function CodeBlock({ lang, text }) {
+  const [copied, setCopied] = useState(false)
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1600)
+    } catch {
+      setCopied(false)
+    }
+  }
+  return (
+    <div className="ed-code-wrap">
+      <pre className="ed-code" data-lang={lang}>
+        <code>{text}</code>
+      </pre>
+      <button type="button" className="ed-copy" onClick={copy} aria-label={copied ? 'Copied' : 'Copy code'}>
+        {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+        {copied ? 'Copied' : 'Copy'}
+      </button>
+    </div>
+  )
+}
+
+function Blocks({ blocks }) {
+  return blocks.map((b, i) => {
+    if (b.type === 'h1') return null
+    if (b.type === 'h2') return <h2 key={i}>{b.text}</h2>
+    if (b.type === 'h3') return <h3 key={i}>{b.text}</h3>
+    if (b.type === 'code') return <CodeBlock key={i} lang={b.lang} text={b.text} />
+    if (b.type === 'hidden')
+      return (
+        <details key={i} className="ed-hidden">
+          <summary>
+            <Inline text={b.title} />
+          </summary>
+          <div className="ed-hidden-body">
+            <Blocks blocks={b.blocks} />
+          </div>
+        </details>
+      )
+    if (b.type === 'ul' || b.type === 'ol') {
+      const List = b.type
+      return (
+        <List key={i}>
+          {b.items.map((t, j) => (
+            <li key={j}>
+              <Inline text={t} />
+            </li>
+          ))}
+        </List>
+      )
+    }
+    if (b.type === 'table')
+      return (
+        <div key={i} className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                {b.head.map((h, j) => (
+                  <th key={j}>
+                    <Inline text={h} />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {b.rows.map((r, j) => (
+                <tr key={j}>
+                  {r.map((c, k) => (
+                    <td key={k}>
+                      <Inline text={c} />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )
+    if (b.type === 'note')
+      return (
+        <p key={i} className="ed-note">
+          <Inline text={b.text} />
+        </p>
+      )
+    return (
+      <p key={i}>
+        <Inline text={b.text} />
+      </p>
+    )
+  })
 }
 
 export default function Editorial({ itemKey, onBack }) {
@@ -69,67 +164,7 @@ export default function Editorial({ itemKey, onBack }) {
         </div>
       ) : (
         <div className="ed-body">
-          {blocks.map((b, i) => {
-            if (b.type === 'h1') return null
-            if (b.type === 'h2') return <h2 key={i}>{b.text}</h2>
-            if (b.type === 'h3') return <h3 key={i}>{b.text}</h3>
-            if (b.type === 'code')
-              return (
-                <pre key={i} className="ed-code" data-lang={b.lang}>
-                  <code>{b.text}</code>
-                </pre>
-              )
-            if (b.type === 'ul' || b.type === 'ol') {
-              const List = b.type
-              return (
-                <List key={i}>
-                  {b.items.map((t, j) => (
-                    <li key={j}>
-                      <Inline text={t} />
-                    </li>
-                  ))}
-                </List>
-              )
-            }
-            if (b.type === 'table')
-              return (
-                <div key={i} className="table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        {b.head.map((h, j) => (
-                          <th key={j}>
-                            <Inline text={h} />
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {b.rows.map((r, j) => (
-                        <tr key={j}>
-                          {r.map((c, k) => (
-                            <td key={k}>
-                              <Inline text={c} />
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )
-            if (b.type === 'note')
-              return (
-                <p key={i} className="ed-note">
-                  <Inline text={b.text} />
-                </p>
-              )
-            return (
-              <p key={i}>
-                <Inline text={b.text} />
-              </p>
-            )
-          })}
+          <Blocks blocks={blocks} />
         </div>
       )}
     </article>

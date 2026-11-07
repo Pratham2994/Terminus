@@ -18,7 +18,11 @@ export async function loadEditorial(key) {
 }
 
 // A small Markdown reader for our own files: headings (#, ##, ###),
-// paragraphs, "-" lists, "1." lists, fenced code, and inline `code` / **bold**.
+// paragraphs, "-" lists, "1." lists, fenced code, tables, "> " notes,
+// inline `code` / **bold**, and folded sections:
+//   :::hidden Title shown on the fold
+//   ...any of the above...
+//   :::
 export function parseMarkdown(text) {
   const blocks = []
   const lines = text.replace(/\r\n/g, '\n').split('\n')
@@ -27,6 +31,19 @@ export function parseMarkdown(text) {
     const line = lines[i]
     if (!line.trim()) {
       i++
+      continue
+    }
+    const fold = line.match(/^:::hidden\s*(.*)/)
+    if (fold) {
+      const inner = []
+      i++
+      let inCode = false
+      while (i < lines.length && !(lines[i].trim() === ':::' && !inCode)) {
+        if (lines[i].startsWith('```')) inCode = !inCode
+        inner.push(lines[i++])
+      }
+      i++
+      blocks.push({ type: 'hidden', title: fold[1] || 'Hidden', blocks: parseMarkdown(inner.join('\n')) })
       continue
     }
     const fence = line.match(/^```(\w*)/)
@@ -73,7 +90,8 @@ export function parseMarkdown(text) {
       continue
     }
     const para = []
-    while (i < lines.length && lines[i].trim() && !/^(```|#{1,3}\s|\s*-\s|\s*\d+\.\s|> |\s*\|)/.test(lines[i])) para.push(lines[i++].trim())
+    while (i < lines.length && lines[i].trim() && !/^(```|#{1,3}\s|\s*-\s|\s*\d+\.\s|> |\s*\||:::)/.test(lines[i])) para.push(lines[i++].trim())
+    if (!para.length) para.push(lines[i++].trim()) // a stray ":::" line: show it as text, never loop
     blocks.push({ type: 'p', text: para.join(' ') })
   }
   return blocks

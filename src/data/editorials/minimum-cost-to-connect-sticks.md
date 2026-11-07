@@ -1,6 +1,6 @@
 # Minimum Cost to Connect Sticks
 
-> LeetCode 1167 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks as "Min Cost to Connect Ropes": use the Problem link above.
+> LeetCode 1167 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks as "Min Cost to Connect Ropes": use the Problem link above. GfG's function is `int minCost(vector<int>& arr)`: the same body as `connectSticks` below.
 
 ## The problem
 

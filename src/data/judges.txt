@@ -20,9 +20,9 @@ pattern-14|Code360|https://www.naukri.com/code360/problems/increasing-letter-tri
 pattern-15|Code360|https://www.naukri.com/code360/problems/reverse-letter-triangle_6581906
 pattern-16|Code360|https://www.naukri.com/code360/problems/alpha-ramp_6581888
 pattern-17|Code360|https://www.naukri.com/code360/problems/alpha-hill_6581921
-pattern-18|Code360|https://www.naukri.com/code360/problems/alpha-triangle_6581429
+pattern-18|Code360|https://www.naukri.com/code360/problems/alpha-triangle_6581429|~starts each row at the last letter and counts down (C, C B, C B A)
 pattern-19|GfG|https://www.geeksforgeeks.org/problems/double-triangle-pattern/1
-pattern-20|GfG|https://www.geeksforgeeks.org/problems/butterfly-pattern/1
+pattern-20|Code360|https://www.naukri.com/code360/problems/symmetry_6581914
 pattern-21|GfG|https://www.geeksforgeeks.org/problems/print-square--105330/1
 pattern-22|GfG|https://www.geeksforgeeks.org/problems/square-pattern-1662666141/1
 count-all-digits-of-a-number|GfG|https://www.geeksforgeeks.org/problems/count-total-digits-in-a-number/1

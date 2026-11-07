@@ -3345,6 +3345,12 @@ button.nc-name:hover {
   font-weight: 800;
 }
 
+/* Long code in a sentence (function signatures) must wrap on a phone. */
+.ed-body .inline-code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .ed-note {
   padding: 0.75rem 1rem;
   border: 1px solid color-mix(in srgb, var(--led) 40%, var(--rule));
@@ -3367,6 +3373,63 @@ button.nc-name:hover {
 
 .ed-code code {
   font-family: inherit;
+}
+
+.ed-code-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+.ed-code-wrap .ed-code {
+  padding-top: 2.4rem; /* room for the Copy button */
+}
+
+.ed-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-1);
+  background: var(--ink-0);
+  color: var(--paper-2);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.ed-copy:hover,
+.ed-copy:focus-visible {
+  color: var(--paper);
+  border-color: var(--led);
+}
+
+/* Folded section: hidden tests and the self-check program. */
+.ed-hidden {
+  border: 1px dashed color-mix(in srgb, var(--bad) 45%, var(--rule));
+  border-radius: var(--r-2);
+  background: var(--ink-1);
+}
+
+.ed-hidden > summary {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--paper-2);
+}
+
+.ed-hidden[open] > summary {
+  border-bottom: 1px solid var(--rule);
+}
+
+.ed-hidden-body {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+  min-width: 0;
 }
 
 .link-set .link-own {

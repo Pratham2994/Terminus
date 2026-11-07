@@ -6,7 +6,7 @@
 
 Given a digit string num (length ≤ 10) and a target, insert '+', '−' or '*' between digits, or nothing (which joins digits into a longer number). Return every expression that evaluates to target, with normal precedence: * before + and −. Numbers may not have leading zeros ("05" is not allowed, "0" is).
 
-Examples: "123", 6 → **["1*2*3","1+2+3"]**. "105", 5 → **["1*0+5","10-5"]**. "3456237490", 9191 → **[]**.
+Examples: "123", 6 → `["1*2*3","1+2+3"]`. "105", 5 → `["1*0+5","10-5"]`. "3456237490", 9191 → **[]**.
 
 ## The idea: backtracking over the next number
 
@@ -83,4 +83,4 @@ public:
 - First number "10": then "5": "10-5" = 5 ✓. "10+5" = 15, "10*5" = 50.
 - First number "105" = 105 ✗.
 
-Answer: **["1*0+5", "10-5"]**. (Tested on 400 random inputs against trying every operator combination and evaluating it.)
+Answer: `["1*0+5", "10-5"]`. (Tested on 400 random inputs against trying every operator combination and evaluating it.)

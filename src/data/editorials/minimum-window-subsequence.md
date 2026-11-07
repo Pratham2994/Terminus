@@ -1,6 +1,6 @@
 # Minimum Window Subsequence
 
-> LeetCode 727 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks: use the Problem link above.
+> LeetCode 727 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks: use the Problem link above. GfG's function is `string minWindow(string& s1, string& s2)`: the same code works with the `&` added.
 
 ## The problem
 

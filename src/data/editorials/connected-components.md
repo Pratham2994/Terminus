@@ -1,6 +1,6 @@
 # Connected Components
 
-> takeUforward's page for this needs Plus, and LeetCode 323 is Premium. The **same problem** (count components from an edge list) is free on GeeksforGeeks: use the Problem link above. The function here is `int findNumberOfComponent(int V, vector<vector<int>>& edges)`.
+> takeUforward's page for this needs Plus, and LeetCode 323 is Premium. The **same problem** (count components from an edge list) is free on GeeksforGeeks: use the Problem link above. GfG's function is `int countConnected(int V, vector<vector<int>>& edges)`; the code below calls it `findNumberOfComponent`, with the same body.
 
 ## The problem
 

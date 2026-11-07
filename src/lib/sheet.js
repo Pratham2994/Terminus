@@ -156,8 +156,8 @@ export function resources(item) {
     if (item.leetcodePremium) out.push({ kind: 'premium', label: 'LeetCode', site: 'Premium', href: item.leetcodePremium })
   }
   const list = out.filter(Boolean)
-  // Nothing free outside Terminus: add a web search, so Start has somewhere to go.
-  if (!list.some((r) => !r.internal && r.kind !== 'premium')) {
+  // Nothing free anywhere, not even our editorial: add a web search, so Start has somewhere to go.
+  if (!list.some((r) => (!r.internal || r.kind === 'own') && r.kind !== 'premium')) {
     const q = encodeURIComponent(`${item.label} problem`)
     const search = { kind: 'search', label: 'Search', site: 'web', href: `https://www.google.com/search?q=${q}` }
     const premiumAt = list.findIndex((r) => r.kind === 'premium')
@@ -166,9 +166,16 @@ export function resources(item) {
   return list
 }
 
-// The link Start opens: the first free outside resource.
+// The link Start opens: the free place to solve it. With no free judge,
+// our own editorial (it holds the tests and a self-check program); else the
+// first free outside resource.
 export function primaryLink(item) {
-  return resources(item).find((r) => !r.internal && r.kind !== 'premium')?.href || strivLink(item)
+  const list = resources(item)
+  const target =
+    list.find((r) => r.kind === 'problem') ||
+    list.find((r) => r.kind === 'own') ||
+    list.find((r) => !r.internal && r.kind !== 'premium')
+  return target?.href || strivLink(item)
 }
 
 export function strivLink(item) {
