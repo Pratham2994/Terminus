@@ -1,5 +1,6 @@
 import { ExternalLink } from 'lucide-react'
 import { resources } from '../lib/sheet'
+import { hasEditorial } from '../lib/editorials'
 import { useEffect, useState } from 'react'
 
 export function LineBadge({ line, size = 'md' }) {
@@ -50,11 +51,13 @@ export function LinkSet({ item, hideOwn = false }) {
       {!item.lesson && item.plusOnly && !item.leetcode && (
         <p className="link-note">
           takeUforward’s problem page needs Plus.{' '}
-          {item.editorial
-            ? 'The free editorial has the full statement.'
-            : item.video
-              ? 'The video explains the statement.'
-              : 'Nothing free there, so search for it.'}
+          {hasEditorial(item.key)
+            ? 'The Terminus editorial explains it and names a free place to practise.'
+            : item.editorial
+              ? 'The free editorial has the full statement.'
+              : item.video
+                ? 'The video explains the statement.'
+                : 'Nothing free there, so search for it.'}
         </p>
       )}
     </div>

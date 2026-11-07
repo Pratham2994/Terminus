@@ -87,6 +87,17 @@ function parse(text) {
 export const SHEET = parse(raw)
 export const ITEM_BY_KEY = new Map(SHEET.items.map((it) => [it.key, it]))
 
+// LeetCode problems in the sheet that need LeetCode Premium. They are never
+// used as the place to solve; they are listed last, marked Premium.
+const LEETCODE_PREMIUM = new Set([
+  'buildings-with-an-ocean-view', 'plus-one-linked-list', 'longest-substring-with-at-most-k-distinct-characters',
+  'minimum-window-subsequence', 'find-the-celebrity', 'boundary-of-binary-tree', 'inorder-successor-in-bst',
+  'largest-bst-subtree', 'minimum-cost-to-connect-sticks', 'number-of-distinct-islands', 'alien-dictionary',
+  'minimize-max-distance-to-gas-station', 'number-of-islands-ii', 'connecting-cities-with-minimum-cost',
+  'implement-trie-ii-prefix-tree', 'longest-word-with-all-prefixes', 'number-of-distinct-substrings-in-a-string',
+  'maximum-size-subarray-sum-equals-k', 'median-of-a-row-wise-sorted-matrix',
+])
+
 // Free resources from src/data/links.txt, one line per item in sheet order.
 const BLOG_BASE = 'https://takeuforward.org/blogs/data-structure-and-algorithm/'
 {
@@ -100,7 +111,8 @@ const BLOG_BASE = 'https://takeuforward.org/blogs/data-structure-and-algorithm/'
     if (slug !== it.slug) return
     it.editorial = blog ? (blog.startsWith('~') ? BLOG_BASE + blog.slice(1) : `https://takeuforward.org${blog}`) : null
     it.video = yt ? `https://www.youtube.com/watch?v=${yt}` : null
-    it.leetcode = lc ? `https://leetcode.com/problems/${lc}/` : null
+    it.leetcode = lc && !LEETCODE_PREMIUM.has(lc) ? `https://leetcode.com/problems/${lc}/` : null
+    it.leetcodePremium = lc && LEETCODE_PREMIUM.has(lc) ? `https://leetcode.com/problems/${lc}/` : null
     it.plusOnly = flag === 'P'
   })
 }
@@ -123,18 +135,22 @@ export function resources(item) {
     // Our own editorial, for problems with nothing free besides the problem.
     if (hasEditorial(item.key)) out.push({ kind: 'own', label: 'Editorial', site: 'Terminus', href: editorialHref(item.key), internal: true })
     out.push(editorial, video)
+    if (item.leetcodePremium) out.push({ kind: 'premium', label: 'LeetCode', site: 'Premium', href: item.leetcodePremium })
   }
   const list = out.filter(Boolean)
-  if (list.length === 0) {
+  // Nothing free outside Terminus: add a web search, so Start has somewhere to go.
+  if (!list.some((r) => !r.internal && r.kind !== 'premium')) {
     const q = encodeURIComponent(`${item.label} problem`)
-    list.push({ kind: 'search', label: 'Search', site: 'web', href: `https://www.google.com/search?q=${q}` })
+    const search = { kind: 'search', label: 'Search', site: 'web', href: `https://www.google.com/search?q=${q}` }
+    const premiumAt = list.findIndex((r) => r.kind === 'premium')
+    list.splice(premiumAt === -1 ? list.length : premiumAt, 0, search)   // before any Premium link
   }
   return list
 }
 
 // The link Start opens: the first free outside resource.
 export function primaryLink(item) {
-  return resources(item).find((r) => !r.internal)?.href || strivLink(item)
+  return resources(item).find((r) => !r.internal && r.kind !== 'premium')?.href || strivLink(item)
 }
 
 export function strivLink(item) {

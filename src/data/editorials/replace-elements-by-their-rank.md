@@ -50,7 +50,7 @@ public:
 
 ## Why is it on the Heaps line?
 
-You can also ranks values by popping them from a min-heap in order and raising the rank only when the value changes. Sorting does the same job more simply.
+You can also rank values by popping them from a min-heap in order and raising the rank only when the value changes. Sorting does the same job more simply.
 
 ## Dry run ([40, 10, 20, 30])
 

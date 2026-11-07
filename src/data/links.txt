@@ -2,7 +2,7 @@
 # slug|editorial path (~ = /blogs/data-structure-and-algorithm/)|YouTube id|LeetCode slug|P if takeUforward's practice page needs Plus
 # Read from takeuforward.org (signed-in sheet page) on 2026-11-07. LeetCode slugs removed where
 # the LeetCode problem differs from the A2Z one or is LeetCode Premium while the takeUforward page is free:
-# bracket reversals, Rabin-Karp, KMP, connected components.
+# bracket reversals, Rabin-Karp, KMP, connected components, count palindromic subsequences.
 breaking-the-myth|~breaking-the-myth-dsa-is-language-independent|qbwJ1U6I-IU||
 programming-and-what-are-computers|~programming-and-computers|y_tiNJXgA2U||
 how-to-think-like-a-programmer|~how-to-think-like-a-programmer|iv7jtDODKrg||
@@ -472,7 +472,7 @@ distinct-subsequences||nVG7eTiD2bY|distinct-subsequences|
 edit-distance||fJaKO8FbDdo|edit-distance|
 wildcard-matching||ZmlQ3vgAOMo|wildcard-matching|
 word-break|||word-break|
-count-palindromic-subsequences|||count-palindromic-subsequences|
+count-palindromic-subsequences||||
 matrix-chain-multiplication||vRVfmbCFW7Y||
 burst-balloons||Yz4LlDSlkns|burst-balloons|
 palindrome-partitioning-ii-|~palindrome-partitioning-ii-minimum-cuts|_H8V5hJUGd0|palindrome-partitioning-ii|

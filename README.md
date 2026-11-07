@@ -39,7 +39,12 @@ Row-level security limits every row to its owner, so each person sees only their
 
 Free links per item (editorial, YouTube, LeetCode, and whether takeUforward's practice page needs Plus)
 live in `src/data/links.txt`, in sheet order. Start opens the first free one: LeetCode, then a free
-takeUforward page, then the editorial or video. Lessons open the free editorial first.
+takeUforward page, then the editorial or video. Lessons open the free editorial first. LeetCode Premium
+links are never used to solve; they show last, marked Premium.
+
+53 problems with no free editorial or video have a Terminus editorial in `src/data/editorials/`
+(one Markdown file per station key), shown in the app at `#editorial/<key>`. Each solution was
+compiled and checked against a brute force on random inputs before it was written up.
 
 The sheet lives in `src/data/a2z.txt` (order, sections, slugs and video lengths read from
 takeuforward.org on 2026-11-07). Terminus links to takeUforward and copies none of its content.
