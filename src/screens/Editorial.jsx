@@ -91,6 +91,33 @@ export default function Editorial({ itemKey, onBack }) {
                 </List>
               )
             }
+            if (b.type === 'table')
+              return (
+                <div key={i} className="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        {b.head.map((h, j) => (
+                          <th key={j}>
+                            <Inline text={h} />
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {b.rows.map((r, j) => (
+                        <tr key={j}>
+                          {r.map((c, k) => (
+                            <td key={k}>
+                              <Inline text={c} />
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )
             if (b.type === 'note')
               return (
                 <p key={i} className="ed-note">

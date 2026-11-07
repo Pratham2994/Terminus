@@ -55,6 +55,17 @@ export function parseMarkdown(text) {
       blocks.push({ type: ordered ? 'ol' : 'ul', items })
       continue
     }
+    if (line.trim().startsWith('|')) {
+      const rows = []
+      while (i < lines.length && lines[i].trim().startsWith('|')) {
+        const cells = lines[i].trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim())
+        // Skip the |---|---| line under the header.
+        if (!cells.every((c) => /^:?-+:?$/.test(c))) rows.push(cells)
+        i++
+      }
+      blocks.push({ type: 'table', head: rows[0] || [], rows: rows.slice(1) })
+      continue
+    }
     if (line.startsWith('> ')) {
       const q = []
       while (i < lines.length && lines[i].startsWith('> ')) q.push(lines[i++].slice(2))
@@ -62,7 +73,7 @@ export function parseMarkdown(text) {
       continue
     }
     const para = []
-    while (i < lines.length && lines[i].trim() && !/^(```|#{1,3}\s|\s*-\s|\s*\d+\.\s|> )/.test(lines[i])) para.push(lines[i++].trim())
+    while (i < lines.length && lines[i].trim() && !/^(```|#{1,3}\s|\s*-\s|\s*\d+\.\s|> |\s*\|)/.test(lines[i])) para.push(lines[i++].trim())
     blocks.push({ type: 'p', text: para.join(' ') })
   }
   return blocks
