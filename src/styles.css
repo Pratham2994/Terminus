@@ -2418,7 +2418,6 @@ td:first-child {
   height: 100%;
   min-width: 4px;
   border-radius: 4px;
-  transition: width 500ms var(--ease-out);
 }
 
 .bar-alone {
