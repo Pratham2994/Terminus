@@ -2952,7 +2952,6 @@ td:first-child {
   gap: 0.9rem;
   padding: 1rem 1.1rem 0.85rem;
   border: 1px solid var(--rule);
-  border-top: 3px solid var(--c);
   border-radius: var(--r-2);
   background: linear-gradient(180deg, var(--ink-1), color-mix(in srgb, var(--ink-1) 55%, var(--ink-0)));
 }
