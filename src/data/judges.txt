@@ -1,0 +1,99 @@
+# Free judges for A2Z problems that have no free place to solve them (takeUforward
+# page needs Plus, and no free LeetCode). Checked by hand against takeUforward's
+# statement on 2026-11-07. Most of these are the same problem; formats can differ
+# (e.g. stars printed with spaces).
+# key|site|url|~ when the problem is only similar (see the note after ~)
+pattern-1|GfG|https://www.geeksforgeeks.org/problems/print-square-wall-1605682270/1
+pattern-2|GfG|https://www.geeksforgeeks.org/problems/right-angle-triangle-1605685807/1
+pattern-3|GfG|https://www.geeksforgeeks.org/problems/right-angled-number-triangle/1
+pattern-4|Code360|https://www.naukri.com/code360/problems/triangular-number-pyramid_6573690
+pattern-5|GfG|https://www.geeksforgeeks.org/problems/inverted-right-angletriangle-1605691171--104349/1
+pattern-6|Code360|https://www.naukri.com/code360/problems/reverse-number-triangle_6581889
+pattern-7|GfG|https://www.geeksforgeeks.org/problems/pyramid-patterns/1
+pattern-8|GfG|https://www.geeksforgeeks.org/problems/inverted-triangle-of-stars0110/1
+pattern-9|GfG|https://www.geeksforgeeks.org/problems/pattern/1
+pattern-10|GfG|https://www.geeksforgeeks.org/problems/triangle-pattern-1661718013/1
+pattern-11|Code360|https://www.naukri.com/code360/problems/binary-number-triangle_6581890
+pattern-12|GfG|https://www.geeksforgeeks.org/problems/double-triangle-pattern-1662664259/1
+pattern-13|GfG|https://www.geeksforgeeks.org/problems/floyds-triangle1222/1
+pattern-14|Code360|https://www.naukri.com/code360/problems/increasing-letter-triangle_6581897
+pattern-15|Code360|https://www.naukri.com/code360/problems/reverse-letter-triangle_6581906
+pattern-16|Code360|https://www.naukri.com/code360/problems/alpha-ramp_6581888
+pattern-17|Code360|https://www.naukri.com/code360/problems/alpha-hill_6581921
+pattern-18|Code360|https://www.naukri.com/code360/problems/alpha-triangle_6581429
+pattern-19|GfG|https://www.geeksforgeeks.org/problems/double-triangle-pattern/1
+pattern-20|GfG|https://www.geeksforgeeks.org/problems/butterfly-pattern/1
+pattern-21|GfG|https://www.geeksforgeeks.org/problems/print-square--105330/1
+pattern-22|GfG|https://www.geeksforgeeks.org/problems/square-pattern-1662666141/1
+count-all-digits-of-a-number|GfG|https://www.geeksforgeeks.org/problems/count-total-digits-in-a-number/1
+check-for-prime-number|GfG|https://www.geeksforgeeks.org/problems/prime-number2314/1
+divisors-of-a-number|GfG|https://www.geeksforgeeks.org/problems/all-divisors-of-a-number/1
+sum-of-array-elements|GfG|https://www.geeksforgeeks.org/problems/sum-all-array-elements/1
+check-if-the-array-is-sorted-i|GfG|https://www.geeksforgeeks.org/problems/check-if-an-array-is-sorted0701/1
+linear-search|GfG|https://www.geeksforgeeks.org/problems/search-an-element-in-an-array-1587115621/1
+union-of-two-sorted-arrays|GfG|https://www.geeksforgeeks.org/problems/union-of-two-sorted-arrays-1587115621/1
+leaders-in-an-array|Code360|https://www.naukri.com/code360/problems/superior-elements_6783446|~returns the leaders in sorted order
+longest-subarray-with-sum-k|GfG|https://www.geeksforgeeks.org/problems/longest-sub-array-with-sum-k0809/1
+largest-subarray-with-sum-0|GfG|https://www.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1
+count-subarrays-with-given-xor-k|GfG|https://www.geeksforgeeks.org/problems/count-subarray-with-given-xor/1
+find-nth-root-of-a-number|GfG|https://www.geeksforgeeks.org/problems/find-nth-root-of-m5843/1
+minimise-max-distance-to-gas-stations|GfG|https://www.geeksforgeeks.org/problems/minimize-max-distance-to-gas-station/1
+matrix-median|GfG|https://www.geeksforgeeks.org/problems/median-in-a-row-wise-sorted-matrix1527/1
+rat-in-a-maze|GfG|https://www.geeksforgeeks.org/problems/rat-in-a-maze-problem/1
+m-coloring-problem|GfG|https://www.geeksforgeeks.org/problems/m-coloring-problem-1587115620/1
+find-the-length-of-the-linked-list|GfG|https://www.geeksforgeeks.org/problems/count-nodes-of-linked-list/1
+search-in-linked-list|GfG|https://www.geeksforgeeks.org/problems/search-in-linked-list-1664434326/1
+add-one-to-a-number-represented-by-ll|GfG|https://www.geeksforgeeks.org/problems/add-1-to-a-number-represented-as-linked-list/1
+check-if-the-i-th-bit-is-set-or-not|GfG|https://www.geeksforgeeks.org/problems/check-whether-k-th-bit-is-set-or-not-1587115620/1
+check-if-a-number-is-odd-or-not|GfG|https://www.geeksforgeeks.org/problems/odd-or-even3618/1|~returns true for even, not odd
+xor-of-numbers-in-a-given-range|GfG|https://www.geeksforgeeks.org/problems/find-xor-of-numbers-from-l-to-r/1
+shortest-job-first|GfG|https://www.geeksforgeeks.org/problems/shortest-job-first/1
+job-sequencing-problem|GfG|https://www.geeksforgeeks.org/problems/job-sequencing-problem-1587115620/1
+longest-substring-with-at-most-k-distinct-characters|Code360|https://www.naukri.com/code360/problems/longest-substring-with-at-most-k-distinct-characters_2221410
+infix-to-postfix-conversion|GfG|https://www.geeksforgeeks.org/problems/infix-to-postfix-1587115620/1
+infix-to-prefix-conversion|GfG|https://www.geeksforgeeks.org/problems/infix-to-prefix-notation/1
+prefix-to-infix-conversion|GfG|https://www.geeksforgeeks.org/problems/prefix-to-infix-conversion/1
+prefix-to-postfix-conversion|GfG|https://www.geeksforgeeks.org/problems/prefix-to-postfix-conversion/1
+postfix-to-infix-conversion|GfG|https://www.geeksforgeeks.org/problems/postfix-to-infix-conversion/1
+postfix-to-prefix-conversion|GfG|https://www.geeksforgeeks.org/problems/postfix-to-prefix-conversion/1
+celebrity-problem|GfG|https://www.geeksforgeeks.org/problems/the-celebrity-problem/1
+boundary-traversal|GfG|https://www.geeksforgeeks.org/problems/boundary-traversal-of-binary-tree/1
+top-view-of-bt|GfG|https://www.geeksforgeeks.org/problems/top-view-of-binary-tree/1
+bottom-view-of-bt|GfG|https://www.geeksforgeeks.org/problems/bottom-view-of-binary-tree/1
+inorder-successor-and-predecessor-in-bst|GfG|https://www.geeksforgeeks.org/problems/predecessor-and-successor/1
+largest-bst-in-binary-tree|GfG|https://www.geeksforgeeks.org/problems/largest-bst/1
+number-of-distinct-islands|GfG|https://www.geeksforgeeks.org/problems/number-of-distinct-islands/1
+alient-dictionary|GfG|https://www.geeksforgeeks.org/problems/alien-dictionary/1
+shortest-path-in-dag|GfG|https://www.geeksforgeeks.org/problems/shortest-path-in-directed-acyclic-graph/1
+shortest-path-in-undirected-graph-with-unit-weights|GfG|https://www.geeksforgeeks.org/problems/shortest-path-in-undirected-graph-having-unit-distance/1|~asks for one source-to-destination distance
+dijkstra's-algorithm|GfG|https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1
+print-shortest-path-|GfG|https://www.geeksforgeeks.org/problems/shortest-path-in-weighted-undirected-graph/1
+minimum-multiplications-to-reach-end|GfG|https://www.geeksforgeeks.org/problems/minimum-multiplications-to-reach-end/1
+bellman-ford-algorithm|GfG|https://www.geeksforgeeks.org/problems/distance-from-the-source-bellman-ford-algorithm/1
+floyd-warshall-algorithm|GfG|https://www.geeksforgeeks.org/problems/implementing-floyd-warshall2042/1
+disjoint-set-|GfG|https://www.geeksforgeeks.org/problems/disjoint-set-union-find/1|~uses queries instead of unionByRank and unionBySize
+find-the-mst-weight|GfG|https://www.geeksforgeeks.org/problems/minimum-spanning-tree/1
+number-of-islands-ii|GfG|https://www.geeksforgeeks.org/problems/number-of-islands/1
+articulation-point-in-graph|GfG|https://www.geeksforgeeks.org/problems/articulation-point2616/1
+kosaraju's-algorithm|GfG|https://www.geeksforgeeks.org/problems/strongly-connected-components-kosarajus-algo/1
+frog-jump|GfG|https://www.geeksforgeeks.org/problems/geek-jump/1
+frog-jump-with-k-distances|GfG|https://www.geeksforgeeks.org/problems/minimal-cost/1
+unbounded-knapsack|GfG|https://www.geeksforgeeks.org/problems/knapsack-with-duplicate-items4201/1
+trie-implementation-and-advanced-operations|Code360|https://www.naukri.com/code360/problems/implement-trie_1387095
+longest-word-with-all-prefixes|Code360|https://www.naukri.com/code360/problems/complete-string_2687860
+number-of-distinct-substrings-in-a-string|Code360|https://www.naukri.com/code360/problems/count-distinct-substrings_985292
+lcm-of-two-numbers|GfG|https://www.geeksforgeeks.org/problems/lcm-of-two-numbers/1
+sum-of-array-elements-ii|GfG|https://www.geeksforgeeks.org/problems/sum-all-array-elements/1
+check-if-a-number-is-prime-or-not|GfG|https://www.geeksforgeeks.org/problems/prime-number2314/1
+reverse-a-stack|GfG|https://www.geeksforgeeks.org/problems/reverse-a-stack/1
+traversal-in-linked-list|GfG|https://www.geeksforgeeks.org/problems/print-linked-list-elements/1
+convert-array-to-dll|GfG|https://www.geeksforgeeks.org/problems/create-a-doubly-linked-list-from-a-given-array/1
+set-the-rightmost-unset-bit|GfG|https://www.geeksforgeeks.org/problems/set-the-rightmost-unset-bit4436/1
+minimum-window-subsequence|GfG|https://www.geeksforgeeks.org/problems/minimum-window-subsequence/1
+build-heap-from-a-given-array|Code360|https://www.naukri.com/code360/problems/build-min-heap_1171167
+implement-min-heap|Code360|https://www.naukri.com/code360/problems/min-heap_4691801|~has only insert and extract-min
+implement-max-heap|GfG|https://www.geeksforgeeks.org/problems/max-heap-implementation/1|~has only push, pop, peek and size
+check-if-an-array-represents-a-min-heap-|GfG|https://www.geeksforgeeks.org/problems/does-array-represent-heap4345/1|~checks a max-heap instead
+minimum-cost-to-connect-sticks|GfG|https://www.geeksforgeeks.org/problems/minimum-cost-of-ropes-1587115620/1
+connected-components|GfG|https://www.geeksforgeeks.org/problems/number-of-provinces/1
+minimum-number-of-bracket-reversals-to-make-an-expression-balanced|GfG|https://www.geeksforgeeks.org/problems/count-the-reversals0401/1|~uses { } instead of ( )

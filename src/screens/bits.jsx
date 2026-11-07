@@ -41,6 +41,7 @@ export function LinkSet({ item, hideOwn = false }) {
           key={r.kind}
           className={`btn link-${r.kind}`}
           href={r.href}
+          title={r.title}
           {...(r.internal ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
         >
           {r.label}
@@ -51,7 +52,11 @@ export function LinkSet({ item, hideOwn = false }) {
       {!item.lesson && item.plusOnly && !item.leetcode && (
         <p className="link-note">
           takeUforward’s problem page needs Plus.{' '}
-          {hasEditorial(item.key)
+          {item.judge
+            ? item.judge.similar
+              ? `${item.judge.site} has a free, similar version: it ${item.judge.similar}.`
+              : `Solve the same problem free on ${item.judge.site}.`
+            : hasEditorial(item.key)
             ? 'The Terminus editorial explains it and names a free place to practise.'
             : item.editorial
               ? 'The free editorial has the full statement.'

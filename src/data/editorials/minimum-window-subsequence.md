@@ -1,6 +1,6 @@
 # Minimum Window Subsequence
 
-> LeetCode 727 is **Premium**, and takeUforward's page needs Plus, so there is no free judge. Solve it in your own editor and test it with the examples below. A free practice option: search GeeksforGeeks for "Minimum Window Subsequence".
+> LeetCode 727 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks: use the Problem link above.
 
 ## The problem
 

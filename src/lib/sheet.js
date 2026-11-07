@@ -6,6 +6,7 @@
 //   P|minutes|slug|Label   (practice problem)
 import raw from '../data/a2z.txt?raw'
 import linksRaw from '../data/links.txt?raw'
+import judgesRaw from '../data/judges.txt?raw'
 import { editorialHref, hasEditorial } from './editorials'
 
 // One entry per topic, in sheet order: short code shown on the line badge, and line colour.
@@ -117,11 +118,24 @@ const BLOG_BASE = 'https://takeuforward.org/blogs/data-structure-and-algorithm/'
   })
 }
 
+// Free judges (GfG, Code360) for problems with no free place to solve them.
+// src/data/judges.txt: key|site|url|~note when the problem is only similar.
+{
+  for (const row of judgesRaw.split(/\r?\n/)) {
+    const l = row.trim()
+    if (!l || l.startsWith('#')) continue
+    const [key, site, href, note = ''] = l.split('|')
+    const it = ITEM_BY_KEY.get(key)
+    if (it) it.judge = { site, href, similar: note.startsWith('~') ? note.slice(1) : null }
+  }
+}
+
 // Every free link for an item, in the order to use them.
 // A lesson: the free editorial, the video, then takeUforward's lesson page
 // (which can sit behind Plus). A problem: where to solve it (LeetCode before
 // takeUforward's practice page, which has limited credits; a Plus-only page
-// is left out), then the editorial, then the video. With nothing free at
+// is replaced by a free judge from judges.txt when there is one), then the
+// editorial, then the video. With nothing free at
 // all, a web search for the problem.
 export function resources(item) {
   const out = []
@@ -132,6 +146,10 @@ export function resources(item) {
   } else {
     if (item.leetcode) out.push({ kind: 'problem', label: 'Problem', site: 'LeetCode', href: item.leetcode })
     else if (!item.plusOnly) out.push({ kind: 'problem', label: 'Problem', site: 'takeUforward', href: strivLink(item) })
+    else if (item.judge) {
+      const j = item.judge
+      out.push({ kind: 'problem', label: j.similar ? 'Similar' : 'Problem', site: j.site, href: j.href, title: j.similar ? `Similar problem: ${j.similar}` : undefined })
+    }
     // Our own editorial, for problems with nothing free besides the problem.
     if (hasEditorial(item.key)) out.push({ kind: 'own', label: 'Editorial', site: 'Terminus', href: editorialHref(item.key), internal: true })
     out.push(editorial, video)

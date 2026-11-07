@@ -1,6 +1,6 @@
 # Minimum Cost to Connect Sticks
 
-> LeetCode 1167 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks as **"Minimum Cost of ropes"**. Search for it there to submit.
+> LeetCode 1167 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks as "Min Cost to Connect Ropes": use the Problem link above.
 
 ## The problem
 

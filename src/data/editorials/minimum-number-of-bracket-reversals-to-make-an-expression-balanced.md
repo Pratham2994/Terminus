@@ -1,6 +1,6 @@
 # Minimum number of bracket reversals to make an expression balanced
 
-> takeUforward's page for this needs Plus. Its LeetCode link points to a **different** problem (LeetCode 921 adds brackets instead of reversing them). Free practice: GeeksforGeeks "Count the Reversals" is this exact problem. The function here is `int countRev(string s)`.
+> takeUforward's page for this needs Plus. Its LeetCode link points to a **different** problem (LeetCode 921 adds brackets instead of reversing them). GeeksforGeeks has this exact problem with `{ }` instead of `( )`: use the Similar link above. The function here is `int countRev(string s)`.
 
 ## The problem
 

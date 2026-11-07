@@ -2,7 +2,7 @@
 # slug|editorial path (~ = /blogs/data-structure-and-algorithm/)|YouTube id|LeetCode slug|P if takeUforward's practice page needs Plus
 # Read from takeuforward.org (signed-in sheet page) on 2026-11-07. LeetCode slugs removed where
 # the LeetCode problem differs from the A2Z one or is LeetCode Premium while the takeUforward page is free:
-# bracket reversals, Rabin-Karp, KMP, connected components, count palindromic subsequences.
+# bracket reversals, Rabin-Karp, KMP, connected components, count palindromic subsequences, Kosaraju.
 breaking-the-myth|~breaking-the-myth-dsa-is-language-independent|qbwJ1U6I-IU||
 programming-and-what-are-computers|~programming-and-computers|y_tiNJXgA2U||
 how-to-think-like-a-programmer|~how-to-think-like-a-programmer|iv7jtDODKrg||
@@ -423,7 +423,7 @@ accounts-merge||FMwpt_aQOGw|accounts-merge|
 number-of-islands-ii||Rn6B-Q4SNyA|number-of-islands-ii|P
 making-a-large-island|~making-a-large-island|lgiz0Oup6gM|making-a-large-island|
 most-stones-removed-with-same-row-or-column|~most-stones-removed-same-row-column|OwMNX8SPavM|most-stones-removed-with-same-row-or-column|
-kosaraju's-algorithm|~kosarajus-algorithm|V8qIqJxCioo|maximum-number-of-non-overlapping-substrings|P
+kosaraju's-algorithm|~kosarajus-algorithm|V8qIqJxCioo||P
 bridges-in-graph|~bridges-in-graph-tarjan-algorithm|qrAub5z8FeA|critical-connections-in-a-network|
 articulation-point-in-graph|~articulation-points-in-graph|j1QDfU21iZk||P
 introduction-to-dp|~dynamic-programming-memoization-tabulation|tyB0ztf0DNY||

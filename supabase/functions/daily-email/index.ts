@@ -12,9 +12,20 @@ import nodemailer from 'npm:nodemailer@6.9.16'
 
 const SHEET_URL = 'https://raw.githubusercontent.com/Pratham2994/Terminus/master/src/data/a2z.txt'
 const LINKS_URL = 'https://raw.githubusercontent.com/Pratham2994/Terminus/master/src/data/links.txt'
+const JUDGES_URL = 'https://raw.githubusercontent.com/Pratham2994/Terminus/master/src/data/judges.txt'
 const BLOG_BASE = 'https://takeuforward.org/blogs/data-structure-and-algorithm/'
 const APP_URL = Deno.env.get('APP_URL') ?? 'https://terminus-lime.vercel.app'
 const REVIEW_GAP: Record<number, number> = { 1: 3, 2: 7, 3: 21 }
+
+// LeetCode Premium problems. Keep in sync with LEETCODE_PREMIUM in src/lib/sheet.js.
+const LEETCODE_PREMIUM = new Set([
+  'buildings-with-an-ocean-view', 'plus-one-linked-list', 'longest-substring-with-at-most-k-distinct-characters',
+  'minimum-window-subsequence', 'find-the-celebrity', 'boundary-of-binary-tree', 'inorder-successor-in-bst',
+  'largest-bst-subtree', 'minimum-cost-to-connect-sticks', 'number-of-distinct-islands', 'alien-dictionary',
+  'minimize-max-distance-to-gas-station', 'number-of-islands-ii', 'connecting-cities-with-minimum-cost',
+  'implement-trie-ii-prefix-tree', 'longest-word-with-all-prefixes', 'number-of-distinct-substrings-in-a-string',
+  'maximum-size-subarray-sum-equals-k', 'median-of-a-row-wise-sorted-matrix',
+])
 
 type Item = {
   key: string
@@ -28,6 +39,7 @@ type Item = {
   video?: string
   leetcode?: string
   plusOnly?: boolean
+  judge?: string
 }
 type Row = { user_id: string; item_key: string; status: string; stage: number; next_review: string | null; done_at: string | null }
 type Attempt = { user_id: string; item_key: string; kind: string; result: string; created_at: string }
@@ -78,9 +90,18 @@ async function sheet(): Promise<Item[]> {
     if (slug !== it.slug) return
     it.editorial = blog ? (blog.startsWith('~') ? BLOG_BASE + blog.slice(1) : `https://takeuforward.org${blog}`) : undefined
     it.video = yt ? `https://www.youtube.com/watch?v=${yt}` : undefined
-    it.leetcode = lc ? `https://leetcode.com/problems/${lc}/` : undefined
+    it.leetcode = lc && !LEETCODE_PREMIUM.has(lc) ? `https://leetcode.com/problems/${lc}/` : undefined
     it.plusOnly = flag === 'P'
   })
+  // Free judges for Plus-only problems (src/data/judges.txt: key|site|url|~note).
+  const byKey = new Map(items.map((it) => [it.key, it]))
+  for (const row of (await (await fetch(JUDGES_URL)).text()).split(/\r?\n/)) {
+    const l = row.trim()
+    if (!l || l.startsWith('#')) continue
+    const [key, , href] = l.split('|')
+    const it = byKey.get(key)
+    if (it && href) it.judge = href
+  }
   SHEET = items
   return items
 }
@@ -95,6 +116,7 @@ function link(it: Item) {
   return (
     it.leetcode ||
     (!it.plusOnly ? tuf : undefined) ||
+    it.judge ||
     it.editorial ||
     it.video ||
     `https://www.google.com/search?q=${encodeURIComponent(`${it.label} problem`)}`
