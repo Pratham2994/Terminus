@@ -1,10 +1,10 @@
 # Count of odd numbers in Array
 
-> No free judge has this exact problem, so Terminus is your judge. Solve it with the visible tests, then run the hidden tests with the self-check program at the bottom in a free online compiler. takeUforward's function takes `int arr[], int n`. Here it takes `vector<int>& arr`, so `n` is `arr.size()`.
+> No free judge has this exact problem, so Terminus is your judge. Solve it with the tests below, then check it with the self-check program at the bottom. takeUforward's function takes `int arr[], int n`; here it takes `vector<int>& arr`, so n is `arr.size()`.
 
-## The problem
+## What you need to do
 
-Given an array of n positive integers (1 ≤ arr[i] ≤ 10⁴), return how many of them are **odd**.
+Count how many numbers in the array are **odd**. All numbers are between 1 and 10 000.
 
 ## Visible tests
 
@@ -14,18 +14,25 @@ Given an array of n positive integers (1 ≤ arr[i] ≤ 10⁴), return how many 
 | [1, 2, 1, 1, 5, 1] | 5 |
 | [1, 3, 5, 7, 9] | 5 |
 
-## Step by step
+## How to solve it, step by step
 
-1. You must look at every element once: an element you skip could be odd. So the best possible time is O(n).
-2. A number x is odd when `x % 2 == 1`. (For negative numbers `x % 2` is −1 in C++, so `x % 2 != 0` is the safer habit. Here all numbers are positive, so both work.)
-3. Keep a counter and add 1 for each odd element.
-4. Bit trick (same result): `x & 1` is 1 exactly when x is odd, because the last binary bit of an odd number is 1. So you can write `count += x & 1;`.
+1. **Look at every number once.**
 
-## Complexity
+   **Why:** any number you skip could be odd, so you cannot do better than one look each.
 
-- Time: O(n). Space: O(1).
+2. **A number x is odd when `x % 2 != 0`.** Add 1 to a counter for each one.
 
-## Dry run ([10000, 9999, 1, 2])
+   **Why:** odd numbers leave a remainder when divided by 2. (`!= 0` is the safer habit: for negative numbers, C++ gives −1, not 1.)
+
+3. **A neat alternative: `count += x & 1;`**
+
+   **Why:** the last binary bit of a number is 1 exactly when it is odd.
+
+## How fast is it?
+
+One look per number: O(n). No extra memory.
+
+## Walk through ([10000, 9999, 1, 2])
 
 10000 even, 9999 odd (1), 1 odd (2), 2 even. Answer: **2**.
 

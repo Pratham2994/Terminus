@@ -2,36 +2,29 @@
 
 > takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `int setBit(int n)`.
 
-## The problem
+## What you need to do
 
-Find the **rightmost 0 bit** of n and make it 1. Return the new number.
+Write n in binary, find the **rightmost 0**, and change it to 1. Return the new number.
 
-Examples: 10 (1010) → **11** (1011). 13 (1101) → **15** (1111). 15 (01111) → **31** (11111): when all bits are 1, the next 0 is just above them.
+## Example
 
-## Brute force
+- 10 = 1010 → 1011 = **11**.
+- 13 = 1101 → 1111 = **15**.
+- 15 = 01111 → 11111 = **31**. When all bits are 1, the 0 just above them is the one that changes.
 
-Check bits 0, 1, 2, … until you find a 0, then set it with `n | (1 << i)`.
+## How to solve it, step by step
 
-- Time: O(number of bits). Fine, but there is a one-step trick.
+1. **Look at what +1 does in binary.** It turns the 1s at the end into 0s, and the rightmost 0 into a 1. Example: 1011 + 1 = 1100.
 
-## The trick: n | (n + 1)
+   **Why:** it is like 199 + 1 = 200 in decimal: the 9s roll over and the next digit goes up. In binary, the 1s roll over.
 
-Look at what **+1** does in binary. It turns the trailing 1s into 0s and the **rightmost 0 into a 1**:
+2. **OR it with the original number:** `n | (n + 1)`. Example: 1011 | 1100 = 1111.
 
-- 1011 + 1 = 1100. The trailing "11" became "00", and the 0 above them became 1.
+   **Why:** the bits that +1 cleared are still 1 in n, so OR brings them back. The one new 1 (the old rightmost 0) stays. Nothing else changed.
 
-Now OR it with n. The bits that n + 1 cleared are still 1 in n, so they come back. The bit that n + 1 set is new. Everything above did not change.
+3. **That is the whole answer:** one line.
 
-- 1011 | 1100 = **1111**. Only the rightmost 0 changed.
-
-So **`n | (n + 1)`** sets exactly the rightmost unset bit.
-
-Sister tricks worth knowing:
-
-- `n & (n − 1)` **clears** the rightmost **set** bit.
-- `n & −n` keeps **only** the rightmost set bit.
-
-## Code (C++)
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -42,17 +35,17 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(1). Space: O(1).
+One addition and one OR: O(1).
 
-## Edge cases
+## Good to know: the sister tricks
 
-- n = 0 → 1.
-- All ones, like 7 (111) → 15 (1111). The trick handles it with no special case.
+- `n & (n − 1)` **clears** the rightmost 1.
+- `n & −n` keeps **only** the rightmost 1.
 
-## Dry run (n = 6 = 110)
+## Walk through (n = 6 = 110)
 
-n + 1 = 111. 110 | 111 = **111 = 7**.
+n + 1 = 111. 110 | 111 = 111 = **7**.
 
-(Tested on every n < 2²⁰ against the brute force.)
+(Tested on every n below 1 048 576 against checking bit by bit.)

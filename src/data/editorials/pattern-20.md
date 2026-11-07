@@ -1,6 +1,10 @@
 # Pattern 20
 
-> takeUforward's page needs Plus. Solve it free on Code360 (the Problem link above), "Symmetry". Its function: `void symmetry(int n)`. Code360 prints every cell followed by a space: a star is `* `, a blank is two spaces.
+> takeUforward's page needs Plus. Solve the same pattern free on Code360 (the Problem link above), "Symmetry".
+
+## What you need to do
+
+Print a butterfly: stars on the left and right edges, growing to the middle row and shrinking again.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -16,12 +20,29 @@
 *        *
 ```
 
-## Step by step
+## What is different on Code360
 
-1. This is Pattern 19 turned inside out: **2n − 1 rows**, each 2n cells wide: stars, gap, stars.
-2. Star count per side: 1, 2, …, n, then n − 1, …, 1. That is Pattern 10's count: for row i from 0, **s = i + 1** while i < n, else **2n − 1 − i**.
-3. The gap is the rest of the width: **2n − 2s** cells.
-4. Check the middle row: s = n, gap 0, so 2n stars. ✓
+Code360 prints every cell followed by a space: a star is `* `, a blank is two spaces.
+
+Code360's function: `void symmetry(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. There are **2n − 1** rows. Each row: stars, a gap, stars.
+
+   **Why:** It is Pattern 19 turned inside out.
+
+2. Stars on each side: **s = i + 1** while i < n, else **2n − 1 − i**.
+
+   **Why:** This is Pattern 10's up-and-down count.
+
+3. The gap is **2n − 2s** cells.
+
+   **Why:** Each row is 2n cells wide, and the stars use 2s of them.
+
+Row by row:
 
 | Row i (from 0) | Stars per side s | Gap |
 |---|---|---|
@@ -43,11 +64,6 @@ void symmetry(int n) {
 }
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

@@ -1,6 +1,10 @@
 # Pattern 17
 
-> takeUforward's page needs Plus. Solve it free on Code360 (the Problem link above), "Alpha Hill". Its function: `void alphaHill(int n)`. Code360 puts a space between letters, so each letter takes 2 columns, and row i starts with 2(n − i − 1) spaces.
+> takeUforward's page needs Plus. Solve the same pattern free on Code360 (the Problem link above), "Alpha Hill".
+
+## What you need to do
+
+Print a pyramid of letters that go up to the middle and back down: A, A B A, A B C B A.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,12 +16,29 @@
 ABCDEDCBA
 ```
 
-## Step by step
+## What is different on Code360
 
-1. The **shape** is Pattern 7, the pyramid: n − i − 1 spaces, then 2i + 1 characters.
-2. The **letters** go up from A to the peak, then back down: A B C B A. The peak of row i is `'A' + i`.
-3. Clean way: for position j from 0 to 2i, the letter is A + (i − |i − j|). The distance from the middle, |i − j|, makes it go down on both sides.
-4. Simple way: print A … peak going up, then peak − 1 … A going down. Two small loops.
+Code360 puts a space between letters, so each letter takes 2 columns, and row i starts with 2(n − i − 1) spaces.
+
+Code360's function: `void alphaHill(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. The shape is Pattern 7's pyramid: spaces, then 2i + 1 letters.
+
+   **Why:** It is a pyramid filled with letters.
+
+2. The middle letter of row i is `'A' + i`.
+
+   **Why:** Row 0 peaks at A, row 1 at B, and so on.
+
+3. For position j (0 … 2i), print `'A' + i − |i − j|`.
+
+   **Why:** |i − j| is the distance from the middle. Subtracting it makes the letters climb to the middle and fall again.
+
+Row by row:
 
 | Row i (from 0) | Letters |
 |---|---|
@@ -40,11 +61,6 @@ void alphaHill(int n) {
 }
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

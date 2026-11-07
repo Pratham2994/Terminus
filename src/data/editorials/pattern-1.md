@@ -1,6 +1,10 @@
 # Pattern 1
 
-> takeUforward's page needs Plus. Solve it free on GeeksforGeeks (the Problem link above), "Print Solid Square". Its function: `void printSolidSquare(int n)`. GfG puts one space between the stars: `* * * * *`.
+> takeUforward's page needs Plus. Solve the same pattern free on GeeksforGeeks (the Problem link above), "Print Solid Square".
+
+## What you need to do
+
+Print a square of stars: n rows, and n stars in every row.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,12 +16,27 @@
 *****
 ```
 
-## Step by step
+## What is different on GfG
 
-1. Every pattern is a grid of **rows**. First ask: how many rows? Here **n**.
-2. Then ask, for row i: what is printed in it? Here always **n** stars. The row number does not matter.
-3. So: an outer loop for the rows, an inner loop for the stars, and a newline after each row.
-4. This "outer = rows, inner = what is in a row" frame solves all 22 patterns. Only the inner part changes.
+GfG puts one space between the stars: `* * * * *`.
+
+GfG's function: `void printSolidSquare(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. Use an outer loop for the rows. There are **n** rows.
+
+   **Why:** Every pattern is rows of something, so one loop for the rows and one loop for what goes in a row solves all 22.
+
+2. Inside it, use an inner loop that prints **n** stars.
+
+   **Why:** Every row of a square is the same, so the inner loop does not depend on the row.
+
+3. Print a newline after each row.
+
+   **Why:** Without it, all the stars end up on one long line.
 
 ## Code (C++, for GfG)
 
@@ -36,11 +55,6 @@ class Solution {
 };
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

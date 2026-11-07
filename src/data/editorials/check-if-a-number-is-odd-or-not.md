@@ -1,25 +1,38 @@
 # Check if a Number is Odd or Not
 
-> takeUforward's page needs Plus. Practise on GeeksforGeeks (the **Similar** link above), "Odd or Even": it asks the **opposite** question, `bool isEven(int n)`, true for even. Both versions are below, with a self-check for takeUforward's version (the self-check uses `bool isOdd(int n)`). The free editorial and video above cover it too.
+> takeUforward's page needs Plus. Practise on GeeksforGeeks (the **Similar** link above). It asks the opposite question; the box below shows the difference. The free editorial and video above cover it too.
 
-## The problem
+## What you need to do
 
-Given a non-negative integer n, return true if n is **odd**.
+Return true if n is **odd**.
 
-## Visible tests
+## What is different on GfG
 
-| n | Odd? |
-|---|---|
-| 7 | true |
-| 0 | false |
-| 10 | false |
+| | takeUforward | GfG "Odd or Even" |
+|---|---|---|
+| Question | is n **odd**? | is n **even**? |
+| Returns true for | 7, 1, 99 | 0, 10, 44 |
+| Function | `bool isOdd(int n)` in the self-check | `bool isEven(int n)` |
 
-## Step by step
+**In short:** the same idea, with the answer flipped. Check the last bit; on GfG return true when it is 0.
 
-1. **The usual way:** n is odd when it leaves remainder 1 on division by 2: `n % 2 == 1`.
-2. **The bit way (what this station is about):** in binary, the **last bit** of a number is its remainder mod 2. Odd numbers end in 1, even numbers in 0: 7 = 11**1**, 10 = 101**0**.
-3. `n & 1` keeps only the last bit, so **`(n & 1) == 1`** means odd. It is one CPU instruction, and it is also correct for negative numbers in two's complement (`-3 & 1` is 1), while `-3 % 2` is −1 in C++.
-4. GfG's version is the negation: even ⇔ `(n & 1) == 0`.
+## Example
+
+- 7 → odd → **true** (GfG: false).
+- 10 → even → **false** (GfG: true).
+- 0 → even → **false** (GfG: true).
+
+## How to solve it, step by step
+
+1. **The usual way:** n is odd when `n % 2 == 1`.
+
+   **Why:** odd numbers leave remainder 1 when divided by 2.
+
+2. **The bit way (what this station is about):** look at the **last binary bit**. `(n & 1) == 1` means odd.
+
+   **Why:** in binary, the last bit is the remainder when dividing by 2. 7 is 11**1**, 10 is 101**0**.
+
+3. **For GfG, flip it:** even means `(n & 1) == 0`.
 
 ## Code for GfG (submit this there)
 
@@ -32,14 +45,13 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-O(1) time and space.
+One operation: O(1).
 
-## Edge cases
+## Watch out for
 
-- n = 0 is even, so not odd.
-- Write `(n & 1) == 1` with brackets: `n & 1 == 1` means `n & (1 == 1)`, which happens to work, but `n & 1 == 0` means `n & 0`, which is always 0. Always bracket bit operations.
+- Put brackets around bit operations: `n & 1 == 0` means `n & (1 == 0)`, which is always 0.
 
 ## Check takeUforward's version
 

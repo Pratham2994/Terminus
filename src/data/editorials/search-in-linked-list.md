@@ -2,21 +2,30 @@
 
 > takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `bool searchKey(Node* head, int key)`. The video above explains it too.
 
-## The problem
+## What you need to do
 
-Return true if some node of the list holds `key`.
+Return true if any node in the list holds the value `key`.
 
-Examples: 1 → 2 → 3 → 4, key = 3 → **true**. 7 → 8 → 9, key = 4 → **false**.
+## Example
 
-## Step by step
+- 1 → 2 → 3 → 4, key = 3 → **true**.
+- 7 → 8 → 9, key = 4 → **false**.
 
-1. Walk the list from `head` with a pointer `cur`.
-2. At each node, compare `cur->data` with `key`. Equal → return true **at once**; there is no need to look further.
-3. If you fall off the end (`cur == nullptr`), the key is not there → false.
+## How to solve it, step by step
 
-Binary search does not help, even on a sorted list: you cannot jump to the middle of a linked list, so finding the middle already costs O(n).
+1. **Walk the list from `head`,** one node at a time.
 
-## Code (C++)
+   **Why:** a linked list has no shortcut to the middle, so you have to look at the nodes in order.
+
+2. **At each node, compare its value with `key`. If they match, return true at once.**
+
+   **Why:** once you have found it, there is no need to look further.
+
+3. **If you reach the end (`nullptr`), return false.**
+
+   **Why:** you checked every node and none matched.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -29,17 +38,13 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n) in the worst case (key absent or at the end). Space: O(1).
+O(n) in the worst case, when the key is missing or at the end. No extra memory.
 
-## Edge cases
+## Watch out for
 
-- Empty list → false.
-- Key at the head → true after one comparison.
-
-## Dry run (1 → 2 → 3 → 4, key = 3)
-
-1 ≠ 3, 2 ≠ 3, 3 = 3 → **true**.
+- An empty list returns false.
+- Binary search does not help here, even on a sorted list: just finding the middle of a linked list already takes O(n).
 
 (Tested on 2 000 random lists and keys.)

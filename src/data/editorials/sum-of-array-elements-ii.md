@@ -1,28 +1,34 @@
 # Sum of Array Elements II
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `int arraySum(vector<int>& arr)`. GfG does not force recursion, but this station is about recursion, so solve it recursively.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `int arraySum(vector<int>& arr)`. GfG accepts a loop too, but this station is about **recursion**, so practise it that way.
 
-## The problem
+## What you need to do
 
-Return the sum of all elements of the array, **using recursion** (no loop).
+Add up all the numbers in the array, **using recursion** instead of a loop.
 
-Examples: [1, 2, 3] → **6**. [5, 8, 1] → **14**.
+## Example
 
-## How to think recursively
+[5, 8, 1] → 5 + 8 + 1 = **14**.
 
-A recursive function needs two things:
+## How to solve it, step by step
 
-1. **A base case** that answers a tiny input directly.
-2. **A step** that answers a big input using the answer to a **smaller** one.
+1. **Find a smaller copy of the same problem.** "The sum of the first i numbers" is the sum of the first i − 1 numbers, plus number i.
 
-For the sum of the first i elements:
+   **Why:** recursion means solving a problem with the answer to a smaller copy of itself.
 
-- Base case: the sum of the first **0** elements is **0**.
-- Step: sum of the first i elements = **sum of the first i − 1** + `arr[i − 1]`.
+2. **Write the base case:** the sum of the first 0 numbers is 0.
 
-Trust the smaller call. You do not trace the whole chain in your head; you only check that the step is right and the base case stops it.
+   **Why:** every recursion needs a point where it stops. Without one, the calls never end and the program crashes.
 
-## Code (C++)
+3. **Write the step:** `sumFirst(i) = sumFirst(i − 1) + arr[i − 1]`.
+
+   **Why:** `arr[i − 1]` is the i-th number, because arrays start at 0.
+
+4. **Trust the smaller call.** Do not trace every call in your head; just check that the step is right and the base case is reached.
+
+   **Why:** this habit makes recursion easy. If the step is right for one size, it is right for all sizes.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -38,21 +44,20 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n). One call per element.
-- Space: O(n) for the call stack: n calls wait on each other before any returns. A loop would use O(1). This is the price of recursion.
+One call per number: O(n) time. The calls wait on each other, so it also uses O(n) memory for the call stack. A loop would use O(1); that is the price of recursion.
 
-## Edge cases
+## Watch out for
 
-- Empty array: `sumFirst(arr, 0)` returns 0 at once.
-- Pass the vector **by reference** (`vector<int>&`). Passing by value copies the whole array in every call, which makes it O(n²).
+- Pass the array **by reference** (`vector<int>&`). Without the `&`, every call copies the whole array, which makes it very slow.
+- An empty array returns 0 straight from the base case.
 
-## Dry run ([5, 8, 1])
+## Walk through ([5, 8, 1])
 
 - sumFirst(3) = sumFirst(2) + 1
 - sumFirst(2) = sumFirst(1) + 8
 - sumFirst(1) = sumFirst(0) + 5 = 0 + 5 = 5
-- back up: 5 + 8 = 13, then 13 + 1 = **14**.
+- Coming back: 5 + 8 = 13, then 13 + 1 = **14**.
 
-(Tested on 2 000 random arrays against a loop.)
+(Tested on 2 000 random arrays against a plain loop.)

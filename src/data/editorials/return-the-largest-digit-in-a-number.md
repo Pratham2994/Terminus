@@ -1,10 +1,10 @@
 # Return the Largest Digit in a Number
 
-> No free judge has this exact problem, so Terminus is your judge. Solve it with the visible tests, then run the hidden tests with the self-check program at the bottom in a free online compiler. The function here is `int largestDigit(int n)`.
+> No free judge has this exact problem, so Terminus is your judge. Solve it with the tests below, then check it with the self-check program at the bottom. The function here is `int largestDigit(int n)`.
 
-## The problem
+## What you need to do
 
-You get a non-negative integer n (0 ≤ n ≤ 5000). Return the **largest digit** in it.
+Return the **biggest digit** in n. n is between 0 and 5000.
 
 ## Visible tests
 
@@ -14,22 +14,31 @@ You get a non-negative integer n (0 ≤ n ≤ 5000). Return the **largest digit*
 | 99 | 9 |
 | 1 | 1 |
 
-## Step by step
+## How to solve it, step by step
 
-1. Visit every digit with the usual pair: `n % 10` gives the last digit, `n /= 10` removes it.
-2. Keep a running maximum, `best`. Compare each digit with it.
-3. **What should `best` start at?** Digits are 0 … 9, so 0 is safe. Every digit is ≥ 0.
-4. **Edge case: n = 0.** A `while (n > 0)` loop does not run at all, and you return the start value 0. That is the right answer, because the number 0 has one digit, 0. Make sure your start value really is 0 and not −1.
-5. Small speed-up (optional): once `best` is 9 you can stop. Nothing beats 9.
+1. **Walk through the digits:** `n % 10` gives the last digit, and `n /= 10` removes it. Repeat until n is 0.
 
-## Complexity
+   **Why:** this is the standard way to visit every digit of a number.
 
-- Time: O(number of digits) = O(log₁₀ n).
-- Space: O(1).
+2. **Keep the biggest digit seen so far in `best`.** Compare each new digit with it.
 
-## Dry run (n = 2999)
+   **Why:** you only need the winner, not all the digits.
 
-Digits seen right to left: 9 → best 9, then 9, 9, 2. Answer: **9**.
+3. **Start `best` at 0.**
+
+   **Why:** every digit is at least 0, so 0 never beats a real digit. It also gives the right answer for n = 0, where the loop does not run.
+
+4. **Optional: stop early once `best` is 9.**
+
+   **Why:** no digit can beat 9.
+
+## How fast is it?
+
+One step per digit: O(number of digits). No extra memory.
+
+## Walk through (n = 2999)
+
+Digits from the right: 9 → best 9, then 9, 9, 2. Answer: **9**.
 
 ## Check your solution
 

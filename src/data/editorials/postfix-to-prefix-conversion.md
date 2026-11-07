@@ -2,20 +2,32 @@
 
 > takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `string postToPre(string s)`. The video above explains it too.
 
-## The problem
+## What you need to do
 
-Example: `ab+c*` → `*+abc`. `ABC/-AK/L-*` → `*-A/BC-/AKL`.
+Turn a **postfix** expression (operator last, `ab+`) into **prefix** (operator first, `+ab`).
 
-## Step by step
+## Examples
 
-1. Scan **left to right**.
-2. **Operand** → push it as a string.
-3. **Operator op** → pop `right` first, then `left`, push `op + left + right`.
-4. The last string is the answer.
+- `ab+c*` → `*+abc`
+- `ABC/-AK/L-*` → `*-A/BC-/AKL`
 
-It is "Postfix to Infix" with prefix glue (operator in front, no brackets).
+## How to solve it, step by step
 
-## Code (C++)
+This is "Postfix to Infix" with prefix-style joining.
+
+1. **Read from left to right.**
+
+   **Why:** in postfix, an operator's two values are the last two things finished before it.
+
+2. **A letter: push it as a string.**
+
+3. **An operator: pop right (first), then left (second), and push operator + left + right.**
+
+   **Why:** prefix puts the operator first. The stack returns values in reverse, so right comes off first.
+
+4. **The last string on the stack is the answer.**
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -35,16 +47,15 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²) worst case from string copies. Space: O(n).
+O(n) stack steps (string joins can make it O(n²) for long inputs). O(n) memory.
 
-## Edge cases
+## Watch out for
 
-- One operand → itself.
-- `ab-` → `-ab`, not `-ba`: pop right first.
+- `ab-` must give `-ab`, not `-ba`: pop the right value first.
 
-## Dry run (`ab+c*`)
+## Walk through (`ab+c*`)
 
 a, b → [a, b]. `+` → [+ab]. c → [+ab, c]. `*` → right c, left +ab → `*+abc`.
 

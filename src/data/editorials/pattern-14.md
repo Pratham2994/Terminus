@@ -1,6 +1,10 @@
 # Pattern 14
 
-> takeUforward's page needs Plus. Solve it free on Code360 (the Problem link above), "Increasing Letter Triangle". Its function: `void nLetterTriangle(int n)`. Code360 puts a space between the letters: `A B C`.
+> takeUforward's page needs Plus. Solve the same pattern free on Code360 (the Problem link above), "Increasing Letter Triangle".
+
+## What you need to do
+
+Print a staircase of letters: A, then A B, then A B C.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,11 +16,25 @@ ABCD
 ABCDE
 ```
 
-## Step by step
+## What is different on Code360
 
-1. This is Pattern 3 with letters instead of numbers.
-2. Letters are numbers in C++: `'A' + 0` is A, `'A' + 1` is B, and so on. Cast it back with `(char)`.
-3. So column j (from 0) prints `(char)('A' + j)`.
+Code360 puts a space between the letters: `A B C`.
+
+Code360's function: `void nLetterTriangle(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. The shape is Pattern 3: row i has i entries.
+
+   **Why:** It is the same staircase, with letters instead of numbers.
+
+2. Print the letter `(char)('A' + j)` for column j (from 0).
+
+   **Why:** Letters are numbers inside the computer: 'A' + 1 is 'B'. So the column number turns into a letter.
+
+Row by row:
 
 | Row i (from 0) | Prints |
 |---|---|
@@ -38,11 +56,6 @@ void nLetterTriangle(int n) {
 }
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

@@ -1,6 +1,10 @@
 # Pattern 10
 
-> takeUforward's page needs Plus. Solve it free on GeeksforGeeks (the Problem link above), "Half Diamond Star Pattern". Its function: `void printHalfStar(int n)`. GfG puts a space after each star: `* * * `.
+> takeUforward's page needs Plus. Solve the same pattern free on GeeksforGeeks (the Problem link above), "Half Diamond Star Pattern".
+
+## What you need to do
+
+Print a sideways arrow: stars grow from 1 to n, then shrink back to 1.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -16,12 +20,29 @@
 *
 ```
 
-## Step by step
+## What is different on GfG
 
-1. There are **2n − 1** rows: the count goes 1, 2, …, n, then back down to 1.
-2. Way 1: two loops, Pattern 2 (growing) then Pattern 5 (shrinking, starting from n − 1).
-3. Way 2, one loop: for row i from 0 to 2n − 2, the star count is **i + 1** while i < n, and **2n − 1 − i** after that.
-4. Check the middle row, i = n − 1: n stars. The next, i = n: 2n − 1 − n = n − 1. ✓
+GfG puts a space after each star: `* * * `.
+
+GfG's function: `void printHalfStar(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. There are **2n − 1** rows: the star count goes 1, 2, …, n and back down to 1.
+
+   **Why:** Count the rows in the picture: up to n, then n − 1 more.
+
+2. For row i (from 0): print **i + 1** stars while i < n, and **2n − 1 − i** after that.
+
+   **Why:** The first half grows like Pattern 2; the second half shrinks like Pattern 5.
+
+3. Check the middle: i = n − 1 gives n stars, and i = n gives n − 1.
+
+   **Why:** The two halves join without a jump.
+
+Row by row:
 
 | Row i (from 0) | Stars |
 |---|---|
@@ -45,11 +66,6 @@ class Solution {
 };
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

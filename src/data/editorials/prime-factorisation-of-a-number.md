@@ -1,10 +1,10 @@
 # Prime factorisation of a Number
 
-> No free judge has this exact problem (many queries, answered with a sieve), so Terminus is your judge. The video above explains it too. Run the hidden tests with the self-check program at the bottom in a free online compiler. The function here is `vector<vector<int>> primeFactors(vector<int>& queries)`. A related free problem for one number: GfG [All Prime Factors in Sorted Order](https://www.geeksforgeeks.org/problems/prime-factorization/1).
+> No free judge has this exact problem (many numbers, answered with a sieve), so Terminus is your judge. The video above explains it too. Check your answer with the self-check program at the bottom. The function here is `vector<vector<int>> primeFactors(vector<int>& queries)`. For a single number, GfG has a related free problem: [All Prime Factors in Sorted Order](https://www.geeksforgeeks.org/problems/prime-factorization/1).
 
-## The problem
+## What you need to do
 
-You get up to 10⁵ numbers, each 2 ≤ x ≤ 2·10⁵. For each one, return its prime factors **with repeats, in increasing order** (12 → [2, 2, 3]).
+You get up to 100 000 numbers, each between 2 and 200 000. For each one, list its prime factors **with repeats, from small to big**. For example, 12 → [2, 2, 3].
 
 ## Visible tests
 
@@ -14,21 +14,35 @@ You get up to 10⁵ numbers, each 2 ≤ x ≤ 2·10⁵. For each one, return its
 | [7, 12, 18] | [[7], [2, 2, 3], [2, 3, 3]] |
 | [15, 20] | [[3, 5], [2, 2, 5]] |
 
-## Step by step
+## How to solve it, step by step
 
-1. **One number, the classic way:** divide by d = 2, 3, 4, … while d·d ≤ x; each time d divides x, record d and divide. What is left (> 1) is a prime. Cost O(√x) per number. For 10⁵ numbers that is about 10⁵ · 450 ≈ 4.5·10⁷ steps. That is OK, but there is a better tool built for exactly this.
-2. **Smallest prime factor (SPF) sieve:** compute `spf[x]`, the smallest prime that divides x, for **every** x up to the limit, once.
-3. Build it like the Sieve of Eratosthenes: set `spf[x] = x` for all x. For each i from 2 with `spf[i] == i` (i is prime), go through j = i·i, i·i + i, …, and if `spf[j] == j` (nothing smaller marked it yet), set `spf[j] = i`.
-4. **Factorising is now fast:** while x > 1, record `spf[x]`, then `x /= spf[x]`. Each step divides x by at least 2, so it takes at most log₂ x ≈ 18 steps.
-5. **The order comes free:** spf of the remaining number never decreases, so the factors come out already sorted.
-6. Build the sieve **once**, up to the largest query (or 2·10⁵), not once per query.
+1. **The simple way for one number:** divide by 2, 3, 4, … while the divisor squared is at most the number. Each time it divides, record it and divide. What is left (if above 1) is a prime.
 
-## Complexity
+   **Why it is not ideal here:** it costs about √x per number. With 100 000 numbers, that adds up to tens of millions of steps.
 
-- Sieve: O(N log log N) time, O(N) space, with N = 2·10⁵.
-- Each query: O(log x). All queries: O(n log N).
+2. **Better: build a "smallest prime factor" table (SPF) once,** for every number up to 200 000. `spf[x]` is the smallest prime that divides x.
 
-## Dry run (x = 18)
+   **Why:** after this one-time work, each number can be split almost instantly.
+
+3. **Build it like the Sieve of Eratosthenes:** start with `spf[x] = x`. For each i with `spf[i] == i` (i is prime), go through i·i, i·i + i, … and set `spf[j] = i` wherever `spf[j]` still equals j.
+
+   **Why:** the first prime to reach j is its smallest prime factor, and "still equals j" keeps that first one.
+
+4. **To factor x:** while x > 1, record `spf[x]` and divide x by it.
+
+   **Why:** each step divides x by at least 2, so it takes at most about 18 steps for numbers up to 200 000.
+
+5. **The factors come out sorted on their own.**
+
+   **Why:** the smallest prime factor of what is left never goes down.
+
+6. **Build the table once,** not once per number.
+
+## How fast is it?
+
+The table takes about O(N log log N) time and O(N) memory, with N = 200 000. Each number then takes O(log x).
+
+## Walk through (x = 18)
 
 spf[18] = 2 → [2], x = 9. spf[9] = 3 → [2, 3], x = 3. spf[3] = 3 → [2, 3, 3], x = 1. Done.
 

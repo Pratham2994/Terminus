@@ -2,22 +2,32 @@
 
 > takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `string preToPost(string& s)`. The video above explains it too.
 
-## The problem
+## What you need to do
 
-Example: `*+ABC` → `AB+C*`. `*-A/BC-/AKL` → `ABC/-AK/L-*`.
+Turn a **prefix** expression (operator first, `+AB`) into **postfix** (operator last, `AB+`).
 
-## Step by step
+## Examples
 
-This is "Prefix to Infix" with a different way of **gluing** the two operands.
+- `*+ABC` → `AB+C*`
+- `*-A/BC-/AKL` → `ABC/-AK/L-*`
 
-1. Scan **right to left** (so an operator's operands are already finished when you meet it).
-2. **Operand** → push it as a string.
-3. **Operator op** → pop `left`, then pop `right`, push `left + right + op`.
-4. The last string on the stack is the answer.
+## How to solve it, step by step
 
-No brackets are needed: postfix never needs them.
+This is "Prefix to Infix" with a different way of joining the pieces.
 
-## Code (C++)
+1. **Read from right to left.**
+
+   **Why:** in prefix, an operator's values come after it, so reading backwards gives you the values first.
+
+2. **A letter: push it as a string.**
+
+3. **An operator: pop left (first), then right (second), and push left + right + operator.**
+
+   **Why:** postfix puts the operator after its two values. No brackets are needed.
+
+4. **The last string on the stack is the answer.**
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -38,24 +48,24 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²) worst case from string copies. Space: O(n).
+O(n) stack steps (string joins can make it O(n²) for long inputs). O(n) memory.
 
-## The family of six conversions
+## The six conversions in one table
 
-| From → To | Scan | On an operator push |
+| From → To | Read | When you meet an operator, push |
 |---|---|---|
 | prefix → infix | right to left | ( left op right ) |
 | prefix → postfix | right to left | left right op |
 | postfix → infix | left to right | ( left op right ) |
 | postfix → prefix | left to right | op left right |
-| infix → postfix / prefix | left to right | operator stack with precedence |
+| infix → postfix / prefix | left to right | use an operator stack with strengths |
 
-For **prefix** you scan right to left and the **first** pop is the left operand. For **postfix** you scan left to right and the first pop is the **right** operand.
+Reading **prefix** (right to left), the first value you pop is the **left** one. Reading **postfix** (left to right), the first value you pop is the **right** one.
 
-## Dry run (`*+ABC`)
+## Walk through (`*+ABC`)
 
-C → [C]. B → [C, B]. A → [C, B, A]. `+` → left A, right B → [C, AB+]. `*` → left AB+, right C → `AB+C*`.
+C, B, A are pushed → [C, B, A]. `+` → left A, right B → [C, AB+]. `*` → left AB+, right C → `AB+C*`.
 
 (Tested on 5 000 random expression trees.)

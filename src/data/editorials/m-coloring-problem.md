@@ -1,28 +1,35 @@
 # M Coloring Problem
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "M-Coloring Problem". GfG's function is `bool graphColoring(int v, vector<vector<int>>& edges, int m)` with an edge list. The video above explains it too.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "M-Coloring Problem". GfG's function is `bool graphColoring(int v, vector<vector<int>>& edges, int m)`, with a list of edges. The video above explains it too.
 
-## The problem
+## What you need to do
 
-An undirected graph has V vertices (0-indexed) and an edge list. Can you color every vertex with one of **m** colors so that **no edge joins two vertices of the same color**? Return true or false.
+You have a graph and **m colours**. Can you colour every vertex so that **no two connected vertices share a colour**? Return true or false.
 
-Examples: V = 4, edges [0,1], [1,3], [2,3], [3,0], [0,2], m = 3 → **true**. A triangle (3 vertices, all joined) with m = 2 → **false**.
+## Example
 
-## Brute force
+- A triangle (3 vertices, all connected) with m = 2 → **false**: two of the three must share a colour.
+- The same triangle with m = 3 → **true**.
 
-Try all m^V colorings and check each. Correct, but you check whole colorings that already broke on the first edge.
+## How to solve it, step by step
 
-## Step by step: backtracking
+1. **Colour the vertices one by one,** in order: 0, 1, 2, …
 
-1. Color the vertices **in order**: 0, then 1, then 2, …
-2. For vertex u, try each color c = 1 … m. A color is **safe** if no neighbour of u already has c.
-3. If safe: give u color c and move on to u + 1. If that leads to a full coloring, return true.
-4. If no color works for u, **undo** and return false: the caller tries its next color.
-5. When u reaches V, every vertex has a safe color → true.
+   **Why:** a fixed order makes it easy to know what is done and what is left.
 
-The difference from brute force: you stop a branch the moment one vertex has no safe color, instead of finishing the coloring first.
+2. **For the current vertex, try colour 1, then 2, … up to m.** A colour is allowed if no neighbour already has it.
 
-## Code (C++)
+   **Why:** that is the only rule of the problem.
+
+3. **If a colour is allowed, use it and move on** to the next vertex. If everything after works out, return true.
+
+4. **If no colour works for this vertex, go back** (return false) so the previous vertex tries its next colour. Remove the colour you set first.
+
+   **Why:** this is backtracking. A dead end tells you an earlier choice was wrong, so you undo it and try again.
+
+5. **When every vertex has a colour, return true.**
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -52,20 +59,19 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(m^V · V) in the worst case. Graph coloring is NP-complete, so no known algorithm is polynomial. The pruning makes typical inputs fast.
-- Space: O(V + E) for the graph, O(V) for colors and recursion.
+In the worst case it tries up to m^V colourings, so it is exponential. No fast method is known for this problem in general. Stopping at the first clash keeps small graphs fast. Memory: O(V + E).
 
-## Edge cases
+## Watch out for
 
-- A **self-loop** (an edge [u, u]) makes coloring impossible: u would need to differ from itself. The safety check sees u's own color only after it is set, so the code above would miss it. Constraints on GfG exclude self-loops; if you meet them elsewhere, return false when you see one.
-- No edges: any m ≥ 1 works.
+- A vertex connected to itself (a self-loop) can never be coloured. GfG does not include them; elsewhere, return false when you see one.
+- A graph with no edges works with any m ≥ 1.
 
-## Dry run (triangle 0-1-2, m = 2)
+## Walk through (triangle, m = 2)
 
-- 0 → color 1. 1 → color 1 clashes with 0, color 2 is safe.
-- 2 → color 1 clashes with 0, color 2 clashes with 1. No color → back up.
-- 1 has no other color → back up. 0 → color 2, and the same thing happens mirrored. → **false**.
+- Vertex 0 → colour 1. Vertex 1 → colour 1 clashes, colour 2 is fine.
+- Vertex 2 → colour 1 clashes with 0, colour 2 clashes with 1. Dead end → go back.
+- Vertex 1 has no other colour, so go back to 0 → colour 2. The same thing happens the other way round → **false**.
 
-(Tested on 3 000 random graphs up to 7 vertices against trying all m^V colorings.)
+(Tested on 3 000 random graphs up to 7 vertices against trying every colouring.)

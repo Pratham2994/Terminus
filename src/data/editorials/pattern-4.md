@@ -1,6 +1,10 @@
 # Pattern 4
 
-> takeUforward's page needs Plus. Solve it free on Code360 (the Problem link above), "Triangle". Its function: `void triangle(int n)`. Code360 puts a space between the numbers: `3 3 3`.
+> takeUforward's page needs Plus. Solve the same pattern free on Code360 (the Problem link above), "Triangle".
+
+## What you need to do
+
+Print a staircase where every row repeats its own row number: 1, then 2 2, then 3 3 3.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,11 +16,25 @@
 55555
 ```
 
-## Step by step
+## What is different on Code360
 
-1. Rows: **n**. Row i has **i** entries, like Pattern 3.
-2. The difference: print the **row number** i, not the column number j.
-3. Patterns 3 and 4 side by side show the key question for number patterns: does the number follow the **row** or the **column**?
+Code360 puts a space between the numbers: `3 3 3`.
+
+Code360's function: `void triangle(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. Same loops as Pattern 2: row i holds i things.
+
+   **Why:** The shape is the same staircase.
+
+2. Print the **row number i** in every position.
+
+   **Why:** Row 3 is 3 3 3: the number never changes inside a row, so it must come from the row, not the column. Compare with Pattern 3, which prints j.
+
+Row by row:
 
 | Row i | Prints |
 |---|---|
@@ -39,11 +57,6 @@ void triangle(int n) {
 }
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

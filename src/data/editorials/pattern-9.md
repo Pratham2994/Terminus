@@ -1,6 +1,10 @@
 # Pattern 9
 
-> takeUforward's page needs Plus. Solve it free on GeeksforGeeks (the Problem link above), "Diamond Shape Pattern". Its function: `void printDiamond(int n)`. GfG prints the same diamond with a space between stars: row i has n − i − 1 spaces, then i + 1 copies of `* `. That draws the same shape as 2i + 1 plain stars.
+> takeUforward's page needs Plus. Solve the same pattern free on GeeksforGeeks (the Problem link above), "Diamond Shape Pattern".
+
+## What you need to do
+
+Print a diamond: the pyramid from Pattern 7, then the upside-down pyramid from Pattern 8.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -17,12 +21,27 @@
     *
 ```
 
-## Step by step
+## What is different on GfG
 
-1. Split the picture: the **top half is Pattern 7** (a pyramid) and the **bottom half is Pattern 8** (an inverted pyramid). 2n rows in all.
-2. So write the two loops one after the other. Nothing new is needed.
-3. GfG's spaced version: in row i, print n − i − 1 spaces, then "* " i + 1 times. With a space after each star, i + 1 stars take 2i + 1 columns, the same width as takeUforward's 2i + 1 stars.
-4. Splitting a pattern into parts you already know is the main skill these patterns teach.
+GfG prints the same diamond with a space between stars: row i has n − i − 1 spaces, then i + 1 copies of `* `. That draws the same shape as 2i + 1 plain stars.
+
+GfG's function: `void printDiamond(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. Draw the top half with Pattern 7's loop.
+
+   **Why:** The top of a diamond is a pyramid.
+
+2. Then draw the bottom half with Pattern 8's loop.
+
+   **Why:** The bottom is the same pyramid upside down.
+
+3. GfG prints the stars with a space between them. Row i then has n − i − 1 spaces and i + 1 copies of "* ".
+
+   **Why:** A star plus a space takes 2 columns, so i + 1 of them fill the same width as 2i + 1 plain stars.
 
 ## Code (C++, for GfG)
 
@@ -44,11 +63,6 @@ class Solution {
 };
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

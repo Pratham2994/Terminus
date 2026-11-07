@@ -1,24 +1,44 @@
 # Shortest Job First
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `int solve(vector<int>& bt)`. Both return the average waiting time **rounded down**. The video above explains it too.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `int solve(vector<int>& bt)`. Both sites want the average waiting time **rounded down**. The video above explains it too.
 
-## The problem
+## What you need to do
 
-n processes all arrive at time 0. `bt[i]` is how long process i runs. The CPU runs one at a time, always picking the **shortest** remaining job (Shortest Job First). A process's **waiting time** is how long it waits before it starts. Return the average waiting time, rounded down.
+All jobs arrive at time 0. `bt[i]` is how long job i runs. The computer runs one job at a time and always picks the **shortest** job left. A job's waiting time is how long it waits before it starts. Return the average waiting time, rounded down.
 
-Examples: [4, 3, 7, 1, 2] → **4**. [1, 2, 3, 4] → **2**.
+## Example
 
-## Step by step
+bt = [4, 3, 7, 1, 2]. Run them shortest first: 1, 2, 3, 4, 7.
 
-1. SJF on jobs that all arrive at time 0 just means: **run them in increasing order of length**. So sort `bt`.
-2. The first job waits 0. Each next job waits for **all jobs before it** to finish. So job k waits `bt[0] + … + bt[k − 1]`, a running prefix sum.
-3. Add up all the waiting times and divide by n. Integer division rounds down.
+| Job length | Waits |
+|---|---|
+| 1 | 0 |
+| 2 | 1 |
+| 3 | 1 + 2 = 3 |
+| 4 | 1 + 2 + 3 = 6 |
+| 7 | 1 + 2 + 3 + 4 = 10 |
 
-## Why shortest first is optimal (greedy)
+Total 20, average 20 / 5 = **4**.
 
-Every job's length is added to the waiting time of **every job after it**. The first job's length is counted n − 1 times, the second n − 2 times, and so on. To make the total smallest, the **smallest lengths** should get the **biggest multipliers**, so they go first. (If a longer job came right before a shorter one, swapping them lowers the total. That is the exchange argument.)
+## How to solve it, step by step
 
-## Code (C++)
+1. **Sort the lengths from small to big.**
+
+   **Why:** "always pick the shortest", with everyone arriving at time 0, is just sorted order.
+
+2. **Keep a clock.** Each job waits until the clock reaches its start, then the clock moves forward by its length.
+
+   **Why:** a job's wait is the total length of all jobs before it, and the clock holds exactly that total.
+
+3. **Add up all the waits, then divide by the number of jobs.**
+
+   **Why:** integer division in C++ already rounds down, which is what both sites want.
+
+## Why shortest first is the best order
+
+A job's length is added to the wait of **every job after it**. The first job's length is counted the most times. So the **smallest** lengths should go first, where they are counted most. Putting a longer job in front of a shorter one always makes the total bigger.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -36,17 +56,13 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n log n) for the sort. Space: O(n) for the copy (O(1) if you may sort in place).
+Sorting is O(n log n); the loop is O(n). It uses O(n) extra memory for the sorted copy.
 
-## Edge cases
+## Watch out for
 
-- One job → it waits 0 → 0.
-- Use `long long` for the total: 10⁵ jobs of length 10⁵ give waits up to ~10¹⁴.
+- Use `long long` for the total: many long jobs add up to a very big number.
+- One job alone waits 0, so the answer is 0.
 
-## Dry run ([4, 3, 7, 1, 2])
-
-Sorted: [1, 2, 3, 4, 7]. Waits: 0, 1, 3, 6, 10. Total 20, average 20 / 5 = **4**.
-
-(Tested on 5 000 random arrays against trying every order for small n.)
+(Tested on 5 000 random cases against trying every possible order.)

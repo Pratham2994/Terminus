@@ -1,40 +1,46 @@
 # Convert Min Heap to Max Heap
 
-> No free judge has this exact problem, so Terminus is your judge. Solve it with the visible tests, then run the hidden tests with the self-check program at the bottom in a free online compiler. takeUforward's function is `vector<int> minToMaxHeap(vector<int> nums)`.
+> No free judge has this exact problem, so Terminus is your judge. Solve it with the tests below, then check it with the self-check program at the bottom. takeUforward's function is `vector<int> minToMaxHeap(vector<int> nums)`.
 
-## The problem
+## What you need to do
 
-`nums` is a min-heap in array form. Rearrange it into a **max-heap**: for every index i, `nums[i] ≥` its children `nums[2i + 1]` and `nums[2i + 2]`. Return the array.
-
-Many max-heaps can be made from the same numbers. **Any valid max-heap is accepted.**
+`nums` is a min-heap in array form. Rearrange it into a **max-heap**: every parent must be **≥** its children (children of i are at 2i + 1 and 2i + 2). Many answers are correct, and **any correct max-heap is accepted.**
 
 ## Visible tests
 
-| nums | One valid answer |
+| nums | One correct answer |
 |---|---|
 | [10, 20, 30, 21, 23] | [30, 23, 10, 21, 20] |
 | [-5, -4, -3, -2, -1] | [-1, -2, -3, -4, -5] |
 
-## Step by step
+## How to solve it, step by step
 
-1. **Forget that the input is a min-heap.** That order does not help to build a max-heap, so treat `nums` as an unordered array. The task is "build a max-heap from an array".
-2. **Option A, easy:** sort in **descending** order. A sorted-descending array is always a max-heap, because every parent sits at a smaller index than its children, so it is ≥ them. Cost O(n log n).
-3. **Option B, the real heap algorithm (build-heap):** run **sift down** (max version: swap with the **larger** child while that child is larger) on every non-leaf node, from the **last** non-leaf `n/2 − 1` down to `0`.
-4. **Why bottom-up?** When you sift node i, both of its subtrees are already max-heaps (they have larger indices, so they were done first). Sift-down only works when the subtrees below are heaps.
-5. **Why only up to n/2 − 1?** Indices ≥ n/2 are leaves. A single node is already a heap.
-6. **Why is it O(n), not O(n log n)?** Most nodes are near the bottom and move only a step or two. Half the nodes are leaves (0 moves), a quarter move ≤ 1 level, an eighth ≤ 2, and so on. The sum n/4·1 + n/8·2 + … is below n.
+1. **Forget that the input is a min-heap.** Treat it as an ordinary array.
 
-## Complexity
+   **Why:** a min-heap's order does not help you build a max-heap. The real task is "build a max-heap from an array".
 
-- Option A: O(n log n) time. Option B: **O(n)** time.
-- Space: O(1) extra (in place), besides the returned copy.
+2. **Easy way: sort from big to small.**
 
-## Dry run (Option B on [10, 20, 30, 21, 23])
+   **Why:** a sorted big-to-small array is always a max-heap, because every parent sits before its children. It costs O(n log n).
 
-- n = 5, start at i = 1 (value 20): children 21 and 23, larger is 23 > 20 → swap → [10, 23, 30, 21, 20].
-- i = 0 (value 10): children 23 and 30, larger is 30 → swap → [30, 23, 10, 21, 20]. Index 2 has no children → stop.
+3. **The heap way (what this station teaches):** go through the positions from the **last parent** (n/2 − 1) back to 0, and **sift each one down**. Sift down here means: while it is smaller than its **bigger** child, swap with that child.
 
-Result **[30, 23, 10, 21, 20]**, a valid max-heap.
+   **Why:** when you fix a position, everything below it is already a max-heap, so sifting down is enough to fix it.
+
+4. **Skip the leaves** (positions n/2 and after).
+
+   **Why:** a position with no children is already a heap.
+
+## How fast is it?
+
+The heap way is O(n); sorting is O(n log n). The heap way is O(n) because most positions are near the bottom and move only a step or two. No extra memory besides the returned array.
+
+## Walk through (heap way on [10, 20, 30, 21, 23])
+
+- n = 5, so the last parent is position 1 (value 20). Its children are 21 and 23; the bigger is 23 > 20 → swap → [10, 23, 30, 21, 20].
+- Position 0 (value 10): children 23 and 30; the bigger is 30 → swap → [30, 23, 10, 21, 20]. Position 2 has no children → stop.
+
+Result **[30, 23, 10, 21, 20]**, a correct max-heap.
 
 ## Check your solution
 

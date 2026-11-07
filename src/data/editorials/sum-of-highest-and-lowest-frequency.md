@@ -1,12 +1,10 @@
 # Sum of Highest and Lowest Frequency
 
-> No free judge has this exact problem, so Terminus is your judge. Solve it with the visible tests, then run the hidden tests with the self-check program at the bottom in a free online compiler. The function here is `int sumHighestAndLowestFrequency(vector<int>& nums)`.
+> No free judge has this exact problem, so Terminus is your judge. Solve it with the tests below, then check it with the self-check program at the bottom. The function here is `int sumHighestAndLowestFrequency(vector<int>& nums)`.
 
-## The problem
+## What you need to do
 
-Given an array (1 ≤ n ≤ 10⁵, 1 ≤ arr[i] ≤ 10⁴), find the **highest frequency** (how often the most common value appears) and the **lowest frequency** (how often the least common value appears). Return their sum.
-
-Only values that **appear** count. A value that is not in the array has frequency 0, but it is not "occurring", so it never gives the lowest frequency.
+Count how often each value appears. Take the **highest** count and the **lowest** count, and return their sum. Only values that actually appear count.
 
 ## Visible tests
 
@@ -16,23 +14,37 @@ Only values that **appear** count. A value that is not in the array has frequenc
 | [4, 4, 5, 5, 6] | 2 (4 and 5) | 1 (value 6) | 3 |
 | [10, 9, 7, 7, 8, 8, 8] | 3 (value 8) | 1 (10 or 9) | 4 |
 
-## Step by step
+## How to solve it, step by step
 
-1. **Count first.** You need each value's frequency. Use `unordered_map<int,int> freq` and do `freq[x]++` for every x. (Values are ≤ 10⁴, so an array `int freq[10001]` also works and is faster.)
-2. **Then scan the counts, not the array.** Walk over the map's entries and keep `hi = max(hi, count)` and `lo = min(lo, count)`.
-3. **Start values:** `hi = 0` and `lo = INT_MAX` (or n). Every real count is between 1 and n.
-4. **Trap with the array version:** if you scan all 10001 slots, skip the zeros. Otherwise lo becomes 0 every time.
-5. **Edge case: only one distinct value**, like [5] or [1, 1, 1]. Then that value is both the most and the least frequent, so the answer is count + count = 2·n. ([5] → 2, [1, 1, 1] → 6.)
-6. Return `hi + lo`. Ties do not matter: you only need the frequencies, not which value has them.
+1. **Count every value first,** with `unordered_map<int,int> freq` and `freq[x]++`.
 
-## Complexity
+   **Why:** you cannot know the highest or lowest count before you have all the counts.
 
-- Time: O(n) on average with the hash map.
-- Space: O(k), where k is the number of distinct values.
+2. **Then go through the counts (not the array)** and keep `hi = max(hi, count)` and `lo = min(lo, count)`.
 
-## Dry run ([4, 4, 4, 4, 2, 7, 7])
+   **Why:** the counts are what the question is about.
 
-Counts: 4 → 4, 2 → 1, 7 → 2. hi = 4, lo = 1. Answer: **5**.
+3. **Start with `hi = 0` and `lo` very large** (`INT_MAX`).
+
+   **Why:** every real count is between 1 and n, so the first count replaces both.
+
+4. **Return `hi + lo`.**
+
+5. **Check the case with only one distinct value,** like [1, 1, 1]. That value is both the most and the least common, so the answer is 3 + 3 = 6.
+
+   **Why:** it is easy to think "there is no lowest" and return the wrong thing.
+
+## How fast is it?
+
+One pass to count, one pass over the counts: O(n) on average. Memory for the map: O(number of distinct values).
+
+## Watch out for
+
+- If you use a plain array of 10 001 counters instead of a map, skip the zeros. Otherwise `lo` becomes 0 every time.
+
+## Walk through ([4, 4, 4, 4, 2, 7, 7])
+
+Counts: 4 → 4 times, 2 → 1 time, 7 → 2 times. hi = 4, lo = 1. Answer: **5**.
 
 ## Check your solution
 

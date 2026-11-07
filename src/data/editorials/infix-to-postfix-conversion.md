@@ -1,29 +1,40 @@
 # Infix to Postfix Conversion
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Infix to Postfix". GfG's function is `string infixToPostfix(string& s)`. Operators: `^` (highest, right to left), then `*` `/`, then `+` `-` (left to right). The video above explains it too.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Infix to Postfix". GfG's function is `string infixToPostfix(string& s)`. The video above explains it too.
 
-## The problem
+## What you need to do
 
-**Infix** puts operators between operands: `a+b*c`. **Postfix** puts them after: `abc*+`. Postfix needs no brackets and no precedence rules, which is why computers evaluate it with one stack.
+**Infix** is how we normally write maths: the operator sits between its two values, as in `a+b*c`. **Postfix** puts the operator after its two values: `abc*+`. Convert infix to postfix.
 
-Examples: `a*(b+c)/d` → `abc+*d/`. `a+b*c+d` → `abc*+d+`. `(a+b)*(c+d)` → `ab+cd+*`.
+Operator strength: `^` is strongest (and works right to left), then `*` and `/`, then `+` and `-` (these work left to right).
 
-## The idea (shunting-yard)
+## Examples
 
-Read left to right. **Operands go straight to the output** (their order never changes). **Operators wait on a stack** until we know nothing stronger comes after them.
+- `a+b*c+d` → `abc*+d+`
+- `a*(b+c)/d` → `abc+*d/`
+- `(a+b)*(c+d)` → `ab+cd+*`
 
-Rules for each character:
+## How to solve it, step by step
 
-1. **Operand** (letter or digit) → append to the output.
-2. **`(`** → push.
-3. **`)`** → pop operators to the output until the `(`, then drop the `(`.
-4. **Operator `op`** → first pop every operator on the stack that must run **before** op, then push op. "Must run before" means:
-   - its precedence is **higher**, or
-   - its precedence is **equal** and op is **left-associative** (`+ - * /`). For `^` (right-associative), equal precedence does **not** pop: `a^b^c` is `a^(b^c)`.
-   - Never pop past a `(`.
-5. At the end, pop everything left to the output.
+1. **Letters (operands) go straight to the output.**
 
-## Code (C++)
+   **Why:** in postfix the letters keep their order; only the operators move.
+
+2. **Operators wait on a stack.**
+
+   **Why:** you cannot write an operator yet, because a stronger operator might come next and must run first.
+
+3. **When a new operator arrives, first pop and write every waiting operator that must run before it.** That means one that is stronger, or equally strong when the new one is left-to-right (`+ - * /`). Then push the new operator.
+
+   **Why:** the operators that run first must appear first in postfix. For `^` (right to left), an equal `^` does not pop, because `a^b^c` means `a^(b^c)`.
+
+4. **`(` is pushed. On `)`, pop and write operators until the `(`, then throw the `(` away.**
+
+   **Why:** brackets make their inside finish first, whatever the operators outside are.
+
+5. **At the end, pop and write everything left on the stack.**
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -58,26 +69,25 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n): each character is pushed and popped at most once. Space: O(n).
+Each character is pushed and popped at most once: O(n) time, O(n) memory.
 
-## Edge cases
+## Watch out for
 
-- `a^b^c` → `abc^^` (right to left). `a-b-c` → `ab-c-` (left to right). The equal-precedence rule is what decides this.
-- Nested brackets like `((a))` → `a`.
+- `a-b-c` must give `ab-c-` (left to right), but `a^b^c` gives `abc^^` (right to left). The "equally strong" rule in step 3 decides this.
 
-## Dry run (`a+b*c+d`)
+## Walk through (`a+b*c+d`)
 
-| char | output | stack |
+| read | output | stack |
 |---|---|---|
 | a | a | |
 | + | a | + |
 | b | ab | + |
-| * | ab | + * (higher, so + stays) |
+| * | ab | + * (stronger, so + stays) |
 | c | abc | + * |
-| + | abc*+ | + (pops * and +, pushes +) |
+| + | abc*+ | + (pops * and +, then pushes +) |
 | d | abc*+d | + |
 | end | `abc*+d+` | |
 
-(Tested on 5 000 random expressions: each is built as a tree, printed as infix with only the needed brackets, and the answer is compared with the tree's postfix.)
+(Tested on 5 000 random expressions against the correct answer built from an expression tree.)

@@ -2,25 +2,33 @@
 
 > takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `bool isPrime(int n)`.
 
-## The problem
+## What you need to do
 
-Return true if n is **prime**: greater than 1, with no divisors other than 1 and itself.
+Return true if n is **prime**: bigger than 1, and divisible only by 1 and itself.
 
-Examples: 5 → **true**. 15 → **false** (3 · 5). 1 → **false**. 2 → **true**.
+## Example
 
-## Brute force
+- 5 → **true** (only 1 and 5 divide it).
+- 15 → **false** (3 × 5 = 15).
+- 1 → **false** (1 is not prime by definition).
 
-Try every d from 2 to n − 1. If any divides n, it is not prime.
+## How to solve it, step by step
 
-- Time: O(n). For n = 10⁹ that is a billion steps.
+1. **Numbers below 2 are not prime.** Return false for them first.
 
-## Why √n is enough
+   **Why:** that is the definition, and it keeps 0 and 1 out of the loop.
 
-Divisors come in **pairs**: if d divides n, so does n / d. In each pair, one number is ≤ √n and the other ≥ √n (they cannot both be bigger, or their product would exceed n).
+2. **Try dividing by d = 2, 3, 4, …** If any d divides n, it is not prime.
 
-So if n has any divisor besides 1 and n, it has one **≤ √n**. Checking d from 2 while **d · d ≤ n** is enough.
+   **Why:** a prime has no divisor between 1 and itself.
 
-## Code (C++)
+3. **Stop when d × d > n.** You never need to go past √n.
+
+   **Why:** divisors come in pairs: if d divides n, so does n / d. One of each pair is at most √n. So if there is any divisor, you meet one before √n.
+
+4. **If no d divided n, return true.**
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -34,20 +42,18 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(√n). For n = 10⁹ about 31 623 steps.
-- Space: O(1).
+At most √n tries: O(√n). For n = 1 000 000 000 that is about 31 600 tries instead of a billion. No extra memory.
 
-## Edge cases
+## Watch out for
 
-- n = 1 (and 0) are **not** prime. The `n < 2` check handles them.
-- Write the loop as `d * d <= n`, not `d <= sqrt(n)`: `sqrt` works with floating point and can be off by one for big n.
-- Use `long long` for d, or `d * d` can overflow near n = 2³¹ − 1.
+- Write the loop as `d * d <= n`, not `d <= sqrt(n)`. `sqrt` uses decimals and can be off by one for big n.
+- Use `long long` for d, or `d * d` can overflow when n is near 2 000 000 000.
 
-## Dry run (n = 15)
+## Walk through (n = 15)
 
-- d = 2: 15 % 2 = 1.
-- d = 3: 15 % 3 = 0 → **false**.
+- d = 2: 15 is not divisible by 2.
+- d = 3: 15 ÷ 3 = 5 → divisible → **false**.
 
-(Tested on every n up to 100 000 against the brute force.)
+(Tested on every n up to 100 000.)

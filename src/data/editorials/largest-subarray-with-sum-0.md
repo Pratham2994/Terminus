@@ -2,34 +2,35 @@
 
 > takeUforward's page needs Plus, and its LeetCode link is Premium. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `int maxLength(vector<int>& arr)`. The video above explains it too.
 
-## The problem
+## What you need to do
 
-The array holds positive and negative integers. Return the length of the **longest contiguous subarray with sum 0**, or 0 if none exists.
+The array has positive and negative numbers. Find the **longest run of neighbouring numbers that adds up to 0**, and return its length (0 if there is none).
 
-Examples: [15, −2, 2, −8, 1, 7, 10, 23] → **5** ([−2, 2, −8, 1, 7]). [2, 10, 4] → **0**. [1, 0, −4, 3, 1, 0] → **5**.
+## Example
 
-## Brute force
+[15, −2, 2, −8, 1, 7, 10, 23] → **5**, from [−2, 2, −8, 1, 7]: −2 + 2 − 8 + 1 + 7 = 0.
 
-Every start i, every end j, running sum. O(n²).
+## How to solve it, step by step
 
-## The prefix-sum idea
+1. **Keep a running total** (prefix sum) as you walk the array.
 
-Let `sum` be the running total. If the total is the **same** at two points, everything **between** them adds to 0:
+   **Why:** it turns "does this run add to 0?" into a simple comparison.
 
-prefix after index i = prefix after index j  ⟹  arr[i + 1 … j] sums to 0.
+2. **If the running total is the same at two points, everything between them adds to 0.**
 
-So for each j, find the **first** index where this prefix value appeared. That gives the longest zero-sum subarray ending at j.
+   **Why:** the total did not change, so whatever was added in between must cancel out.
 
-This is "Longest subarray with sum K" with **k = 0**: we look for `sum − 0 = sum` in the map.
+3. **Store the first index where each total appeared,** in a hash map. Never overwrite it.
 
-## Step by step
+   **Why:** at each index j, if the total was seen before at index i, the run i + 1 … j adds to 0. The earliest i gives the longest run.
 
-1. Map `first`: prefix sum → first index where it appeared. Put `first[0] = −1` (the empty prefix).
-2. For each j: add arr[j] to sum.
-3. If sum is in the map: candidate length `j − first[sum]`.
-4. Else: store `first[sum] = j`. Never overwrite.
+4. **Start with total 0 at index −1.**
 
-## Code (C++)
+   **Why:** it handles runs that start at the very first number, like [3, −3].
+
+This is "Longest subarray with sum K" with k = 0.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -50,20 +51,20 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n) on average. Space: O(n).
+One pass: O(n) time on average, O(n) memory for the map.
 
-## Edge cases
+## Watch out for
 
-- A single 0 is a zero-sum subarray of length 1. The map finds it: sum repeats right away.
-- Without `first[0] = −1`, a zero-sum prefix such as [3, −3] would give 0 instead of 2.
+- A single 0 is a run of length 1 that adds to 0. The map catches it, because the total repeats right away.
+- Without the starting entry (step 4), [3, −3] would give 0 instead of 2.
 
-## Dry run ([15, −2, 2, −8, 1, 7, 10, 23])
+## Walk through ([15, −2, 2, −8, 1, 7, 10, 23])
 
-Prefix sums: 15, 13, 15, 7, 8, 15, 25, 48.
+Running totals: 15, 13, 15, 7, 8, 15, 25, 48.
 
-- j = 2: 15 seen at 0 → length 2.
-- j = 5: 15 seen at 0 → length **5** ([−2, 2, −8, 1, 7]).
+- Index 2: total 15 was first seen at index 0 → length 2.
+- Index 5: total 15 again, first seen at 0 → length **5**.
 
-Answer: **5**. (Tested on 5 000 random arrays against the brute force.)
+Answer: **5**. (Tested on 5 000 random arrays against trying every run.)

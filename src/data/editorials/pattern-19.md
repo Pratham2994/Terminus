@@ -1,6 +1,10 @@
 # Pattern 19
 
-> takeUforward's page needs Plus. Solve it free on GeeksforGeeks (the Problem link above), "Mirrored Bridge Pattern". Its function: `void printMirroredBridge(int n)`. GfG prints it like takeUforward: no spaces between stars.
+> takeUforward's page needs Plus. Solve the same pattern free on GeeksforGeeks (the Problem link above), "Mirrored Bridge Pattern".
+
+## What you need to do
+
+Print two triangles of stars that meet: wide at the top and bottom, a gap in the middle.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -17,12 +21,29 @@
 **********
 ```
 
-## Step by step
+## What is different on GfG
 
-1. Every row is 2n wide: **stars, a gap, stars** (Pattern 12's shape, with stars).
-2. Top half, row i from 0: **n − i** stars, **2i** spaces, **n − i** stars.
-3. Bottom half is the top half upside down: row i from 0 has **i + 1** stars, **2(n − i − 1)** spaces, **i + 1** stars.
-4. Check the middle: the last top row has 1 star, 2n − 2 spaces, 1 star; so does the first bottom row. ✓
+GfG prints it like takeUforward: no spaces between stars.
+
+GfG's function: `void printMirroredBridge(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. Each row has three parts: **stars, a gap, stars.** Every row is 2n wide.
+
+   **Why:** Like Pattern 12, but with stars.
+
+2. Top half, row i (from 0): **n − i** stars, **2i** spaces, **n − i** stars.
+
+   **Why:** The stars shrink by one on each side, so the gap grows by two.
+
+3. Bottom half, row i (from 0): **i + 1** stars, **2(n − i − 1)** spaces, **i + 1** stars.
+
+   **Why:** It is the top half upside down.
+
+Row by row:
 
 | Top row i | Stars | Gap | Stars |
 |---|---|---|---|
@@ -45,11 +66,6 @@ class Solution {
 };
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

@@ -1,37 +1,41 @@
 # Minimum number of bracket reversals to make an expression balanced
 
-> takeUforward's page for this needs Plus. Its LeetCode link points to a **different** problem (LeetCode 921 adds brackets instead of reversing them). GeeksforGeeks has the same problem with `{ }` instead of `( )` (the **Similar** link above), as `int countMinReversals(string s)`. Both versions are below, with a self-check for takeUforward's `int countRev(string s)`.
+> takeUforward's page needs Plus, and its LeetCode link is a different problem (LeetCode 921 adds brackets instead of flipping them). Practise on GeeksforGeeks (the **Similar** link above): the same problem with curly brackets. The box below shows the difference.
 
-## The problem
+## What you need to do
 
-s contains only '(' and ')'. One **reversal** flips a bracket. Return the minimum number of reversals that make s balanced, or **−1** if it is impossible.
+The string has only `(` and `)`. One **reversal** flips a bracket. Find the fewest reversals that make the string balanced, or return **−1** if it cannot be done.
 
-Example: ")(())(((" → **3**.
+## What is different on GfG
 
-## Step 1: when is it impossible?
+| | takeUforward | GfG "Minimum Bracket Reversals to Balance" |
+|---|---|---|
+| Brackets | `(` and `)` | `{` and `}` |
+| Function | `int countRev(string s)` | `int countMinReversals(string s)` |
 
-A reversal never changes the length, and a balanced string has even length. So **odd length → −1**. Every even-length string can be balanced.
+**In short:** identical logic. Only the bracket characters change.
 
-## Step 2: cancel what already matches
+## Example
 
-Scan left to right, like checking valid parentheses:
+`)(())(((` → **3**.
 
-- '(' → one more unmatched open.
-- ')' → if there is an unmatched '(', pair them. Otherwise it is an unmatched close.
+## How to solve it, step by step
 
-What is left has the shape `)))…(((`: `close` unmatched ')' followed by `open` unmatched '('. Matched pairs never need a reversal.
+1. **Odd length → −1.**
 
-## Step 3: fix the leftover
+   **Why:** a flip never changes the length, and a balanced string always has even length. Every even-length string can be balanced.
 
-- Every **two** ')' can be fixed with one reversal: "))" → "()". So ⌈close / 2⌉.
-- Every **two** '(' likewise: "((" → "()". So ⌈open / 2⌉.
-- Since the length is even, open and close are both even or both odd. When both are odd, the last ")(" needs 2 reversals → "()". The ceilings add exactly those 2.
+2. **Cancel the pairs that already match.** Walk left to right: `(` adds one open bracket; `)` closes an open one if there is any, otherwise it is an unmatched `)`.
 
-**Answer = ⌈open / 2⌉ + ⌈close / 2⌉.**
+   **Why:** matched pairs never need flipping, so set them aside.
+
+3. **What is left looks like `)))…(((`:** some unmatched `)` (call it `close`) followed by some unmatched `(` (call it `open`).
+
+4. **Fix them in pairs:** `))` needs one flip to become `()`, and so does `((`. So the answer is ⌈open / 2⌉ + ⌈close / 2⌉.
+
+   **Why:** when both counts are odd, one `)(` is left over, and it needs 2 flips. The rounding up adds exactly those 2.
 
 ## Code for GfG (submit this there)
-
-Same logic; only the characters change: `{` plays `(` and `}` plays `)`.
 
 ```cpp
 class Solution {
@@ -49,41 +53,21 @@ class Solution {
 };
 ```
 
-## Code for takeUforward's version (C++)
+## How fast is it?
 
-```cpp
-class Solution {
-public:
-    int countRev(string s) {
-        if (s.size() % 2 == 1) return -1;
-        int open = 0, close = 0;                 // unmatched '(' and ')'
-        for (char c : s) {
-            if (c == '(') open++;
-            else if (open > 0) open--;            // pairs with an earlier '('
-            else close++;
-        }
-        return (open + 1) / 2 + (close + 1) / 2;
-    }
-};
-```
+One pass: O(n) time, no extra memory.
 
-## Complexity
+## Watch out for
 
-- Time: O(n).
-- Space: O(1).
+- `)(` needs **2** flips: open = 1 and close = 1 gives 1 + 1.
+- `(x + 1) / 2` is "x / 2 rounded up" with whole numbers.
 
-## Edge cases
+## Walk through (`)(())(((`)
 
-- ")(" → open = 1, close = 1 → 1 + 1 = **2**. Both must flip.
-- Already balanced → 0.
-- `(x + 1) / 2` is ⌈x / 2⌉ in integer arithmetic.
-
-## Dry run (")(())(((")
-
-- ')' → no open → close = 1.
-- '(' '(' → open = 2. ')' ')' → open = 0.
-- '(' '(' '(' → open = 3.
-- Leftover: close = 1, open = 3 → ⌈3/2⌉ + ⌈1/2⌉ = 2 + 1 = **3**.
+- `)` → nothing open → close = 1.
+- `(` `(` → open = 2. `)` `)` → open = 0.
+- `(` `(` `(` → open = 3.
+- Left over: close = 1, open = 3 → ⌈3/2⌉ + ⌈1/2⌉ = 2 + 1 = **3**.
 
 (Tested on 3 000 random strings against trying every set of flips.)
 
@@ -125,5 +109,23 @@ int main() {
     }
     cout << passed << " / " << tests.size() << " tests passed\n";
 }
+```
+:::
+
+:::hidden Full solution for takeUforward's version (C++)
+```cpp
+class Solution {
+public:
+    int countRev(string s) {
+        if (s.size() % 2 == 1) return -1;
+        int open = 0, close = 0;                 // unmatched '(' and ')'
+        for (char c : s) {
+            if (c == '(') open++;
+            else if (open > 0) open--;            // pairs with an earlier '('
+            else close++;
+        }
+        return (open + 1) / 2 + (close + 1) / 2;
+    }
+};
 ```
 :::

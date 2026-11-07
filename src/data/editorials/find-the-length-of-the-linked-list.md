@@ -2,22 +2,29 @@
 
 > takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Length of Linked List". GfG's function is `int getCount(Node* head)`. The video above explains it too.
 
-## The problem
+## What you need to do
 
-Return the number of nodes in a singly linked list.
+Count the nodes in a linked list.
 
-Examples: 1 → 2 → 3 → 4 → 5 → **5**. 8 → 6 → **2**.
+## Example
 
-## Step by step
+1 → 2 → 3 → 4 → 5 has **5** nodes. 8 → 6 has **2**.
 
-1. A linked list does not store its size. The only way to know is to **walk it**.
-2. Start `cur` at `head` and a counter at 0.
-3. While `cur` is not `nullptr`: count 1, then `cur = cur->next`.
-4. Return the counter.
+## How to solve it, step by step
 
-It is the traversal from the previous station, with a counter instead of a list of values.
+1. **Start a counter at 0 and a pointer `cur` at `head`.**
 
-## Code (C++)
+   **Why:** a linked list does not store its own size, so the only way to know is to walk it and count.
+
+2. **While `cur` is not `nullptr`: add 1, then move with `cur = cur->next`.**
+
+   **Why:** each loop visits one node, so the counter ends equal to the number of nodes.
+
+3. **Return the counter.**
+
+It is the same walk as "Traversal in Linked List", with a counter instead of a list of values.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -30,21 +37,13 @@ class Solution {
 };
 ```
 
-## Recursive version (same idea)
+## How fast is it?
 
-The length of a list is 0 if it is empty, else 1 + the length of the rest: `return head ? 1 + getCount(head->next) : 0;`. It uses O(n) stack space, so the loop is better for long lists.
+O(n) time, one step per node. No extra memory.
 
-## Complexity
+## Watch out for
 
-- Time: O(n). Space: O(1).
-
-## Edge cases
-
-- Empty list → 0.
-- Check `cur != nullptr`, not `cur->next != nullptr`. The second one stops one node early and crashes on an empty list.
-
-## Dry run (8 → 6)
-
-cur = 8 → 1, cur = 6 → 2, cur = nullptr → **2**.
+- Check `cur != nullptr`, not `cur->next != nullptr`. The second stops one node too early, and crashes on an empty list.
+- An empty list has length 0.
 
 (Tested on 2 000 random lists.)

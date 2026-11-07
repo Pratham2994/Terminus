@@ -1,26 +1,34 @@
 # Traversal in Linked List
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Linked List Traversal". GfG's function is `vector<int> printList(Node* head)`, and it returns the values (it does not print them).
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Linked List Traversal". GfG's function is `vector<int> printList(Node* head)`. It **returns** the values; it does not print them.
 
-## The problem
+## What you need to do
 
-Given the head of a singly linked list, return its values in order.
+Walk through a linked list from the first node to the last, and return all the values in order.
 
-Example: 5 → 4 → 3 → 1 → 0 → **[5, 4, 3, 1, 0]**.
+## Example
 
-## What a linked list is
+5 → 4 → 3 → 1 → 0 gives **[5, 4, 3, 1, 0]**.
 
-Each **node** holds a value (`data`) and a pointer to the next node (`next`). The last node's `next` is `nullptr`. You only get `head`, the first node. Unlike an array, there is no `list[i]`: to reach the 5th node you must walk past the first four.
+## First, what is a linked list?
 
-## Step by step
+Each **node** holds a value (`data`) and a pointer to the next node (`next`). The last node's `next` is `nullptr`, meaning "nothing after me". You are only given `head`, the first node. There is no `list[i]`: to reach a node, you walk past all the nodes before it.
 
-1. Start a pointer `cur` at `head`.
-2. While `cur` is not `nullptr`: record `cur->data`, then step: `cur = cur->next`.
-3. When `cur` becomes `nullptr`, you have passed the last node.
+## How to solve it, step by step
 
-Use a **separate** pointer `cur`. Moving `head` itself works here, but in later problems you will need the head again, so keep the habit.
+1. **Start a pointer `cur` at `head`.**
 
-## Code (C++)
+   **Why:** `cur` marks where you are. Using a separate pointer keeps `head` safe for later.
+
+2. **While `cur` is not `nullptr`: save `cur->data`, then step forward with `cur = cur->next`.**
+
+   **Why:** `next` is the only way to reach the following node.
+
+3. **When `cur` becomes `nullptr`, stop.**
+
+   **Why:** you have just walked past the last node.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -34,17 +42,12 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n). Space: O(1) besides the output.
+Each node is visited once: O(n) time. No extra memory besides the answer.
 
-## Edge cases
+## Watch out for
 
-- Empty list (`head == nullptr`): the loop does not run → [].
-- One node: one step, then `cur` is `nullptr`.
-
-## Dry run (1 → 2 → 3)
-
-cur = 1 → [1], cur = 2 → [1, 2], cur = 3 → [1, 2, 3], cur = nullptr → stop.
+- An empty list (`head` is `nullptr`): the loop never runs and you return [].
 
 (Tested on 2 000 random lists.)

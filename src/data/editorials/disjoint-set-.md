@@ -1,29 +1,43 @@
 # Disjoint Set
 
-> takeUforward's page needs Plus. Practise on GeeksforGeeks (the **Similar** link above), "Design Disjoint Set": same structure, but driven by queries, and it has one strict rule: **merge x into y** (the new root must be y's root). That rule rules out union by rank or size there. Both versions are below, with a self-check for takeUforward's class (`unionByRank`, `unionBySize`, `find`). The free editorial and video above cover it too.
+> takeUforward's page needs Plus. Practise on GeeksforGeeks (the **Similar** link above). It has one strict rule that changes the code; the box below shows it. The free editorial and video above cover it too.
 
-## The problem
+## What you need to do
 
-Keep track of groups of elements 0 … n − 1 that only ever **merge**:
+Keep track of groups of elements (0 to n − 1) that only ever **merge**. Support: join the groups of u and v (by rank and by size), and answer "are u and v in the same group?".
 
-- `unionByRank(u, v)` and `unionBySize(u, v)`: merge the groups of u and v.
-- `find(u, v)`: are u and v in the same group?
+## What is different on GfG
 
-## Step by step
+| | takeUforward | GfG "Design Disjoint Set" |
+|---|---|---|
+| Methods | `unionByRank`, `unionBySize`, `bool find(u, v)` | `unionSet(x, y)`, `int find(x)` |
+| Who becomes the leader | you choose (rank or size decides) | **must** be y's leader: "merge x into y" |
+| `find` returns | true/false: same group? | the group's leader |
 
-1. **Every group is a tree.** `parent[x]` points towards the group's **root**, its representative. A root points to itself.
-2. **findRoot(x):** follow `parent` until you reach a node that is its own parent.
-3. **Same group?** Two elements are together exactly when they have the same root.
-4. **Merge:** find both roots; if different, hang one root under the other.
-5. **Keep the trees flat**, or findRoot becomes O(n):
-   - **Path compression:** after finding the root, point every node on the way **straight at the root**.
-   - **Union by rank:** hang the tree of **smaller rank** (rough height) under the larger. Equal ranks → pick one, and its rank grows by 1.
-   - **Union by size:** hang the **smaller** tree (fewer nodes) under the larger, and add the sizes.
-6. With path compression plus rank or size, each operation costs α(n), less than 5 for any real n.
+**In short:** on GfG, always hang x's leader under y's leader, and skip rank and size. GfG's tests check which leader `find` returns, so union by rank would fail there.
 
-## GfG's rule
+## How to solve it, step by step
 
-GfG says `unionSet(x, y)` merges x's group **into** y's group, and the new root **must** be y's root (its tests check which element `find` returns). So on GfG: `parent[find(x)] = find(y)`, always. Path compression alone keeps it fast enough.
+1. **Each group is a tree. `parent[x]` points towards the group's leader** (its root). A leader points to itself.
+
+   **Why:** two elements are in the same group exactly when they lead to the same root.
+
+2. **To find a leader, follow `parent` until it points to itself.**
+
+3. **Path compression:** on the way back, point every node you passed **straight at the leader**.
+
+   **Why:** the next search from those nodes takes one step instead of many.
+
+4. **To join two groups, find both leaders.** If they differ, hang one under the other.
+
+   **Why:** only leaders need to change; everyone below follows automatically.
+
+5. **Union by rank:** hang the **shorter** tree (smaller rank) under the taller one. If the ranks are equal, pick one and add 1 to its rank.
+   **Union by size:** hang the tree with **fewer** elements under the bigger one, and add the sizes.
+
+   **Why:** both keep the trees flat, so finding a leader stays fast.
+
+6. **"Same group?" means: do both elements have the same leader?**
 
 ## Code for GfG (submit this there)
 
@@ -46,15 +60,13 @@ class MyDSU {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- takeUforward's version: O(α(n)) per operation. GfG's version (path compression only): O(log n) amortized.
-- Space: O(n).
+With path compression plus rank or size, each operation is almost O(1) (the inverse Ackermann function, below 5 for any real n). GfG's version, with path compression only, is O(log n) on average. Memory: O(n).
 
-## Edge cases
+## Watch out for
 
-- Union of two elements already together: do nothing (and do not change rank or size).
-- `find(u, u)` is always true.
+- Joining two elements that are already together: do nothing, and do not change rank or size.
 
 ## Check takeUforward's version
 

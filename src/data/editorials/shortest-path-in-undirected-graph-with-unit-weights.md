@@ -1,31 +1,46 @@
 # Shortest path in undirected graph with unit weights
 
-> takeUforward's page needs Plus. Practise on GeeksforGeeks (the **Similar** link above), "Shortest Path in Unweighted Graph": the same BFS, but it asks for **one** distance, from `src` to `dest`: `int shortestPath(int V, vector<vector<int>>& edges, int src, int dest)`. takeUforward asks for the distance from vertex 0 to **every** vertex. Both are below, with a self-check for takeUforward's version (the self-check uses `vector<int> shortestPath(vector<vector<int>>& edges, int N, int M)`). The free editorial and video above cover it too.
+> takeUforward's page needs Plus. Practise on GeeksforGeeks (the **Similar** link above). It asks for one distance instead of all of them; the box below shows the difference. The free editorial and video above cover it too.
 
-## The problem
+## What you need to do
 
-An undirected graph has N vertices and M edges, all of length 1. Return the shortest distance from vertex 0 to every vertex, or −1 for a vertex you cannot reach.
+Every edge has length 1. Find the shortest distance from vertex 0 to **every** vertex. Write −1 for a vertex you cannot reach.
 
-## Visible tests
+## What is different on GfG
 
-| N | edges | Answer |
+| | takeUforward | GfG "Shortest Path in Unweighted Graph" |
 |---|---|---|
-| 9 | [0,1] [0,3] [3,4] [4,5] [5,6] [1,2] [2,6] [6,7] [7,8] [6,8] | [0, 1, 2, 1, 2, 3, 3, 4, 4] |
-| 3 | [1,2] | [0, -1, -1] |
+| Start | vertex 0 | any vertex `src` |
+| Answer | distances to **all** vertices | the distance to **one** vertex, `dest` |
+| Function | `vector<int> shortestPath(vector<vector<int>>& edges, int N, int M)` in the self-check | `int shortestPath(int V, vector<vector<int>>& edges, int src, int dest)` |
 
-## Step by step
+**In short:** both are the same BFS. On GfG, start at `src` and return `dist[dest]`.
 
-1. **When every edge costs 1, BFS is Dijkstra.** BFS visits vertices in order of the number of edges from the start, which here **is** the distance.
-2. Build the adjacency list (both directions).
-3. `dist` = −1 for all, `dist[0] = 0`, queue = [0].
-4. Pop u. For every neighbour v with `dist[v] == −1`: set `dist[v] = dist[u] + 1` and push v.
-5. The first time a vertex gets a distance, it is final: anything reaching it later comes from the same level or a later one.
-6. Vertices never reached keep −1, which is what the answer wants.
-7. For GfG's single pair: run the same BFS from `src` and return `dist[dest]` (you can stop as soon as you pop `dest`).
+## Example
+
+N = 3, edges [1,2] → **[0, −1, −1]**: vertex 0 has no edges, so nothing else is reachable.
+
+## How to solve it, step by step
+
+1. **When every edge has length 1, BFS gives the shortest distances.**
+
+   **Why:** BFS visits vertices in order of how many edges away they are, and here that number is the distance.
+
+2. **Build the neighbour lists** (both directions for each edge).
+
+3. **Start: `dist` is −1 everywhere, `dist[0] = 0`, and the queue holds 0.**
+
+   **Why:** −1 means "not reached yet", and it is also the answer for vertices you never reach.
+
+4. **Take a vertex u from the front. For each neighbour v still at −1: set `dist[v] = dist[u] + 1` and add v to the queue.**
+
+   **Why:** the first time BFS reaches a vertex is along a shortest path, so that distance is final.
+
+5. **When the queue is empty, return `dist`.**
 
 ## Why not DFS?
 
-DFS goes deep along one path first, so the first time it reaches a vertex is not necessarily by the shortest route. Fixing that needs revisiting vertices, which is much slower.
+DFS follows one path deep first, so the first time it reaches a vertex is not always the shortest way.
 
 ## Code for GfG (submit this there)
 
@@ -50,14 +65,13 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(N + M). Space: O(N + M).
+Every vertex and edge is handled once: O(N + M) time and memory.
 
-## Edge cases
+## Watch out for
 
-- The graph can be **disconnected**: unreached vertices stay −1.
-- N = 1: [0].
+- The graph may be split into parts: unreachable vertices stay −1.
 
 ## Check takeUforward's version
 

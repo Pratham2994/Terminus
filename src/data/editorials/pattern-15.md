@@ -1,6 +1,10 @@
 # Pattern 15
 
-> takeUforward's page needs Plus. Solve it free on Code360 (the Problem link above), "Reverse Letter Triangle". Its function: `void nLetterTriangle(int n)`. Code360 puts a space between the letters: `A B C`. (It uses the same function name as the increasing triangle.)
+> takeUforward's page needs Plus. Solve the same pattern free on Code360 (the Problem link above), "Reverse Letter Triangle".
+
+## What you need to do
+
+Print an upside-down staircase of letters: A B C … first, then one letter less in every row.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,10 +16,25 @@ AB
 A
 ```
 
-## Step by step
+## What is different on Code360
 
-1. This is Pattern 6 (shrinking rows) with letters, or Pattern 14 upside down.
-2. Row i (from 0) has **n − i** letters, starting from A.
+Code360 puts a space between the letters: `A B C`. (It uses the same function name as the increasing triangle.)
+
+Code360's function: `void nLetterTriangle(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. The shape is Pattern 6: row i (from 0) has **n − i** entries.
+
+   **Why:** The rows shrink by one.
+
+2. Print the letters A, B, C, … in each row.
+
+   **Why:** Each row starts again at A, using `(char)('A' + j)`.
+
+Row by row:
 
 | Row i (from 0) | Prints |
 |---|---|
@@ -37,11 +56,6 @@ void nLetterTriangle(int n) {
 }
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

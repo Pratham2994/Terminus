@@ -1,6 +1,10 @@
 # Pattern 12
 
-> takeUforward's page needs Plus. Solve it free on GeeksforGeeks (the Problem link above), "Number Bridge Pattern". Its function: `a full program: read n, print the pattern`. On GfG you write the whole program (read n with `cin`). No spaces between numbers, like takeUforward.
+> takeUforward's page needs Plus. Solve the same pattern free on GeeksforGeeks (the Problem link above), "Number Bridge Pattern".
+
+## What you need to do
+
+Print numbers going up on the left and back down on the right, with a gap in the middle that shrinks.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,12 +16,29 @@
 1234554321
 ```
 
-## Step by step
+## What is different on GfG
 
-1. Each row has three parts: **left numbers, middle spaces, right numbers**. The row is always 2n wide.
-2. Row i (from 1): left is 1 … i, right is i … 1.
-3. Spaces: the total width 2n minus the 2i digits, so **2(n − i)**. The last row has 0.
-4. Check row 1 for n = 5: "1", 8 spaces, "1" = 10 = 2n characters. ✓
+On GfG you write the whole program (read n with `cin`). No spaces between numbers, like takeUforward.
+
+On GfG you write the **whole program**: read n with `cin`, then print.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. Each row has three parts: **numbers going up, a gap, numbers coming down.**
+
+   **Why:** Splitting a row into parts turns one hard row into three easy loops.
+
+2. Row i (from 1): left part 1 … i, right part i … 1.
+
+   **Why:** Both sides grow by one number each row.
+
+3. The gap is **2(n − i)** spaces.
+
+   **Why:** Every row is 2n characters wide. The numbers use 2i of them, so the gap is the rest.
+
+Row by row:
 
 | Row i | Left | Spaces | Right |
 |---|---|---|---|
@@ -44,11 +65,6 @@ int main() {
 }
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

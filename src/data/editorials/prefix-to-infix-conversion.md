@@ -1,25 +1,31 @@
 # Prefix to Infix Conversion
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `string preToInfix(string& s)`. Wrap **every** operation in brackets: `(A+(B*C))`. Operands are letters; operators are `+ - * / % ^`. The video above explains it too.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `string preToInfix(string& s)`. Put brackets around **every** operation: `(A+(B*C))`. The video above explains it too.
 
-## The problem
+## What you need to do
 
-Example: `+A*BC` → `(A+(B*C))`. `*-A/BC-/AKL` → `((A-(B/C))*((A/K)-L))`.
+Turn a **prefix** expression (operator first, like `+AB`) into normal maths with full brackets, like `(A+B)`.
 
-## The key idea: read it backwards
+## Examples
 
-In prefix, an operator comes **before** its operands. So when you read **right to left**, by the time you meet an operator, both of its operands have already been read and finished. That is exactly when a stack can combine them.
+- `+A*BC` → `(A+(B*C))`
+- `*-A/BC-/AKL` → `((A-(B/C))*((A/K)-L))`
 
-## Step by step
+## How to solve it, step by step
 
-1. Scan from the **last** character to the first.
-2. **Operand** → push it as a string.
-3. **Operator op** → pop the top string: that is the **left** operand (it came right after op). Pop again: the **right** operand. Push `"(" + left + op + right + ")"`.
-4. At the end, the stack holds one string: the answer.
+1. **Read the string from right to left.**
 
-The order matters: going right to left, the **first** pop is the operand closest to the operator, which is the left one.
+   **Why:** in prefix, an operator comes before its values. Reading backwards, you always meet the values first, so they are ready when their operator arrives.
 
-## Code (C++)
+2. **A letter: push it on a stack** as a string.
+
+3. **An operator: pop two strings.** The first one popped is the **left** value, the second is the **right** value. Push `(` + left + operator + right + `)`.
+
+   **Why:** reading backwards, the value right after the operator was pushed last, so it comes off first, and it is the left value.
+
+4. **At the end, the stack holds one string: the answer.**
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -40,20 +46,20 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²) in the worst case because of string copies; O(n) stack operations. Space: O(n).
+O(n) stack steps; joining strings makes it up to O(n²) for long inputs. O(n) memory.
 
-## Edge cases
+## Watch out for
 
-- A single operand `A` → `A` (no brackets).
-- Mixing up left and right turns `-AB` into `(B-A)`. Test with a `-` or `/`.
+- Test with `-` or `/`: if left and right are swapped, `-AB` comes out as `(B-A)`.
+- A single letter `A` stays `A`, with no brackets.
 
-## Dry run (`+A*BC`)
+## Walk through (`+A*BC`)
 
 - C → [C]. B → [C, B].
 - `*` → left B, right C → [(B*C)].
 - A → [(B*C), A].
 - `+` → left A, right (B*C) → `(A+(B*C))`.
 
-(Tested on 5 000 random expression trees against their fully bracketed infix form.)
+(Tested on 5 000 random expression trees.)

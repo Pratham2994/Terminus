@@ -1,32 +1,48 @@
 # Implement Min Heap
 
-> takeUforward's page needs Plus. Practise on Code360 (the **Similar** link above), "Min Heap": it only needs **insert** and **extract-min**, as `vector<int> minHeap(int n, vector<vector<int>>& q)`. takeUforward wants the full class: insert, getMin, extractMin, heapSize, isEmpty and changeKey. Both are below, with a self-check for the full class.
+> takeUforward's page needs Plus. Practise on Code360 (the **Similar** link above). It only tests two of the operations; the box below shows the difference.
 
-## The problem
+## What you need to do
 
-Build a min-heap class **without** `priority_queue`:
+Build your own min-heap class, without `priority_queue`. It must support: insert a value, get the smallest, remove the smallest, get the size, check if empty, and change the value at a position.
 
-- `insert(x)`: add x.
-- `getMin()`: return the smallest value.
-- `extractMin()`: remove the smallest value.
-- `heapSize()`, `isEmpty()`.
-- `changeKey(ind, val)`: set the value at heap-array index `ind` (0-based) to `val`, and repair the heap.
+## What is different on Code360
 
-## Step by step
+| | takeUforward | Code360 "Min Heap" |
+|---|---|---|
+| Operations | insert, getMin, extractMin, heapSize, isEmpty, changeKey | only insert and "print and remove the smallest" |
+| Shape | a class with those methods | one function: `vector<int> minHeap(int n, vector<vector<int>>& q)` |
+| Query format | method calls | `[0, x]` = insert x, `[1]` = remove the smallest and add it to the answer |
 
-1. **Storage:** a `vector<int> h`. Node i has children `2i + 1`, `2i + 2` and parent `(i − 1) / 2`. The root `h[0]` is always the minimum.
-2. **Two repair moves** do all the work:
-   - **sift up** (a value may be too **small** for its spot): while it is smaller than its parent, swap upward.
-   - **sift down** (a value may be too **big**): while it is bigger than its smaller child, swap with that child.
-3. **insert(x):** append x at the end (the next free slot of the complete tree), then sift it **up**. O(log n).
-4. **getMin():** `h[0]`. O(1).
-5. **extractMin():** move the **last** element to the root, remove the last slot, then sift the root **down**. Taking the last element keeps the tree complete. O(log n).
-6. **changeKey(ind, val):** compare with the old value. Smaller → sift up; bigger → sift down. (This is the "Heapify Algorithm" station.)
-7. The self-check uses the standard rules above, including "on equal children, go **left**", so `changeKey` indices match.
+**In short:** write insert and extract-min (they are the heart of a heap), and you can submit on Code360. The other takeUforward methods are small extras, checked by the self-check below.
+
+## How to solve it, step by step
+
+1. **Store the heap in a `vector<int> h`.** The children of position i are at 2i + 1 and 2i + 2; its parent is at (i − 1) / 2.
+
+   **Why:** a heap is a complete tree, so it fits in an array with no gaps and no pointers.
+
+2. **The smallest value is always at `h[0]`.** So getMin is just `h[0]`.
+
+   **Why:** every parent is ≤ its children, so the top is ≤ everything.
+
+3. **Insert:** add the value at the end, then **sift it up** (swap with its parent while the parent is bigger).
+
+   **Why:** adding at the end keeps the tree complete; sifting up puts the value where it belongs.
+
+4. **Extract-min:** move the **last** value to the top, remove the last slot, then **sift the top down** (swap with its smaller child while that child is smaller).
+
+   **Why:** taking the last value keeps the tree complete; sifting down repairs the order.
+
+5. **changeKey(i, val):** smaller than before → sift up; bigger → sift down.
+
+   **Why:** a smaller value can only break things above it, a bigger value only below it.
+
+6. **On equal children, go left.**
+
+   **Why:** both choices are correct heaps, but the self-check's changeKey tests expect this usual rule.
 
 ## Code for Code360 (submit this there)
-
-Each query is `[0, x]` (insert x) or `[1]` (print and remove the minimum). Return the removed values in order.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -56,15 +72,14 @@ vector<int> minHeap(int n, vector<vector<int>>& q) {
 }
 ```
 
-## Complexity
+## How fast is it?
 
-- insert, extractMin, changeKey: O(log n). getMin, heapSize, isEmpty: O(1).
-- Space: O(n).
+insert, extract-min and changeKey move one value along one path: O(log n). getMin, size and isEmpty are O(1). Memory: O(n).
 
-## Edge cases
+## Watch out for
 
-- extractMin on a **one-element** heap: the last element *is* the root; after `pop_back` the heap is empty, so sift-down must not touch `h[0]`. The loop's bounds checks (`l < size`) handle it.
-- Pick the **smaller** child in sift-down; otherwise the other child ends up below a bigger parent.
+- Extracting from a one-value heap leaves it empty: do not sift.
+- In sift-down, always pick the **smaller** child.
 
 ## Check takeUforward's version
 

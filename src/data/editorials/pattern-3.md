@@ -1,6 +1,10 @@
 # Pattern 3
 
-> takeUforward's page needs Plus. Solve it free on GeeksforGeeks (the Problem link above), "Right-Angled Number Triangle Pattern". Its function: `a full program: read n, print the triangle`. On GfG you write the whole program (read n with `cin`), with a space between the numbers: `1 2 3`.
+> takeUforward's page needs Plus. Solve the same pattern free on GeeksforGeeks (the Problem link above), "Right-Angled Number Triangle Pattern".
+
+## What you need to do
+
+Print a staircase of numbers: each row counts 1, 2, 3, … up to its row number.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,11 +16,25 @@
 12345
 ```
 
-## Step by step
+## What is different on GfG
 
-1. Rows: **n**.
-2. Row i has i entries, like Pattern 2. But instead of a star, print the **column number** j.
-3. So the inner loop is the same; only what you print changes: `j` instead of `*`.
+On GfG you write the whole program (read n with `cin`), with a space between the numbers: `1 2 3`.
+
+On GfG you write the **whole program**: read n with `cin`, then print.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. Same loops as Pattern 2: row i holds i things.
+
+   **Why:** The shape is the same staircase.
+
+2. In the inner loop, print the **column number j** instead of a star.
+
+   **Why:** Row 3 is 1 2 3: the numbers count along the row, which is exactly what j does.
+
+Row by row:
 
 | Row i | Prints |
 |---|---|
@@ -45,11 +63,6 @@ int main() {
 }
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

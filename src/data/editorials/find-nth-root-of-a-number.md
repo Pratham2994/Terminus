@@ -1,29 +1,37 @@
 # Find Nth root of a number
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Nth Root of M". GfG's function is `int nthRoot(int n, int m)`. Same problem, same order of arguments (n is the root, m the number). The video above explains it too.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Nth Root of M". GfG's function is `int nthRoot(int n, int m)`: n is the root, m is the number. The video above explains it too.
 
-## The problem
+## What you need to do
 
-Return the integer x with **xⁿ = m**. If no integer does it, return **−1**.
+Find the whole number x with **x to the power n equal to m**. If there is none, return −1.
 
-Examples: n = 3, m = 27 → **3**. n = 4, m = 69 → **−1**. n = 3, m = 8 → **2**.
+## Example
 
-## Brute force
+- n = 3, m = 27 → **3**, because 3 × 3 × 3 = 27.
+- n = 4, m = 69 → **−1**: 2⁴ = 16 and 3⁴ = 81, so no whole number works.
 
-Try x = 1, 2, 3, … while xⁿ ≤ m.
+## How to solve it, step by step
 
-- Time: O(m^(1/n) · n). For n = 1 and m = 10⁹ that is 10⁹ tries.
+1. **Notice that xⁿ only grows as x grows.**
 
-## Binary search on the answer
+   **Why:** this is what makes binary search work. If midⁿ is too small, every smaller x is too small too.
 
-xⁿ **grows** with x. So for every x, xⁿ is either < m, = m or > m, and these come in order: all the "<" first, then at most one "=", then all the ">". That is exactly the shape binary search needs.
+2. **Binary search x between 1 and m.** Look at the middle value, mid.
 
-- Search x in [1, m].
-- mid: compare midⁿ with m. Equal → answer. Smaller → go right. Bigger → go left.
+   **Why:** each check throws away half of the range, so even m = 1 000 000 000 needs only about 30 checks.
 
-**The overflow trap:** midⁿ explodes. For mid = 10⁵ and n = 9, it has 45 digits. So compute the power **step by step and stop as soon as it passes m**. Then you never hold a number above m · mid, which fits in `long long`.
+3. **Compare midⁿ with m:** equal → that is the answer; smaller → search the right half; bigger → search the left half.
 
-## Code (C++)
+   **Why:** this keeps the answer inside the range you are still searching.
+
+4. **Compute midⁿ one multiplication at a time, and stop as soon as it passes m.**
+
+   **Why:** midⁿ can be enormous (10⁵ to the power 9 has 45 digits) and would overflow. Stopping early keeps the numbers small.
+
+5. **If the search ends without an exact match, return −1.**
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -52,21 +60,19 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n · log m): log m binary-search steps, each with at most n multiplications.
-- Space: O(1).
+About log₂(m) checks, each with at most n multiplications: O(n · log m). No extra memory.
 
-## Edge cases
+## Watch out for
 
-- m = 0 → 0, and m = 1 → 1 for every n.
-- n = 1 → the answer is m itself. The search finds it.
-- The early exit in `compare` is what keeps `p` in range: once p > m we stop, so p ≤ m · mid ≤ m².
+- m = 0 → the answer is 0. Handle it first, because the search starts at 1.
+- Do not use `pow()`: it works with decimals and can be slightly off, so `pow(5, 3)` might come out as 124.999….
 
-## Dry run (n = 3, m = 27)
+## Walk through (n = 3, m = 27)
 
-- [1, 27]: mid 14 → 14³ > 27 → hi = 13.
-- [1, 13]: mid 7 → too big → hi = 6.
-- [1, 6]: mid 3 → 3³ = 27 → **3**.
+- Range 1–27, mid 14: 14³ is too big → 1–13.
+- mid 7: too big → 1–6.
+- mid 3: 3³ = 27 → **3**.
 
-(Tested on 30 000 random (n, m) pairs against the brute force.)
+(Tested on 30 000 random pairs against trying every x.)

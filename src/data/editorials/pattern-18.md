@@ -1,6 +1,10 @@
 # Pattern 18
 
-> takeUforward's page needs Plus. Practise on Code360 (the **Similar** link above), "Alpha-Triangle". **Code360's version is different.** It prints C, C B, C B A: every row starts at the last letter and counts **down**. takeUforward's rows end at the last letter: E, D E, C D E. Both are below.
+> takeUforward's page needs Plus. Practise on Code360 (the **Similar** link above), "Alpha-Triangle". The box below shows what is different.
+
+## What you need to do
+
+Print a staircase of letters where every row ends at the last letter: E, D E, C D E.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,12 +16,27 @@ B C D E
 A B C D E
 ```
 
-## Step by step
+## What is different on Code360
 
-1. takeUforward: row i (from 0) has i + 1 letters, and it **ends** at the last letter, `'A' + n − 1`.
-2. So it **starts** at `'A' + n − 1 − i` and goes up: for n = 5, row 2 starts at C: C D E.
-3. Code360: row i also has i + 1 letters, but it **starts** at the last letter and goes **down**: C, C B, C B A for n = 3.
-4. Both are the same idea: find the first letter of the row, then count i + 1 letters up or down.
+**Code360's version is different.** It prints C, C B, C B A: every row starts at the last letter and counts **down**. takeUforward's rows end at the last letter: E, D E, C D E. Both are below.
+
+Code360's function: `void alphaTriangle(int n)`.
+
+## How to solve it, step by step
+
+1. Row i (from 0) has **i + 1** letters.
+
+   **Why:** It is the same staircase as Pattern 16.
+
+2. takeUforward: the row **ends** at the last letter, so it starts at `'A' + n − 1 − i` and counts up.
+
+   **Why:** For n = 5, row 2 starts at C and ends at E.
+
+3. Code360: the row **starts** at the last letter and counts down.
+
+   **Why:** For n = 3: C, C B, C B A. Same staircase, letters in the other direction.
+
+Row by row:
 
 | Row i (from 0) | takeUforward (n = 5) | Code360 (n = 3) |
 |---|---|---|
@@ -51,7 +70,6 @@ void alphaTriangle(int n) {
 }
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

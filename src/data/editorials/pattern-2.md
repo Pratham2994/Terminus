@@ -1,6 +1,10 @@
 # Pattern 2
 
-> takeUforward's page needs Plus. Solve it free on GeeksforGeeks (the Problem link above), "Solid Right Angle Triangle Pattern". Its function: `void printPattern(int n)`. GfG asks for a space **after** each star: `* * * `.
+> takeUforward's page needs Plus. Solve the same pattern free on GeeksforGeeks (the Problem link above), "Solid Right Angle Triangle Pattern".
+
+## What you need to do
+
+Print a staircase of stars: row 1 has 1 star, row 2 has 2 stars, and so on up to n.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,11 +16,29 @@
 *****
 ```
 
-## Step by step
+## What is different on GfG
 
-1. Rows: **n**.
-2. Row i (counting from 1) has **i** stars. The count grows with the row, so the inner loop runs up to i, not n.
-3. That is the only change from Pattern 1: the inner limit depends on the row.
+GfG asks for a space **after** each star: `* * * `.
+
+GfG's function: `void printPattern(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. Outer loop for the rows: i goes from 1 to n.
+
+   **Why:** Every pattern is rows of something, so one loop for the rows and one loop for what goes in a row solves all 22.
+
+2. The inner loop prints **i** stars, not n.
+
+   **Why:** Row 1 has 1 star, row 2 has 2. The count matches the row number, so the inner loop stops at i.
+
+3. Newline after each row.
+
+   **Why:** That starts the next, longer row.
+
+Row by row:
 
 | Row i | Stars |
 |---|---|
@@ -39,11 +61,6 @@ class Solution {
 };
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

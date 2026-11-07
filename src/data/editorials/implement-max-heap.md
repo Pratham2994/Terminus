@@ -1,21 +1,38 @@
 # Implement Max Heap
 
-> takeUforward's page needs Plus. Practise on GeeksforGeeks (the **Similar** link above), "Max Heap implementation": a class with only **push, pop, peek and size**. takeUforward also wants isEmpty and changeKey. Both are below, with a self-check for the full class.
+> takeUforward's page needs Plus. Practise on GeeksforGeeks (the **Similar** link above). It tests fewer operations; the box below shows the difference.
 
-## The problem
+## What you need to do
 
-Build a max-heap class without `priority_queue`: `insert(x)`, `getMax()`, `extractMax()`, `heapSize()`, `isEmpty()`, and `changeKey(ind, val)` (set heap-array index `ind` to `val` and repair).
+Build your own max-heap class, without `priority_queue`: insert, get the biggest, remove the biggest, size, is-empty, and change the value at a position.
 
-## Step by step
+## What is different on GfG
 
-It is the **min-heap with every comparison flipped**. If you did "Implement Min Heap", change `<` to `>` in the sift functions and you are done. In detail:
+| | takeUforward | GfG "Max Heap implementation" |
+|---|---|---|
+| Operations | insert, getMax, extractMax, heapSize, isEmpty, changeKey | push, pop, peek, size |
+| Empty heap | not asked | `peek()` returns **−1**; `pop()` does nothing |
+| Class | `Solution` with the methods above (self-check) | `class maxHeap` |
 
-1. Store the tree in a `vector<int> h`: children of i are `2i + 1`, `2i + 2`; parent is `(i − 1) / 2`. The root `h[0]` is the **maximum**.
-2. **sift up:** while a value is **bigger** than its parent, swap upward.
-3. **sift down:** while a value is **smaller** than its **larger** child, swap with that child.
-4. **insert:** append, sift up. **extractMax:** last element to the root, pop the end, sift down.
-5. **changeKey:** bigger than before → sift up; smaller → sift down.
-6. On GfG, `peek()` must return **−1** on an empty heap, and `pop()` on an empty heap should do nothing.
+**In short:** the same heap. GfG's push = insert, pop = extractMax, peek = getMax. Add the −1 rule for an empty peek.
+
+## How to solve it, step by step
+
+It is the **min-heap with every comparison flipped**. If you did "Implement Min Heap", change `<` to `>` in the sift functions.
+
+1. **Store the heap in a `vector<int>`;** the biggest value is at position 0.
+
+   **Why:** every parent is ≥ its children, so the top is the biggest.
+
+2. **Insert / push:** add at the end, then sift **up** while the value is **bigger** than its parent.
+
+   **Why:** a big new value must climb above smaller parents.
+
+3. **Extract / pop:** move the last value to the top, remove the last slot, then sift **down**: swap with the **bigger** child while that child is bigger.
+
+   **Why:** the bigger child is the only one that can sit above both children.
+
+4. **changeKey:** bigger than before → sift up; smaller → sift down.
 
 ## Code for GfG (submit this there)
 
@@ -50,14 +67,14 @@ class maxHeap {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- push / insert, pop / extractMax, changeKey: O(log n). peek / getMax, size, isEmpty: O(1). Space: O(n).
+Insert, extract and changeKey: O(log n). Peek, size, isEmpty: O(1). Memory: O(n).
 
-## Edge cases
+## Watch out for
 
-- Removing the only element leaves an empty heap: do not sift.
-- In sift-down, swap with the **larger** child.
+- Removing the only value leaves an empty heap: do not sift.
+- In sift-down, swap with the **bigger** child.
 
 ## Check takeUforward's version
 

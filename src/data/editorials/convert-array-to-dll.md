@@ -1,26 +1,32 @@
 # Convert Array to Doubly Linked List
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Doubly Linked List from an Array". GfG's function is `Node* createDLL(vector<int>& arr)`, where a Node has `data`, `next` and `prev`.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Doubly Linked List from an Array". GfG's function is `Node* createDLL(vector<int>& arr)`. A node has `data`, `next` and `prev`.
 
-## The problem
+## What you need to do
 
-Build a doubly linked list holding the array's values in order, and return its head. Every node points **forward** (`next`) and **back** (`prev`).
+Build a doubly linked list with the array's values, in order, and return its first node. Every node points **forward** (`next`) and **back** (`prev`).
 
-Example: [1, 2, 3, 4] → **1 ⇄ 2 ⇄ 3 ⇄ 4**.
+## Example
 
-## Step by step
+[1, 2, 3, 4] → **1 ⇄ 2 ⇄ 3 ⇄ 4**.
 
-1. Make the head from `arr[0]`. Its `prev` stays `nullptr`.
-2. Keep a pointer `tail` to the last node built so far.
-3. For each next value: make a node, and link it **both ways**:
-   - `tail->next = node` (forward link),
-   - `node->prev = tail` (back link).
-   Then move `tail` to the new node.
-4. The last node's `next` stays `nullptr`.
+## How to solve it, step by step
 
-Forgetting one of the two links is the classic bug: printing forward still looks fine, but walking backwards from the tail breaks.
+1. **Make the first node (the head) from `arr[0]`.**
 
-## Code (C++)
+   **Why:** you return the head at the end, so keep it in its own variable.
+
+2. **Keep a pointer `tail` to the last node built so far.** At the start, that is the head.
+
+   **Why:** each new node is attached after the current last one.
+
+3. **For every next value, make a node and link it both ways:** `tail->next = node` and `node->prev = tail`. Then move `tail` to the new node.
+
+   **Why:** a doubly linked list needs both links. If you forget `prev`, the list still looks right when read forward, but walking backward breaks.
+
+4. **Return the head.**
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -40,17 +46,12 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n). Space: O(n) for the n nodes (that is the output).
+One new node per value: O(n) time and O(n) memory, which is the list itself.
 
-## Edge cases
+## Watch out for
 
-- One element: a single node with both pointers `nullptr`.
-- Empty array: return `nullptr` (GfG's arrays have at least one element, but the check costs nothing).
+- A one-value array gives a single node with both links empty.
 
-## Dry run ([10, 20])
-
-head = 10. Node 20: 10->next = 20, 20->prev = 10, tail = 20. Result **10 ⇄ 20**.
-
-(Tested on 2 000 random arrays, walking the result forward and backward.)
+(Tested on 2 000 random arrays, walking each result forward and backward.)

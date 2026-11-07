@@ -1,6 +1,10 @@
 # Pattern 7
 
-> takeUforward's page needs Plus. Solve it free on GeeksforGeeks (the Problem link above), "Pyramid Pattern". Its function: `void printPyramid(int n)`. GfG prints leading spaces, then the stars, with no spaces between stars (no trailing spaces needed).
+> takeUforward's page needs Plus. Solve the same pattern free on GeeksforGeeks (the Problem link above), "Pyramid Pattern".
+
+## What you need to do
+
+Print a pyramid of stars that grows by 2 stars per row and stays centred.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,13 +16,33 @@
 *********
 ```
 
-## Step by step
+## What is different on GfG
 
-1. Rows: **n**. Each row has two parts now: **leading spaces**, then **stars**.
-2. Stars: 1, 3, 5, … The odd numbers, so row i (from 0) has **2i + 1** stars.
-3. Spaces: the last row has none, and each row above has one more. Row i has **n − i − 1** spaces.
-4. Check with the last row, i = n − 1: 0 spaces and 2n − 1 stars. That is the full width. ✓
-5. takeUforward also prints the same spaces **after** the stars, so each row is a full rectangle. Judges usually ignore trailing spaces, so you can skip them on GfG.
+GfG prints leading spaces, then the stars, with no spaces between stars (no trailing spaces needed).
+
+GfG's function: `void printPyramid(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. Each row has two parts: **spaces first, then stars.**
+
+   **Why:** The spaces push the stars to the middle, which makes the pyramid shape.
+
+2. Row i (from 0) has **2i + 1** stars: 1, 3, 5, …
+
+   **Why:** Each row adds one star on each side, so two more than the row above.
+
+3. Row i has **n − i − 1** spaces in front.
+
+   **Why:** The bottom row has no spaces, and every row above it needs one more.
+
+4. Check with the last row (i = n − 1): 0 spaces, 2n − 1 stars.
+
+   **Why:** That is the full width, so the formulas agree.
+
+Row by row:
 
 | Row i (from 0) | Spaces | Stars |
 |---|---|---|
@@ -41,11 +65,6 @@ class Solution {
 };
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

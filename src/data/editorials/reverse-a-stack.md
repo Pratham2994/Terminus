@@ -1,30 +1,34 @@
 # Reverse a Stack
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `void reverseStack(stack<int>& st)`. GfG does not forbid extra space, but takeUforward does: **use recursion only**, no loops or extra containers. Practise that version.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `void reverseStack(stack<int>& st)`. GfG does not forbid extra space, but takeUforward does: practise it **with recursion only**, no loops and no extra containers.
 
-## The problem
+## What you need to do
 
-Reverse a stack in place, using only push, pop, top and empty, plus recursion.
+Turn a stack upside down, using only push, pop, top, empty and recursion.
 
-Example: top → [4, 1, 3, 2] becomes top → [2, 3, 1, 4].
+## Example
 
-## Step by step
+Top → [4, 1, 3, 2] becomes top → [2, 3, 1, 4].
 
-Two recursive functions, each one simple.
+## How to solve it, step by step
 
-**1. `insertAtBottom(st, x)`: put x under everything.**
+You need two small recursive functions.
 
-- If the stack is empty, push x. Done.
-- Otherwise pop the top (hold it in a local variable), insert x at the bottom of the **smaller** stack, then push the held top back.
-- The local variables in the call stack do the job of the "extra storage".
+1. **First, `insertAtBottom(st, x)`: put x under everything else.**
+   - If the stack is empty, just push x.
+   - Otherwise pop the top and hold it, put x at the bottom of what is left, then push the held top back.
 
-**2. `reverse(st)`:**
+   **Why:** you cannot reach the bottom directly, so you pop your way down. The held values wait in the recursive calls, so no extra container is needed.
 
-- If the stack is empty, stop.
-- Pop the top t. Reverse the rest (trust the recursion). Then `insertAtBottom(st, t)`.
-- Why it works: after the recursive call, the rest is reversed. The old top must end at the **bottom** of the reversed stack, and that is exactly what insertAtBottom does.
+2. **Then `reverseStack(st)`:** pop the top t, reverse the rest, then `insertAtBottom(st, t)`.
 
-## Code (C++)
+   **Why:** after the rest is reversed, the old top belongs at the very bottom. That is exactly what insertAtBottom does.
+
+3. **Base case:** an empty stack is already reversed; just return.
+
+   **Why:** every recursion needs a stopping point.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -44,22 +48,19 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: **O(n²)**. reverseStack makes n calls, and each insertAtBottom moves through the whole stack, up to n pops and pushes.
-- Space: O(n) for the recursion depth.
+O(n²) time: reverseStack runs n times, and each insertAtBottom may go through the whole stack. O(n) memory for the recursive calls. With an extra array it would be O(n), but the rule here is "no extra containers".
 
-O(n²) is the cost of the "no extra container" rule. With an extra stack or array it is O(n).
+## Watch out for
 
-## Edge cases
+- Pass the stack **by reference** (`stack<int>&`). Without the `&`, the caller's stack never changes.
+- An empty stack, or one with a single value, stays the same.
 
-- Empty stack or one element: nothing changes.
-- Pass the stack **by reference** (`stack<int>&`). By value, the caller's stack never changes.
+## Walk through (top → [1, 2, 3])
 
-## Dry run (top → [1, 2, 3])
+- Pop 1, reverse [2, 3]: pop 2, reverse [3]: pop 3, reverse [], insert 3 at the bottom → [3].
+- Insert 2 at the bottom of [3] → top → [3, 2].
+- Insert 1 at the bottom → top → **[3, 2, 1]**.
 
-- reverse pops 1, reverses [2, 3] → it pops 2, reverses [3] → pops 3, reverses [] → insert 3 at bottom → [3].
-- insert 2 at the bottom of [3] → top → [3, 2].
-- insert 1 at the bottom → top → **[3, 2, 1]**.
-
-(Tested on 2 000 random stacks against std::reverse.)
+(Tested on 2 000 random stacks.)

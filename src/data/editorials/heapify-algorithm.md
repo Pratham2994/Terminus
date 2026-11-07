@@ -1,12 +1,10 @@
 # Heapify Algorithm
 
-> No free judge has this exact problem, so Terminus is your judge. Solve it with the visible tests, then run the hidden tests with the self-check program at the bottom in a free online compiler. takeUforward's function is `void heapify(vector<int>& nums, int ind, int val)`.
+> No free judge has this exact problem, so Terminus is your judge. Solve it with the tests below, then check it with the self-check program at the bottom. takeUforward's function is `void heapify(vector<int>& nums, int ind, int val)`.
 
-## The problem
+## What you need to do
 
-`nums` is a **min-heap** stored in an array: for every index i, its children are at `2i + 1` and `2i + 2`, and its parent is at `(i − 1) / 2`. Every parent is ≤ its children.
-
-Set `nums[ind] = val`, then repair the array so it is a min-heap again. Change the array in place.
+`nums` is a **min-heap** stored in an array: the children of position i are at 2i + 1 and 2i + 2, its parent is at (i − 1) / 2, and every parent is ≤ its children. Set `nums[ind] = val`, then move values around until it is a min-heap again.
 
 ## Visible tests
 
@@ -15,28 +13,40 @@ Set `nums[ind] = val`, then repair the array so it is a min-heap again. Change t
 | [1, 4, 5, 5, 7, 6] | 5 | 2 | [1, 4, 2, 5, 7, 5] |
 | [2, 4, 3, 6, 5, 7, 8, 7] | 0 | 7 | [3, 4, 7, 6, 5, 7, 8, 7] |
 
-## Step by step
+## How to solve it, step by step
 
-1. **Only one place can be wrong.** Before the change, the whole array was a heap. After the change, only the edges touching `ind` can break: `ind` with its parent, or `ind` with its children.
-2. **Which way?** Compare `val` with the **old** value at `ind`:
-   - `val` **smaller** → it may now be smaller than its parent. Move it **up** (sift up / heapify up). Its children are still fine, because they were ≥ the old value, which is > val.
-   - `val` **larger** → it may now be larger than a child. Move it **down** (sift down / heapify down). The parent is still fine, because parent ≤ old value < val.
-   - equal → nothing to do.
-3. **Sift up:** while `i > 0` and `nums[parent] > nums[i]`, swap them and set `i = parent`.
-4. **Sift down:** find the **smaller** child (the one that must become the parent). If it is smaller than `nums[i]`, swap and continue from that child. Stop when no child is smaller.
-5. **Why the smaller child?** After the swap, that child becomes the parent of the other child. Only the smaller of the two is ≤ both.
-6. **Tie rule:** if both children are equal and smaller, go to the **left** one. Any choice keeps a valid heap, but the hidden tests follow this standard rule.
+1. **Only the changed spot can be wrong.** Before the change, the whole array was a heap.
 
-## Complexity
+   **Why:** so you only need to repair around position `ind`, not the whole array.
 
-- Time: O(log n). The value moves along one path of the tree, whose height is log₂ n.
-- Space: O(1) with loops (O(log n) if you write it recursively).
+2. **Compare the new value with the old one.**
+   - **Smaller:** it may now be smaller than its parent → move it **up**.
+   - **Bigger:** it may now be bigger than a child → move it **down**.
+   - **Equal:** nothing to do.
 
-## Dry run (example 2: ind 0, val 7)
+   **Why:** a smaller value cannot break anything below it, and a bigger value cannot break anything above it. So only one direction needs work.
 
-- [7, 4, 3, 6, 5, 7, 8, 7]. 7 is larger than the old 2 → sift down.
-- i = 0: children 4 and 3. Smaller is 3 (index 2), 3 < 7 → swap → [3, 4, 7, 6, 5, 7, 8, 7], i = 2.
-- i = 2: children at 5 and 6 are 7 and 8. Smaller is 7, not < 7 → stop.
+3. **Moving up (sift up):** while it is not at the top and its parent is bigger, swap them and continue from the parent's spot.
+
+   **Why:** each swap fixes one parent–child pair, and the value climbs until it fits.
+
+4. **Moving down (sift down):** find the **smaller** child. If it is smaller than the value, swap them and continue from that child's spot. Stop when no child is smaller.
+
+   **Why:** the smaller child is the only one that can sit above both children.
+
+5. **If both children are equal, go left.**
+
+   **Why:** either choice gives a correct heap, but the hidden tests follow this usual rule.
+
+## How fast is it?
+
+The value moves along one path of the tree, which is at most log₂ n long: O(log n) time, no extra memory.
+
+## Walk through (example 2: ind 0, val 7)
+
+- [7, 4, 3, 6, 5, 7, 8, 7]. 7 is bigger than the old 2 → move down.
+- Position 0: children 4 and 3. The smaller is 3, and 3 < 7 → swap → [3, 4, 7, 6, 5, 7, 8, 7]. Now at position 2.
+- Position 2: children 7 and 8. The smaller is 7, which is not < 7 → stop.
 
 Result **[3, 4, 7, 6, 5, 7, 8, 7]**.
 

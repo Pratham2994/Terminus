@@ -2,35 +2,33 @@
 
 > takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `int lcm(int a, int b)`.
 
-## The problem
+## What you need to do
 
-Return the **Lowest Common Multiple** of two positive integers: the smallest positive number that both divide.
+Find the **smallest number that both a and b divide** (the Lowest Common Multiple).
 
-Examples: (4, 6) → **12**. (12, 18) → **36**. (5, 11) → **55**.
+## Example
 
-## Brute force
+a = 4, b = 6. Multiples of 4: 4, 8, **12**, 16 … Multiples of 6: 6, **12**, 18 … The first one they share is **12**.
 
-Start at max(a, b) and go up until a number is divisible by both.
+## How to solve it, step by step
 
-- Time: O(a · b) in the worst case (two primes, like 9973 and 9967). Too slow for big inputs.
+1. **The slow idea:** start at the bigger number and count up until both divide it.
 
-## The key fact: lcm · gcd = a · b
+   **Why it is not enough:** for two big primes, like 9973 and 9967, you would count up almost 100 million times.
 
-Write a and b as products of primes. The **gcd** takes the smaller power of every prime, the **lcm** the larger one. Together they use every power exactly once, so
+2. **Use this fact: lcm(a, b) × gcd(a, b) = a × b.** So lcm = a × b / gcd.
 
-**lcm(a, b) = a · b / gcd(a, b)**.
+   **Why:** the gcd is the part a and b share. a × b counts that shared part twice; dividing by the gcd removes the extra copy.
 
-So the real work is the gcd.
+3. **Find the gcd with Euclid's rule:** gcd(a, b) = gcd(b, a mod b), and gcd(a, 0) = a. Repeat until the second number is 0.
 
-## Euclid's algorithm for the gcd
+   **Why:** any number that divides a and b also divides a mod b. So the pair gets smaller but the answer stays the same. It finishes in a handful of steps, even for huge numbers.
 
-**gcd(a, b) = gcd(b, a mod b)**, and gcd(a, 0) = a.
+4. **Divide before you multiply:** compute `a / gcd * b`, not `a * b / gcd`.
 
-Why: any number that divides a and b also divides a − k·b, and a mod b is exactly such a number. So (a, b) and (b, a mod b) have the same common divisors.
+   **Why:** a × b can be too big for an `int` even when the answer fits. a / gcd is always a whole number, so dividing first is safe.
 
-The numbers shrink fast: at least halving every two steps, so it takes O(log min(a, b)) steps.
-
-## Code (C++)
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -50,19 +48,18 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(log min(a, b)). Space: O(1).
+Euclid's rule takes O(log(min(a, b))) steps, so it is very fast. No extra memory.
 
-## Edge cases
+## Watch out for
 
-- **Overflow:** `a * b / g` can overflow an `int` even when the answer fits. `a / g * b` divides first. (`a / g` is exact, because g divides a.)
-- One number divides the other, like (4, 12): gcd = 4, lcm = 4 / 4 · 12 = 12. ✓
-- Equal numbers: lcm(7, 7) = 7.
+- **Overflow:** always divide first (step 4).
+- When one number divides the other, like (4, 12), the answer is the bigger one: 12.
 
-## Dry run (12, 18)
+## Walk through (a = 12, b = 18)
 
-- gcd: (12, 18) → (18, 12) → (12, 6) → (6, 0) → **6**.
-- lcm = 12 / 6 · 18 = **36**.
+- gcd: (12, 18) → (18, 12) → (12, 6) → (6, 0). gcd = **6**.
+- lcm = 12 / 6 × 18 = **36**.
 
-(Tested on 20 000 random pairs against the brute force.)
+(Tested on 20 000 random pairs against the slow idea.)

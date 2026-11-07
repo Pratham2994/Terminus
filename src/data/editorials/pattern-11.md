@@ -1,6 +1,10 @@
 # Pattern 11
 
-> takeUforward's page needs Plus. Solve it free on Code360 (the Problem link above), "Binary Number Triangle". Its function: `void nBinaryTriangle(int n)`. Code360 puts a space between the digits, like takeUforward.
+> takeUforward's page needs Plus. Solve the same pattern free on Code360 (the Problem link above), "Binary Number Triangle".
+
+## What you need to do
+
+Print a staircase of 1s and 0s where the digits take turns.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,12 +16,25 @@
 1 0 1 0 1
 ```
 
-## Step by step
+## What is different on Code360
 
-1. The shape is Pattern 2: row i has i entries.
-2. The **first digit flips** every row: 1, 0, 1, 0, … So row i (from 0) starts with 1 when i is even.
-3. Inside a row, the digit flips at every step.
-4. Neat formula: with i and j both from 0, the digit is **1 when (i + j) is even**. Row 0: j = 0 → 1. Row 1: 0 1. Row 2: 1 0 1. ✓
+Code360 puts a space between the digits, like takeUforward.
+
+Code360's function: `void nBinaryTriangle(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. The shape is Pattern 2: row i has i + 1 digits (counting rows from 0).
+
+   **Why:** It is the same staircase.
+
+2. Print **1 when (i + j) is even**, else 0.
+
+   **Why:** Moving one step along a row or down a row flips the digit, and adding 1 to i or j flips whether i + j is even. Row 0 starts with 1 because 0 + 0 is even.
+
+Row by row:
 
 | Row i (from 0) | Prints |
 |---|---|
@@ -40,11 +57,6 @@ void nBinaryTriangle(int n) {
 }
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

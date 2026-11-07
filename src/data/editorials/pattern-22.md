@@ -1,6 +1,10 @@
 # Pattern 22
 
-> takeUforward's page needs Plus. Solve it free on GeeksforGeeks (the Problem link above), "Concentric Number Square Pattern". Its function: `vector<vector<int>> pattern(int n)`. On GfG you **return** the grid as a `vector<vector<int>>` instead of printing it.
+> takeUforward's page needs Plus. Solve the same pattern free on GeeksforGeeks (the Problem link above), "Concentric Number Square Pattern".
+
+## What you need to do
+
+Fill a square grid with rings of numbers: n on the outside ring, going down to 1 in the centre.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -16,12 +20,25 @@
 5 5 5 5 5 5 5 5 5
 ```
 
-## Step by step
+## What is different on GfG
 
-1. The grid is (2n − 1) × (2n − 1). Use the "decide per cell" idea from Pattern 21.
-2. For cell (i, j), how far is it from the **nearest edge**? The distances to the 4 edges are i, j, (2n − 2) − i and (2n − 2) − j. Take the **minimum**, d.
-3. The outer ring (d = 0) holds n, the next ring (d = 1) holds n − 1, and so on. So the value is **n − d**.
-4. The centre has d = n − 1, so it holds 1. ✓
+On GfG you **return** the grid as a `vector<vector<int>>` instead of printing it.
+
+GfG's function: `vector<vector<int>> pattern(int n)`.
+
+## How to solve it, step by step
+
+1. The grid is **(2n − 1) × (2n − 1)**. Decide each cell (i, j) on its own.
+
+   **Why:** There is no simple row-by-row rule, but each cell has an easy rule.
+
+2. Find the distance to the **nearest edge**: d = min(i, j, size − 1 − i, size − 1 − j).
+
+   **Why:** All cells in the same ring are the same distance from the edge.
+
+3. The cell holds **n − d**.
+
+   **Why:** The outer ring (d = 0) holds n, the next ring n − 1, and the centre (d = n − 1) holds 1.
 
 ## Code (C++, for GfG)
 
@@ -41,7 +58,6 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

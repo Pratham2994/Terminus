@@ -1,29 +1,40 @@
 # Celebrity Problem
 
-> takeUforward's page needs Plus, and LeetCode 277 is Premium. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `int celebrity(vector<vector<int>>& mat)`. One difference: on GfG `mat[i][i]` is **1** (everyone "knows" themself), on takeUforward it is 0. The code below ignores the diagonal, so it works on both. The video above explains it too.
+> takeUforward's page needs Plus, and LeetCode 277 is Premium. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `int celebrity(vector<vector<int>>& mat)`. One small difference: on GfG, `mat[i][i]` is **1** (everyone "knows" themself); on takeUforward it is 0. The code below ignores that square, so it works on both. The video above explains it too.
 
-## The problem
+## What you need to do
 
-n people at a party. `mat[i][j] = 1` means person i knows person j. A **celebrity** is known by **everyone else** and knows **nobody else**. Return the celebrity's index, or −1.
+There are n people at a party. `mat[i][j] = 1` means person i knows person j. A **celebrity** is someone **everyone else knows**, who **knows nobody else**. Return the celebrity's number, or −1 if there is none.
 
-Example: [[0, 1, 0], [0, 0, 0], [0, 1, 0]] → **1** (0 and 2 know 1; 1 knows nobody).
+## Example
 
-## Brute force
+```text
+mat = [[0, 1, 0],
+       [0, 0, 0],
+       [0, 1, 0]]
+```
 
-For each person c, check the whole row c (knows nobody) and column c (known by all). O(n²).
+Persons 0 and 2 both know person 1, and person 1 knows nobody. Answer: **1**.
 
-## The elimination trick
+## How to solve it, step by step
 
-Ask **one** question about two people, a and b: does a know b?
+1. **The slow idea:** check every person's whole row and column. That is O(n²).
 
-- **Yes** → a knows someone, so a is **not** the celebrity.
-- **No** → b is not known by a, so b is **not** the celebrity.
+2. **Ask one question about two people a and b: does a know b?**
+   - Yes → a knows someone, so **a is not** the celebrity.
+   - No → a does not know b, so **b is not** the celebrity.
 
-Either way, **one person is out**. After n − 1 questions, one candidate is left. That candidate is the **only** possible celebrity, but not a sure one (maybe there is none), so check it in O(n).
+   **Why:** either answer rules one person out. After n − 1 questions, only one person is left.
 
-Two pointers make this easy: `a = 0`, `b = n − 1`. While a < b: if a knows b, a++ (a is out), else b-- (b is out).
+3. **Use two pointers:** a starts at the first person, b at the last. If a knows b, move a forward; otherwise move b back. Stop when they meet.
 
-## Code (C++)
+   **Why:** this asks exactly those n − 1 questions.
+
+4. **Check the person who is left:** they must know nobody, and everybody must know them.
+
+   **Why:** the elimination only shows that nobody else can be the celebrity. There may be no celebrity at all, so this last check is required.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -45,21 +56,19 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n): n − 1 questions plus 2(n − 1) checks.
-- Space: O(1).
+n − 1 questions plus one check of a row and a column: O(n) time, no extra memory.
 
-## Edge cases
+## Watch out for
 
-- n = 1: the single person is a celebrity (nobody else exists) → 0. The loop does not run, and the check has nothing to reject.
-- The final check is **required**: [[0, 1], [1, 0]] leaves a candidate, but both know each other → −1.
-- `if (k == c) continue` is what makes the GfG diagonal of 1s harmless.
+- Skip the diagonal (`k == c`) in the final check. That is what makes GfG's 1s on the diagonal harmless.
+- With 2 people who know each other, a candidate is left, but the final check rejects it → −1.
 
-## Dry run ([[0, 1, 0], [0, 0, 0], [0, 1, 0]])
+## Walk through (the example)
 
-- a = 0, b = 2: mat[0][2] = 0 → b = 1.
-- a = 0, b = 1: mat[0][1] = 1 → a = 1. Stop. Candidate 1.
-- Check: row 1 is all 0; column 1 has mat[0][1] = mat[2][1] = 1 → **1**.
+- a = 0, b = 2: does 0 know 2? No → b = 1.
+- a = 0, b = 1: does 0 know 1? Yes → a = 1. They meet: the candidate is 1.
+- Check: person 1 knows nobody, and persons 0 and 2 know 1 → **1**.
 
-(Tested on 5 000 random matrices, with 0 and with 1 on the diagonal, against the brute force.)
+(Tested on 5 000 random cases, with 0s and with 1s on the diagonal.)

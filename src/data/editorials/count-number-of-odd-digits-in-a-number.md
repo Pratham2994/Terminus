@@ -1,10 +1,10 @@
 # Count number of odd digits in a number
 
-> No free judge has this exact problem, so Terminus is your judge. Solve it with the visible tests, then run the hidden tests with the self-check program at the bottom in a free online compiler. takeUforward's function is `int countOddDigit(int n)`.
+> No free judge has this exact problem, so Terminus is your judge. Solve it with the tests below, then check it with the self-check program at the bottom. takeUforward's function is `int countOddDigit(int n)`.
 
-## The problem
+## What you need to do
 
-You get a non-negative integer n (0 ≤ n ≤ 5000). Return how many of its digits are **odd** (1, 3, 5, 7 or 9).
+Count how many digits of n are **odd** (1, 3, 5, 7 or 9). n is between 0 and 5000.
 
 ## Visible tests
 
@@ -12,24 +12,37 @@ You get a non-negative integer n (0 ≤ n ≤ 5000). Return how many of its digi
 |---|---|---|
 | 5 | 1 | 5 is odd |
 | 25 | 1 | only 5 is odd |
-| 15 | 2 | 1 and 5 are odd |
+| 15 | 2 | 1 and 5 are both odd |
 
-## Step by step
+## How to solve it, step by step
 
-1. **How do you get the last digit of a number?** `n % 10`. For 2735 that is 5.
-2. **How do you drop that digit?** `n / 10` (integer division). 2735 becomes 273.
-3. So repeat: look at `n % 10`, then do `n = n / 10`, until n is 0. That visits every digit, right to left.
-4. A digit d is odd when `d % 2 == 1`. Count those.
-5. **Check the edge case before you code:** n = 0. The loop `while (n > 0)` never runs, so the count is 0. That is correct: 0 is an even digit. (In "count all digits", n = 0 needs care. Here it does not.)
+1. **Get the last digit with `n % 10`.** For 2735, that is 5.
 
-## Complexity
+   **Why:** dividing by 10 leaves the last digit as the remainder.
 
-- Time: O(number of digits) = O(log₁₀ n). For n ≤ 5000, at most 4 steps.
-- Space: O(1).
+2. **Remove the last digit with `n = n / 10`.** 2735 becomes 273.
 
-## Dry run (n = 3010)
+   **Why:** integer division by 10 drops the last digit.
 
-| n | n % 10 | odd? | count |
+3. **Repeat steps 1 and 2 until n is 0.**
+
+   **Why:** this visits every digit, from right to left, and stops when none are left.
+
+4. **Count the digits where `digit % 2 == 1`.**
+
+   **Why:** an odd digit leaves remainder 1 when divided by 2.
+
+5. **Check n = 0 before you code.** The loop does not run, so the answer is 0.
+
+   **Why:** 0 is an even digit, so 0 is the right answer here.
+
+## How fast is it?
+
+One step per digit: O(number of digits). For n ≤ 5000, that is at most 4 steps. No extra memory.
+
+## Walk through (n = 3010)
+
+| n | last digit | odd? | count |
 |---|---|---|---|
 | 3010 | 0 | no | 0 |
 | 301 | 1 | yes | 1 |

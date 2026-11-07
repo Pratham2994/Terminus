@@ -1,23 +1,31 @@
 # Postfix to Infix Conversion
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `string postToInfix(string& s)`. Wrap every operation in brackets: `((a*b)+c)`. The video above explains it too.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above). GfG's function is `string postToInfix(string& s)`. Put brackets around every operation: `((a*b)+c)`. The video above explains it too.
 
-## The problem
+## What you need to do
 
-Example: `ab*c+` → `((a*b)+c)`. `abc/-` → **(a-(b/c))**.
+Turn a **postfix** expression (operator last, `ab+`) into normal maths with full brackets, `(a+b)`.
 
-## Step by step
+## Examples
 
-Postfix is the order a stack calculator works in: when you meet an operator, its two operands are the **last two** things finished.
+- `ab*c+` → `((a*b)+c)`
+- `abc/-` → `(a-(b/c))`
 
-1. Scan **left to right**.
-2. **Operand** → push it as a string.
-3. **Operator op** → pop `right` **first**, then `left` (the stack returns them in reverse), push `"(" + left + op + right + ")"`.
-4. The last string is the answer.
+## How to solve it, step by step
 
-The classic bug is the pop order: for `ab-`, popping left first gives `(b-a)`.
+1. **Read from left to right.**
 
-## Code (C++)
+   **Why:** in postfix, the two values of an operator are always the last two things finished before it.
+
+2. **A letter: push it as a string.**
+
+3. **An operator: pop right (first), then left (second). Push** `(` + left + operator + right + `)`.
+
+   **Why:** a stack gives things back in reverse order, so the last value pushed (the right one) comes off first.
+
+4. **The last string on the stack is the answer.**
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -37,17 +45,17 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²) worst case from string copies. Space: O(n).
+O(n) stack steps (string joins can make it O(n²) for long inputs). O(n) memory.
 
-## Edge cases
+## Watch out for
 
-- One operand `a` → `a`.
-- Check with a non-commutative operator (`-`, `/`): `ab-` must give `(a-b)`.
+- The pop order is the classic bug: popping left first turns `ab-` into `(b-a)`.
+- A single letter stays as it is.
 
-## Dry run (`abc/-`)
+## Walk through (`abc/-`)
 
-a → [a], b → [a, b], c → [a, b, c]. `/` → right c, left b → [a, (b/c)]. `-` → right (b/c), left a → **(a-(b/c))**.
+a, b, c → [a, b, c]. `/` → right c, left b → [a, (b/c)]. `-` → right (b/c), left a → `(a-(b/c))`.
 
 (Tested on 5 000 random expression trees.)

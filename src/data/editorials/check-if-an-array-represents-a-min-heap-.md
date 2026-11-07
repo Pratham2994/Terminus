@@ -1,28 +1,40 @@
 # Check if an array represents a min heap
 
-> takeUforward's page needs Plus. Practise on GeeksforGeeks (the **Similar** link above), "Check if Array is Max Heap": the same check for a **max**-heap, `bool isMaxHeap(vector<int>& arr)`. Both versions are below, with a self-check for takeUforward's min-heap version (the self-check uses `bool isHeap(vector<int>& nums)`).
+> takeUforward's page needs Plus. Practise on GeeksforGeeks (the **Similar** link above). It checks for a **max**-heap instead; the box below shows the difference.
 
-## The problem
+## What you need to do
 
-Return true if the array, read as a complete binary tree (children of i at 2i + 1 and 2i + 2), is a **min-heap**: every parent ≤ its children.
+Read the array as a tree (the children of position i are at 2i + 1 and 2i + 2). Return true if every parent is **≤** its children: a **min-heap**.
 
-## Visible tests
+## What is different on GfG
 
-| nums | Answer |
-|---|---|
-| [10, 20, 30, 21, 23] | true |
-| [30, 20, 10, 21, 23] | false |
-| [1, 1, 1] | true |
+| | takeUforward | GfG "Check if Array is Max Heap" |
+|---|---|---|
+| Rule | every parent ≤ its children (min-heap) | every parent **≥** its children (max-heap) |
+| Function | `bool isHeap(vector<int>& nums)` in the self-check | `bool isMaxHeap(vector<int>& arr)` |
 
-## Step by step
+**In short:** the same loop; only the comparison flips.
 
-1. The heap rule is about **every parent–child pair**. Checking them all is enough: if every parent is ≤ its own children, then (by chaining) every node is ≤ everything below it.
-2. Two equivalent loops:
-   - for each **parent** i from 0 to n/2 − 1, compare with `2i + 1` and `2i + 2` (when < n);
-   - or, simpler, for each **child** j from 1 to n − 1, compare with its parent `(j − 1) / 2`.
-3. Return false at the first broken pair; true if none is broken.
-4. **Equal values are allowed**: the rule is ≤, not <.
-5. For GfG's max-heap, flip the comparison: parent ≥ child.
+## Example
+
+- [10, 20, 30, 21, 23] → **true**: 10 ≤ 20 and 10 ≤ 30; 20 ≤ 21 and 20 ≤ 23.
+- [30, 20, 10, 21, 23] → **false**: 30 is bigger than its child 20.
+
+## How to solve it, step by step
+
+1. **Check every parent–child pair.**
+
+   **Why:** if every parent is ≤ its own children, then every node is ≤ everything below it, so the whole array is a heap.
+
+2. **Easiest loop: go through every child j from 1 to n − 1,** and compare it with its parent `(j − 1) / 2`.
+
+   **Why:** every position except the root has exactly one parent, so this checks each pair once.
+
+3. **Return false at the first broken pair; true if none is broken.**
+
+4. **Equal values are fine:** the rule is ≤, not <.
+
+5. **For GfG, flip the comparison:** a parent smaller than its child breaks a max-heap.
 
 ## Code for GfG (submit this there)
 
@@ -37,14 +49,13 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n). Space: O(1).
+One look per position: O(n). No extra memory.
 
-## Edge cases
+## Watch out for
 
-- One element: no pairs → true.
-- A sorted ascending array is always a min-heap; the reverse is not needed.
+- One value alone is always a heap.
 
 ## Check takeUforward's version
 

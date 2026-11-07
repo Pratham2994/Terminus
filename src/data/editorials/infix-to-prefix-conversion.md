@@ -1,30 +1,43 @@
 # Infix to Prefix Conversion
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Infix To Prefix". GfG's function is `string infixToPrefix(string& s)`. Operators: `^` (highest, right to left), then `*` `/`, then `+` `-` (left to right). The video above explains it too.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Infix To Prefix". GfG's function is `string infixToPrefix(string& s)`. The video above explains it too.
 
-## The problem
+## What you need to do
 
-**Prefix** puts each operator **before** its two operands: `a+b` → `+ab`.
+Convert normal maths (infix, `a+b`) to **prefix**, where each operator comes **before** its two values: `+ab`.
 
-Examples: `a*(b+c)/d` → `/*a+bcd`. `(a-b/c)*(a/k-l)` → `*-a/bc-/akl`.
+Operator strength: `^` is strongest (right to left), then `*` and `/`, then `+` and `-` (left to right).
 
-## Two ways
+## Examples
 
-**Way 1, the textbook trick:** reverse the string, swap `(` and `)`, convert to postfix, reverse the result. It works, but the associativity rule must flip too, which is easy to get wrong.
+- `a*(b+c)/d` → `/*a+bcd`
+- `(a-b/c)*(a/k-l)` → `*-a/bc-/akl`
 
-**Way 2, two stacks (used below):** the same idea as infix to postfix, but keep a second stack of **operand strings**. Whenever an operator is applied, pop its two operands and push the combined prefix string `op + left + right`. No reversing, and the precedence rules are exactly the normal ones.
+## How to solve it, step by step
 
-## Step by step (Way 2)
+This uses **two stacks**: one for operators, one for finished pieces (strings).
 
-1. **Operand** → push it (as a one-letter string) on the operand stack.
-2. **`(`** → push on the operator stack.
-3. **`)`** → apply operators until the `(`, then drop the `(`.
-4. **Operator op** → first apply every stacked operator that binds at least as tight (higher precedence, or equal and op is not `^`), then push op.
-5. At the end, apply everything left. The single remaining string is the answer.
+1. **A letter becomes a finished piece:** push it as a one-letter string.
 
-"Apply" = pop the operator, pop **right** then **left** operand (the stack gives them back in reverse), push `op + left + right`.
+   **Why:** a single letter is already a complete prefix expression.
 
-## Code (C++)
+2. **Operators wait on the operator stack,** exactly as in Infix to Postfix: before pushing a new operator, first apply every waiting operator that must run before it (stronger, or equally strong when the new one is not `^`).
+
+   **Why:** the operators that run first must be combined first.
+
+3. **To apply an operator:** pop two pieces (the right one comes off first, then the left), and push `operator + left + right`.
+
+   **Why:** that is exactly what prefix means: the operator, then its two values.
+
+4. **`(` is pushed; on `)`, apply operators until the `(`, then drop it.**
+
+   **Why:** brackets finish their inside first.
+
+5. **At the end, apply everything left. The one remaining piece is the answer.**
+
+The textbook alternative is: reverse the string, swap the brackets, convert to postfix, reverse again. It works, but the "equally strong" rule flips too, which is easy to get wrong. The two-stack way avoids that.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -64,21 +77,19 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²) in the worst case, because of string concatenation (each apply copies strings). Fine for these input sizes. Way 1 is O(n).
-- Space: O(n).
+O(n) operations; joining strings can make it O(n²) in the worst case, which is fine for these sizes. O(n) memory.
 
-## Edge cases
+## Watch out for
 
-- `a-b-c` → `--abc` (left to right: (a−b)−c). `a^b^c` → `^a^bc` (right to left).
-- A single operand `a` → `a`.
+- `a-b-c` → `--abc` (left to right: (a − b) − c). `a^b^c` → `^a^bc` (right to left).
 
-## Dry run (`a*(b+c)/d`)
+## Walk through (`a*(b+c)/d`)
 
-- a → vals [a]. `*` → ops [*]. `(` → ops [*, (]. b, c → vals [a, b, c], `+` waits inside.
-- `)` → apply + → vals [a, +bc]; drop `(`.
-- `/` → `*` has equal precedence → apply * → vals [*a+bc]; push /.
-- d → vals [*a+bc, d]. End → apply / → `/*a+bcd`.
+- `a` → pieces [a]. `*` → operators [*]. `(` → operators [*, (]. `b`, `c` → pieces [a, b, c]; `+` waits inside the bracket.
+- `)` → apply + → pieces [a, +bc]; drop `(`.
+- `/` → `*` is equally strong → apply * → pieces [*a+bc]; push /.
+- `d` → pieces [*a+bc, d]. End → apply / → `/*a+bcd`.
 
-(Tested on 5 000 random expressions against the tree's prefix form.)
+(Tested on 5 000 random expressions against the correct answer built from an expression tree.)

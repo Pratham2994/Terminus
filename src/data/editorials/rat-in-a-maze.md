@@ -1,24 +1,43 @@
 # Rat in a Maze
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Rat in Maze". GfG's function is `vector<string> ratInMaze(vector<vector<int>>& maze)`. Return the paths in **lexicographic (sorted) order**; if there is none, return an empty list. The video above explains it too.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Rat in Maze". GfG's function is `vector<string> ratInMaze(vector<vector<int>>& maze)`. Return the paths **in sorted order**, or an empty list if there are none. The video above explains it too.
 
-## The problem
+## What you need to do
 
-An n × n grid has 1 (open) and 0 (blocked). A rat starts at (0, 0) and must reach (n − 1, n − 1). It moves **U**p, **D**own, **L**eft or **R**ight, only through open cells, and never visits a cell twice in one path. Return every path as a string of moves.
+A square grid has 1 (open) and 0 (wall). A rat starts at the top-left and must reach the bottom-right. It can move **D**own, **L**eft, **R**ight or **U**p, only through open cells, and it never visits the same cell twice in one path. List every path as a string of moves.
 
-Example: 
-maze = [[1, 0, 0, 0], [1, 1, 0, 1], [1, 1, 0, 0], [0, 1, 1, 1]] → **["DDRDRR", "DRDDRR"]**.
+## Example
 
-## Step by step: backtracking
+```text
+1 0 0 0
+1 1 0 1
+1 1 0 0
+0 1 1 1
+```
 
-1. **State:** the current cell (r, c) and the path string so far.
-2. **Done:** if (r, c) is the target, save the path.
-3. **Choices:** try the four moves. A move is allowed if the next cell is inside the grid, open, and **not on the current path**.
-4. **Mark, recurse, unmark:** mark the cell as visited before going deeper, and **unmark it when you come back**. Unmarking is the "backtrack": the cell may be used by a different path.
-5. **Sorted output for free:** try the moves in alphabetical order, **D, L, R, U**. Then paths come out already sorted, because a DFS that always tries the smaller letter first produces strings in lexicographic order.
-6. Check the start: if maze[0][0] is 0 (or the target is 0), there are no paths.
+Answer: **["DDRDRR", "DRDDRR"]**.
 
-## Code (C++)
+## How to solve it, step by step
+
+1. **Stand on a cell and try all four moves.** For each move, check that the next cell is inside the grid, open, and not already on this path.
+
+   **Why:** these are the only rules for a legal move.
+
+2. **Mark the cell before going deeper, and unmark it when you come back.**
+
+   **Why:** marking stops the rat from walking in circles. Unmarking (the "backtrack") lets a different path use that cell later.
+
+3. **When you reach the bottom-right, save the path.**
+
+   **Why:** that path is complete.
+
+4. **Try the moves in alphabetical order: D, L, R, U.**
+
+   **Why:** then the paths come out already sorted, so you do not need to sort at the end.
+
+5. **Check the start first:** if the top-left (or bottom-right) is a wall, there are no paths.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -54,18 +73,13 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(3^(n²)) in the worst case. After the first step, each cell has at most 3 new directions (the 4th leads back). Real mazes prune most branches.
-- Space: O(n²) for the recursion depth and the path.
+In the worst case, each step has up to 3 new directions, so it is exponential. Walls cut most branches early, so real mazes run quickly. Memory: O(n²) for the path and the recursion.
 
-## Edge cases
+## Watch out for
 
-- n = 1 with maze [[1]]: the start is the target → one empty path "".
-- The maze is restored after the search (every cell is unmarked), so the caller's grid is unchanged.
+- A 1 × 1 maze with [[1]]: the rat is already there, so the answer is one empty path, "".
+- The code unmarks every cell, so the maze you were given is unchanged afterwards.
 
-## Dry run (the example)
-
-From (0, 0) only D is open → (1, 0). There, D → (2, 0) and R → (1, 1) both open. D first: (2, 0) → R (2, 1) → D (3, 1) → R R → "DDRDRR". Then the R branch: (1, 1) → D (2, 1) → D (3, 1) → R R → "DRDDRR".
-
-(Tested on 3 000 random mazes up to 5 × 5 against a brute force that lists all simple paths and sorts them.)
+(Tested on 3 000 random mazes up to 5 × 5 against listing every path and sorting.)

@@ -1,6 +1,10 @@
 # Pattern 6
 
-> takeUforward's page needs Plus. Solve it free on Code360 (the Problem link above), "Reverse Number Triangle". Its function: `void nNumberTriangle(int n)`. Code360 puts a space between the numbers: `1 2 3`.
+> takeUforward's page needs Plus. Solve the same pattern free on Code360 (the Problem link above), "Reverse Number Triangle".
+
+## What you need to do
+
+Print an upside-down staircase of numbers: 1 to n first, then one number less in every row.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,11 +16,25 @@
 1
 ```
 
-## Step by step
+## What is different on Code360
 
-1. Rows: **n**. Row i (from 0) has **n − i** entries, exactly like Pattern 5.
-2. Each entry is the **column number** j (1, 2, 3, …), like Pattern 3.
-3. So this is Pattern 5's shape with Pattern 3's contents. Mixing two known pieces is how most patterns are built.
+Code360 puts a space between the numbers: `1 2 3`.
+
+Code360's function: `void nNumberTriangle(int n)`.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. Use Pattern 5's shape: row i (from 0) has **n − i** entries.
+
+   **Why:** The rows shrink the same way.
+
+2. Print the column number j (1, 2, 3, …) in each entry.
+
+   **Why:** Each row starts again at 1, like Pattern 3.
+
+Row by row:
 
 | Row i (from 0) | Prints |
 |---|---|
@@ -38,11 +56,6 @@ void nNumberTriangle(int n) {
 }
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

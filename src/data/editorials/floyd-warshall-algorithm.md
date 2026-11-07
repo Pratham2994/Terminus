@@ -1,25 +1,40 @@
 # Floyd Warshall Algorithm
 
-> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Floyd Warshall". GfG's function is `void floydWarshall(vector<vector<int>>& dist)`: change the matrix in place. A missing edge is **10⁸** (infinity), and edges can be **negative** (but there is no negative cycle). The video above explains it too.
+> takeUforward's page needs Plus. Solve the same problem free on GeeksforGeeks (the Problem link above), "Floyd Warshall". GfG's function is `void floydWarshall(vector<vector<int>>& dist)`: change the matrix in place. A missing edge is written as **10⁸**, and edges can be **negative** (but there is no negative cycle). The video above explains it too.
 
-## The problem
+## What you need to do
 
-`dist[i][j]` is the weight of the edge i → j (10⁸ if none, 0 on the diagonal). Replace it with the **shortest distance** from every i to every j.
+`dist[i][j]` is the length of the road from i to j (10⁸ if there is none, 0 from a city to itself). Change every entry to the **shortest** distance from i to j, using any route.
 
-Example: dist = [[0, −1, 2], [1, 0, 10⁸], [3, 1, 0]] → **[[0, −1, 2], [1, 0, 3], [2, 1, 0]]**.
+## Example
 
-## The idea: allow one more middle vertex at a time
+```text
+before:  [0, -1,  2]      after:  [0, -1, 2]
+         [1,  0, 1e8]             [1,  0, 3]
+         [3,  1,  0]              [2,  1, 0]
+```
 
-Define "the shortest path from i to j that only passes **through** vertices 0 … k − 1". Now allow vertex k as well. A shortest path either:
+From 1 to 2 there was no direct road, but 1 → 0 → 2 costs 1 + 2 = **3**.
 
-- does **not** use k → it stays `dist[i][j]`, or
-- **does** use k → it goes i → k, then k → j: `dist[i][k] + dist[k][j]`.
+## How to solve it, step by step
 
-Take the smaller one. After doing this for k = 0, 1, …, n − 1, every vertex is allowed in the middle, so the matrix holds the true shortest distances.
+1. **Pick a city k and allow routes to pass through it.** For every pair (i, j), check whether going i → k → j is shorter than the best route so far.
 
-**The loop order is the whole algorithm: k must be the outer loop.** With k inside, `dist[i][k]` may not be final yet when you use it.
+   **Why:** the best route either uses k or it does not. If it does, it is "best to k" plus "best from k".
 
-## Code (C++)
+2. **Do this for k = 0, then 1, then 2, … up to the last city.**
+
+   **Why:** after step k, the table holds the best routes that only pass through cities 0 … k. After the last k, every city is allowed, so the table is complete.
+
+3. **k must be the outer loop,** with i and j inside it.
+
+   **Why:** when you use `dist[i][k]` and `dist[k][j]`, they must already be final for "cities up to k − 1". The wrong loop order uses half-finished values.
+
+4. **Skip a pair when either half is 10⁸ (no road).**
+
+   **Why:** with negative edges, 10⁸ + (−5) is less than 10⁸, and an unreachable city would suddenly look reachable.
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -37,19 +52,19 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n³). Space: O(1) extra (it works in the matrix itself).
+Three nested loops over n cities: O(n³) time. It works inside the table, so no extra memory.
 
-## Edge cases
+## Watch out for
 
-- **Skip infinite legs.** With negative edges, `10⁸ + (−5)` is smaller than `10⁸` and would turn "unreachable" into a fake distance. The `!= INF` checks prevent that.
-- **Negative cycle detection:** after the loops, if any `dist[i][i] < 0`, vertex i is on a negative cycle. GfG promises there is none, but takeUforward's version may ask for it.
+- The 10⁸ check in step 4.
+- **Finding a negative cycle:** after the loops, if any `dist[i][i]` is below 0, city i is on a negative cycle. GfG promises there is none, but takeUforward may ask for it.
 
-## Dry run (the example)
+## Walk through (the example)
 
-- k = 0: dist[1][2] via 0 = 1 + 2 = 3 < 10⁸ → **3**. dist[2][1] via 0 = 3 + (−1) = 2, but it is already 1 → keep.
-- k = 1: dist[0][2] via 1 = −1 + 3 = 2, equal. dist[2][0] via 1 = 1 + 1 = **2** < 3.
-- k = 2: no further changes.
+- k = 0: 1 → 0 → 2 = 1 + 2 = 3, better than 10⁸ → **3**.
+- k = 1: 2 → 1 → 0 = 1 + 1 = 2, better than 3 → **2**.
+- k = 2: nothing improves.
 
-Result **[[0, −1, 2], [1, 0, 3], [2, 1, 0]]**. (Tested on 3 000 random graphs with negative edges and no negative cycles against Bellman-Ford from every vertex.)
+(Tested on 3 000 random graphs with negative edges against Bellman-Ford from every city.)

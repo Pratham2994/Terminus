@@ -1,32 +1,42 @@
 # Requirements needed to construct a unique BT
 
-> No free judge has this exact problem, so Terminus is your judge. The free editorial and video above explain it too. Run the hidden tests with the self-check program at the bottom in a free online compiler. The function here is `bool uniqueBinaryTree(int a, int b)`.
+> No free judge has this exact problem, so Terminus is your judge. The free editorial and video above explain it too. Check your answer with the self-check program at the bottom. The function here is `bool uniqueBinaryTree(int a, int b)`.
 
-## The problem
+## What you need to do
 
-You get two traversal types, a and b. Each is a number: **1 = preorder, 2 = inorder, 3 = postorder.** Return true if those two traversals (of a tree with **distinct** values) are always enough to build exactly one binary tree.
+You get two traversal types, a and b: **1 = preorder, 2 = inorder, 3 = postorder.** Return true if these two traversals (of a tree with all-different values) are always enough to rebuild **exactly one** tree.
 
 ## Visible tests
 
 | a | b | Answer |
 |---|---|---|
 | 1 | 2 | true (preorder + inorder) |
-| 2 | 2 | false (two inorders) |
+| 2 | 2 | false (inorder twice) |
 | 1 | 3 | false (preorder + postorder) |
 
-## Step by step: why inorder is the key
+## How to solve it, step by step
 
-1. **Preorder** is root, left, right. Its **first** element is the root.
-2. **Postorder** is left, right, root. Its **last** element is the root.
-3. **Inorder** is left, root, right. Once you know the root, everything **before** it in inorder is the left subtree, and everything **after** it is the right subtree.
-4. So preorder (or postorder) tells you the root, and inorder splits the rest into left and right. Repeat on each side and the whole tree is fixed. **Preorder + inorder** and **postorder + inorder** give a unique tree.
-5. **Why does preorder + postorder fail?** Take a root 1 with one child 2. If 2 is the left child: preorder 1 2, postorder 2 1. If 2 is the right child: preorder 1 2, postorder 2 1. Same traversals, two different trees. Nothing tells you which side a single child is on. Inorder would: 2 1 versus 1 2.
-6. **Two copies of the same traversal** add no information, and one traversal alone is never enough (except for tiny trees). So (1,1), (2,2), (3,3) are all false.
-7. **Rule:** true exactly when the two types are **different** and **one of them is 2** (inorder). The order of a and b does not matter.
+1. **Preorder tells you the root:** it is the **first** value. Postorder also tells you the root: it is the **last** value.
 
-## Complexity
+   **Why:** preorder visits the root before its children; postorder visits it after them.
 
-O(1) time and space.
+2. **Inorder tells you the sides:** once you know the root, everything **before** it in inorder is the left side, and everything **after** it is the right side.
+
+   **Why:** inorder visits left, then root, then right.
+
+3. **So preorder + inorder, or postorder + inorder, fixes the whole tree.** Find the root, split into left and right, and repeat on each side.
+
+4. **Preorder + postorder is not enough.** Example: root 1 with one child 2. If 2 is on the left, preorder is 1 2 and postorder is 2 1. If 2 is on the right, you get the same 1 2 and 2 1.
+
+   **Why:** without inorder, nothing tells you which side a single child is on.
+
+5. **The same traversal twice adds nothing new,** so (1,1), (2,2) and (3,3) are false.
+
+6. **The rule:** true exactly when the two types are **different** and **one of them is 2** (inorder).
+
+## How fast is it?
+
+One comparison: O(1).
 
 ## All 9 cases
 

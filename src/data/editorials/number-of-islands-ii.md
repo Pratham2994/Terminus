@@ -2,29 +2,39 @@
 
 > takeUforward's page needs Plus, and LeetCode 305 is Premium. Solve the same problem free on GeeksforGeeks (the Problem link above), "Count Islands After Every Operation". GfG's function is `vector<int> numOfIslands(int n, int m, vector<vector<int>>& operators)`. The video above explains it too.
 
-## The problem
+## What you need to do
 
-An n × m grid starts as all water. Each operation turns one cell into **land**. After **every** operation, report the number of islands (groups of land cells joined up, down, left or right).
+A grid starts as all water. Each operation turns one cell into **land**. After **every** operation, report how many islands there are. An island is a group of land cells joined up, down, left or right.
 
-Example: n = 4, m = 5, operations (0,0), (0,0), (1,1), (1,0), (0,1), (0,3), (1,3), (0,4), (3,2), (2,2), (1,2), (0,2) → **[1, 1, 2, 1, 1, 2, 2, 2, 3, 3, 1, 1]**.
+## Example
 
-## Brute force
+4 × 5 grid, land added at (0,0), (0,0), (1,1), (1,0), …
 
-After each operation, count islands with BFS over the whole grid. O(k · n · m). Too slow when there are many operations.
+- (0,0) → 1 island.
+- (0,0) again → still 1.
+- (1,1) → a separate island → 2.
+- (1,0) touches both (0,0) and (1,1) → they join into **1**.
 
-## Disjoint Set Union: islands only ever merge
+## How to solve it, step by step
 
-Adding land can do two things: create a **new** island, or **join** islands. It never splits one. "Things only merge" is exactly what DSU is built for.
+1. **The slow idea:** after each operation, count the islands from scratch with BFS. That redoes the whole grid every time.
 
-1. Number each cell `id = r · m + c`. Keep a DSU over all cells and a counter `islands`.
-2. New land at (r, c): if it is **already land**, nothing changes. Report the same count.
-3. Otherwise mark it, and `islands++` (it starts as its own island).
-4. For each of its 4 neighbours that is land: if the two are in **different** sets, `union` them and `islands--` (two islands became one).
-5. Report `islands`.
+2. **Notice: adding land only ever joins islands, it never splits one.**
 
-Checking "different sets" before counting down matters: a cell can touch the **same** island from two sides.
+   **Why:** this "things only merge" pattern is exactly what a Disjoint Set (DSU) is built for.
 
-## Code (C++)
+3. **Give each cell a number, `r · m + c`, and keep a DSU over all cells, plus a counter `islands`.**
+
+4. **For each new land cell:**
+   - If it is already land, nothing changes. Report the same count.
+   - Otherwise mark it as land and add 1 to `islands` (it starts as an island of its own).
+   - For each of its 4 neighbours that is land: if they are in **different** groups, join them and subtract 1.
+
+   **Why:** joining two separate islands turns them into one. If they are already in the same group, nothing changes.
+
+5. **Report `islands` after every operation.**
+
+## Code (C++, for GfG)
 
 ```cpp
 class Solution {
@@ -72,17 +82,13 @@ class Solution {
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n·m + k · α(n·m)), effectively linear. Space: O(n·m).
+Each DSU step costs almost O(1), so the total is about O(n·m + number of operations). Memory: O(n·m).
 
-## Edge cases
+## Watch out for
 
-- The **same cell twice**: the second time nothing changes (the example has (0,0) twice).
-- A cell touching one island on two sides: the second `unite` returns false, so the count drops only once.
+- The **same cell twice**: the second time, nothing changes.
+- A new cell can touch the **same** island from two sides. The "different groups" check makes the count drop only once.
 
-## Dry run (start of the example)
-
-(0,0) → 1. (0,0) again → 1. (1,1) → new, no land neighbours → 2. (1,0) → new (3), joins (0,0) → 2, joins (1,1) → **1**.
-
-(Tested on 3 000 random grids and operation lists against a BFS recount after every step.)
+(Tested on 3 000 random grids, recounting with BFS after every operation.)

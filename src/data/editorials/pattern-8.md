@@ -1,6 +1,10 @@
 # Pattern 8
 
-> takeUforward's page needs Plus. Solve it free on GeeksforGeeks (the Problem link above), "Inverted Triangle of Stars". Its function: `a full program: read n, print the triangle`. On GfG you write the whole program (read n with `cin`). Leading spaces, then stars, no spaces between stars.
+> takeUforward's page needs Plus. Solve the same pattern free on GeeksforGeeks (the Problem link above), "Inverted Triangle of Stars".
+
+## What you need to do
+
+Print the pyramid from Pattern 7 upside down.
 
 ## The pattern (n = 5, as takeUforward shows it)
 
@@ -12,12 +16,25 @@
     *
 ```
 
-## Step by step
+## What is different on GfG
 
-1. This is Pattern 7 upside down. Rows: **n**.
-2. Row i (from 0): **i** leading spaces, then **2(n − i) − 1** stars.
-3. Check: row 0 has 0 spaces and 2n − 1 stars (full width); the last row, i = n − 1, has n − 1 spaces and 1 star. ✓
-4. Trick: you can also reuse Pattern 7 with the row index reversed, i → n − 1 − i.
+On GfG you write the whole program (read n with `cin`). Leading spaces, then stars, no spaces between stars.
+
+On GfG you write the **whole program**: read n with `cin`, then print.
+
+**In short:** the loops are the same on both sites. Only what you print between the cells changes.
+
+## How to solve it, step by step
+
+1. Same two parts as Pattern 7: spaces, then stars.
+
+   **Why:** It is the same pyramid, just flipped.
+
+2. Row i (from 0) has **i** spaces, then **2(n − i) − 1** stars.
+
+   **Why:** The first row is the full width with no spaces; each row after it gets one more space and two fewer stars.
+
+Row by row:
 
 | Row i (from 0) | Spaces | Stars |
 |---|---|---|
@@ -43,11 +60,6 @@ int main() {
 }
 ```
 
-## takeUforward's format
+## How fast is it?
 
-On takeUforward the shape is the same; only the spacing differs (see the picture above). Change what you print between the cells, not the loops.
-
-## Complexity
-
-- Time: O(n²): about n² cells are printed (the output itself is that big).
-- Space: O(1) besides the output.
+It prints about n² characters, so it takes O(n²) time. That is the size of the picture itself, so no solution can be faster. It uses no extra memory.

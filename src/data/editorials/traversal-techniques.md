@@ -1,10 +1,10 @@
 # Traversal Techniques
 
-> No free judge has this exact problem, so Terminus is your judge. The video above explains it too. Run the hidden tests with the self-check program at the bottom in a free online compiler. The function here is `vector<vector<int>> dfsAndBfs(int V, vector<vector<int>>& edges)`: return {dfs order, bfs order}. Related free practice: GfG [DFS of Graph](https://www.geeksforgeeks.org/problems/depth-first-traversal-for-a-graph/1) and [BFS of Graph](https://www.geeksforgeeks.org/problems/bfs-traversal-of-graph/1) (they give an adjacency list, not edges).
+> No free judge has this exact problem, so Terminus is your judge. The video above explains it too. Check your answer with the self-check program at the bottom. The function here is `vector<vector<int>> dfsAndBfs(int V, vector<vector<int>>& edges)`: return {DFS order, BFS order}. For extra practice, GfG has each half separately: [DFS of Graph](https://www.geeksforgeeks.org/problems/depth-first-traversal-for-a-graph/1) and [BFS of Graph](https://www.geeksforgeeks.org/problems/bfs-traversal-of-graph/1). They give an adjacency list instead of edges.
 
-## The problem
+## What you need to do
 
-An undirected, **connected** graph has V vertices (0 … V − 1) and a list of edges [u, v]. Starting at vertex 0, return the **DFS** visiting order and the **BFS** visiting order.
+A connected graph has V vertices (0 to V − 1) and a list of edges [u, v] that go both ways. Starting at vertex 0, return the order in which **DFS** visits the vertices, and the order in which **BFS** visits them.
 
 ## Visible tests
 
@@ -13,27 +13,40 @@ An undirected, **connected** graph has V vertices (0 … V − 1) and a list of 
 | 4 | [0,1], [0,3], [1,2] | [0, 1, 2, 3] | [0, 1, 3, 2] |
 | 3 | [0,1], [0,2] | [0, 1, 2] | [0, 1, 2] |
 
-The order depends on the order you try neighbours in. Build the adjacency list in **edge order** (as above). The self-check accepts **any** valid DFS and BFS order, so another neighbour order also passes.
+The order depends on which neighbour you try first. Build the neighbour lists in edge order, as above. The self-check accepts **any** correct DFS and BFS order.
 
-## Step by step
+## How to solve it, step by step
 
-1. **Build an adjacency list.** For each edge [u, v], add v to `adj[u]` **and** u to `adj[v]` (undirected).
-2. **DFS (go deep first):** visit a vertex, mark it, then for each unvisited neighbour, recurse into it **right away**. You only come back when a branch is finished. Use recursion (or your own stack).
-3. **BFS (go wide first):** use a **queue**. Push 0 and mark it. Repeatedly pop the front, record it, and push each unvisited neighbour, **marking it when you push it**.
-4. **Why mark on push in BFS?** If you mark only when you pop, a vertex can be pushed twice by two different neighbours before it is popped, and it appears twice in the order.
-5. Keep **two separate visited arrays** (or reset it), one per traversal.
+1. **Build a neighbour list:** for each edge [u, v], add v to u's list **and** u to v's list.
 
-## Complexity
+   **Why:** the edges go both ways, so each end must know about the other.
 
-- Time: O(V + E) for each traversal: every vertex is visited once, every edge is looked at twice.
-- Space: O(V + E) for the adjacency list, O(V) for visited and the stack or queue.
+2. **DFS (go deep first):** visit a vertex and mark it. Then, for each unvisited neighbour, visit it **straight away** (recursion).
 
-## Dry run (V = 4, edges [0,1], [0,3], [1,2])
+   **Why:** DFS follows one path as far as it can before coming back to try the next one.
 
-adj: 0 → [1, 3], 1 → [0, 2], 2 → [1], 3 → [0].
+3. **BFS (go wide first):** use a **queue**. Put 0 in and mark it. Repeatedly take the front vertex, record it, and add each unvisited neighbour to the back, **marking it as you add it**.
 
-- DFS: 0 → 1 → (0 seen) 2 → back → back to 0 → 3. Order **[0, 1, 2, 3]**.
-- BFS: queue [0] → pop 0, push 1, 3 → pop 1, push 2 → pop 3 → pop 2. Order **[0, 1, 3, 2]**.
+   **Why:** a queue serves vertices in the order they were found, so all vertices one step away come before those two steps away.
+
+4. **In BFS, mark a vertex when you add it, not when you take it out.**
+
+   **Why:** otherwise two neighbours can both add the same vertex before it is taken out, and it appears twice.
+
+5. **Use separate "visited" marks for DFS and BFS.**
+
+   **Why:** after DFS, every vertex is marked, so BFS would visit nothing.
+
+## How fast is it?
+
+Each traversal visits every vertex once and looks at every edge twice: O(V + E). Memory: O(V + E) for the neighbour lists.
+
+## Walk through (V = 4, edges [0,1], [0,3], [1,2])
+
+Neighbours: 0 → [1, 3], 1 → [0, 2], 2 → [1], 3 → [0].
+
+- DFS: 0 → 1 → 2, back to 0 → 3. Order **[0, 1, 2, 3]**.
+- BFS: queue [0] → take 0, add 1 and 3 → take 1, add 2 → take 3 → take 2. Order **[0, 1, 3, 2]**.
 
 ## Check your solution
 
