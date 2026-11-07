@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { ChevronRight } from 'lucide-react'
 import { computeStats, GRID_WEEKS } from '../lib/stats'
 import { parseDay, prettyDay } from '../lib/dates'
+import { REDO_PER_DAY } from '../lib/schedule'
 import { LineBadge } from './bits'
 
 const DAY_NAMES = ['Mon', '', 'Wed', '', 'Fri', '', '']
@@ -32,13 +33,13 @@ export default function Stats({ state, today, onStation }) {
     <section className="stats" aria-labelledby="stats-title">
       <header className="page-head">
         <h1 id="stats-title">Stats</h1>
-        <p>How far you have ridden, and how well it is sticking.</p>
+        <p>How far you have ridden, and how well it is sticking. Sessions cover the last 26 weeks.</p>
       </header>
 
       <div className="kpis">
         <Kpi label="Stations reached" value={s.reached} of={s.total} bar={pct(s.reached, s.total)} />
         <Kpi label="Mastered" value={s.mastered} note="three clean reviews, or a lesson" />
-        <Kpi label="Reviews due" value={s.due} note={s.due ? 'on today’s board' : 'nothing waiting'} hot={s.due > 0} />
+        <Kpi label="Reviews due" value={s.due} note={s.due === 0 ? 'nothing waiting' : s.due > REDO_PER_DAY ? `${REDO_PER_DAY} a day on your board` : 'on today’s board'} hot={s.due > 0} />
         <Kpi label="Active days" value={s.activeThisMonth} note="this month" />
       </div>
 
@@ -245,8 +246,7 @@ function Solving({ s }) {
                 <span className="mono">{s.avgNewMinutes} min</span> per new problem •{' '}
               </>
             )}
-            <span className="mono">{hours ? `${hours} h ${s.minutes % 60} min` : `${s.minutes} min`}</span> on the line in
-            total
+            <span className="mono">{hours ? `${hours} h ${s.minutes % 60} min` : `${s.minutes} min`}</span> on the line in 26 weeks
           </p>
         </>
       )}

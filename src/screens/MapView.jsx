@@ -106,6 +106,8 @@ function Finder({ state, today, search, onSearch, onStation }) {
       if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return
       const t = e.target
       if (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName)) return
+      // Not while a station sheet is open on top of the map.
+      if (document.querySelector('[aria-modal="true"]')) return
       e.preventDefault()
       input.current?.focus()
     }

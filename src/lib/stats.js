@@ -38,9 +38,22 @@ export function computeStats({ progress, attempts, today = dayString() }) {
   let minutes = 0
   let newMinutes = 0
   let newTimed = 0
+  // The latest first solve of each station. A station that was reset and
+  // solved again has older sessions from before the reset; they belong to
+  // a run that was undone, so they do not count.
+  const latestNew = new Map()
   for (const a of attempts) {
+    if (a.kind === 'new' && !(latestNew.get(a.item_key) >= a.created_at)) latestNew.set(a.item_key, a.created_at)
+  }
+  const counts = (a) => {
     // A reset station keeps its notes, but its sessions no longer count.
-    if (progress.get(a.item_key)?.status !== 'done') continue
+    if (progress.get(a.item_key)?.status !== 'done') return false
+    const since = latestNew.get(a.item_key)
+    return !since || a.created_at >= since
+  }
+
+  for (const a of attempts) {
+    if (!counts(a)) continue
     const d = localDay(a.created_at)
     perDay.set(d, (perDay.get(d) || 0) + 1)
     const item = ITEM_BY_KEY.get(a.item_key)
@@ -91,7 +104,8 @@ export function computeStats({ progress, attempts, today = dayString() }) {
 
   const shaky = [...struggles.entries()]
     .map(([key, s]) => ({ item: ITEM_BY_KEY.get(key), ...s }))
-    .filter((s) => s.item)
+    // A mastered station had three clean reviews since; it is no longer shaky.
+    .filter((s) => s.item && (progress.get(s.item.key)?.stage ?? 0) < GRADUATED)
     .sort((a, b) => b.count - a.count || (a.last < b.last ? 1 : -1))
     .slice(0, 5)
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LogOut, Minus, Plus } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
@@ -6,6 +6,15 @@ export default function Settings({ user, state, actions, run }) {
   const [budget, setBudget] = useState(state.budget)
   const [saved, setSaved] = useState(false)
   const dirty = budget !== state.budget
+
+  // A change saved on the other device arrives on refresh. Show it, unless
+  // you are in the middle of changing the number here.
+  const [seen, setSeen] = useState(state.budget)
+  useEffect(() => {
+    if (state.budget === seen) return
+    setSeen(state.budget)
+    if (budget === seen) setBudget(state.budget)
+  }, [state.budget, seen, budget])
 
   const save = async () => {
     const ok = await run(() => actions.setBudget(budget))
