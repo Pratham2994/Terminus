@@ -6,7 +6,7 @@ stations from a small weekly budget. Each one links to its page on takeUforward.
 
 ## What it does
 
-- **Today** — a departures board. *Redo* lists up to two due reviews; *Today* lists the new
+- **Today** — a departures board. *Redo* lists the day's due reviews; *Today* lists the new
   stations your weekly budget gives you for the day. A missed day moves work forward.
 - **Ride** — pressing *Start* opens Striver's page and starts a timer on a short line:
   plan by 5 min, half the video at about 22 min, the full solution at 40 min, then code it from
