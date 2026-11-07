@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { TrainFront, Map as MapIcon, BookOpen, Settings as Gear } from 'lucide-react'
+import { TrainFront, Map as MapIcon, BookOpen, ChartColumn, Settings as Gear } from 'lucide-react'
 import { configured, supabase } from './lib/supabase'
 import { useTerminus } from './lib/store'
 import { ITEM_BY_KEY } from './lib/sheet'
@@ -9,12 +9,14 @@ import Today from './screens/Today'
 import Ride from './screens/Ride'
 import MapView from './screens/MapView'
 import Kit from './screens/Kit'
+import Stats from './screens/Stats'
 import Settings from './screens/Settings'
 import StationSheet from './screens/StationSheet'
 
 const TABS = [
   { id: 'today', label: 'Today', Icon: TrainFront },
   { id: 'map', label: 'Map', Icon: MapIcon },
+  { id: 'stats', label: 'Stats', Icon: ChartColumn },
   { id: 'kit', label: 'Kit', Icon: BookOpen },
 ]
 const RIDE_KEY = 'terminus.ride'
@@ -22,7 +24,7 @@ const EXTRA_KEY = 'terminus.extra'
 
 function readHash() {
   const h = window.location.hash.replace('#', '')
-  return ['today', 'map', 'kit', 'settings'].includes(h) ? h : 'today'
+  return ['today', 'map', 'stats', 'kit', 'settings'].includes(h) ? h : 'today'
 }
 
 function readJSON(key) {
@@ -94,6 +96,7 @@ function Shell({ user }) {
   const [ride, setRideState] = useState(() => readRide(user.id))
   const [station, setStation] = useState(null)
   const [mapLine, setMapLine] = useState(null)
+  const [mapSearch, setMapSearch] = useState({ q: '', f: 'all' })
   const [toast, setToast] = useState(null)
   const [state, actions] = useTerminus(user)
   const today = useToday()
@@ -166,7 +169,7 @@ function Shell({ user }) {
   }
 
   let body
-  if (state.loading) body = <p className="loading">Loading your line…</p>
+  if (state.loading) body = <Skeleton />
   else if (state.error)
     body = (
       <div className="notice">
@@ -181,7 +184,18 @@ function Shell({ user }) {
   else if (tab === 'today')
     body = <Today state={state} actions={actions} run={run} say={say} onBoard={board} today={today} extra={extra} onMore={addExtra} />
   else if (tab === 'map')
-    body = <MapView state={state} today={today} line={mapLine} onLine={setMapLine} onStation={setStation} />
+    body = (
+      <MapView
+        state={state}
+        today={today}
+        line={mapLine}
+        onLine={setMapLine}
+        search={mapSearch}
+        onSearch={setMapSearch}
+        onStation={setStation}
+      />
+    )
+  else if (tab === 'stats') body = <Stats state={state} today={today} onStation={setStation} />
   else if (tab === 'kit') body = <Kit />
   else body = <Settings user={user} state={state} actions={actions} run={run} />
 
@@ -214,7 +228,11 @@ function Shell({ user }) {
         </button>
       </header>
 
-      <main className="content">{body}</main>
+      <main className={tab === 'stats' || (tab === 'today' && !ride) ? 'content content-wide' : 'content'}>
+        <div className="view" key={ride && tab === 'today' ? 'ride' : tab}>
+          {body}
+        </div>
+      </main>
 
       {station && (
         <StationSheet
@@ -239,6 +257,18 @@ function Shell({ user }) {
           )}
         </div>
       )}
+    </div>
+  )
+}
+
+// Grey blocks in the shape of the board while data loads.
+function Skeleton() {
+  return (
+    <div className="skeleton" aria-busy="true" aria-label="Loading your line">
+      <i className="sk sk-title" />
+      <i className="sk sk-line" />
+      <i className="sk sk-block" />
+      <i className="sk sk-block sk-tall" />
     </div>
   )
 }

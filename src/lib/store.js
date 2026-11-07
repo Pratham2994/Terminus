@@ -35,7 +35,8 @@ export function useTerminus(user) {
         const up = await supabase.from('progress').upsert(rows, { onConflict: 'user_id,item_key', ignoreDuplicates: true })
         fail(up.error, 'Could not set up your sheet')
       }
-      const since = addDays(weekStart(dayString()), -60)
+      // About half a year: enough for the Stats activity grid (20 weeks).
+      const since = addDays(weekStart(dayString()), -182)
       const [prog, att] = await Promise.all([
         supabase.from('progress').select(PROGRESS_COLS).eq('user_id', uid).limit(2000),
         supabase.from('attempts').select(ATTEMPT_COLS).eq('user_id', uid).gte('created_at', new Date(since).toISOString()).order('created_at').limit(5000),

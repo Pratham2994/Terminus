@@ -15,7 +15,10 @@ stations from a small weekly budget. Each one links to its page on takeUforward.
 - **Reviews** — a solved problem returns after 3, 7 and 21 days. *Clean* moves it on,
   *Struggled* restarts the loop. Lessons have no reviews.
 - **Map** — all 20 lines and 495 stations, with each station's state and your notes.
-  *I know this*, *Skip* and *Reset* live here.
+  Search by name, section or line (press `/`), and filter by state.
+  *I know this*, *Skip* and *Reset* live here, each with Undo.
+- **Stats** — stations reached, mastered and due; a 20-week activity grid; clean-review rate;
+  how you solve (alone, hint, solution); top patterns; shaky stations; progress per line.
 - **Kit** — a C++ cheat sheet: Big-O, STL, bits, math, templates, and what to do when stuck.
 
 Lessons for Java and Python start as skipped, because the kit is C++. Undo that on the map.
