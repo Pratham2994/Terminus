@@ -5,6 +5,7 @@
 //   T|minutes|slug|Label   (theory lesson)
 //   P|minutes|slug|Label   (practice problem)
 import raw from '../data/a2z.txt?raw'
+import linksRaw from '../data/links.txt?raw'
 
 // One entry per topic, in sheet order: short code shown on the line badge, and line colour.
 const LINE_STYLE = [
@@ -84,6 +85,54 @@ function parse(text) {
 
 export const SHEET = parse(raw)
 export const ITEM_BY_KEY = new Map(SHEET.items.map((it) => [it.key, it]))
+
+// Free resources from src/data/links.txt, one line per item in sheet order.
+const BLOG_BASE = 'https://takeuforward.org/blogs/data-structure-and-algorithm/'
+{
+  const rows = linksRaw
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith('#'))
+  SHEET.items.forEach((it, i) => {
+    const [slug, blog = '', yt = '', lc = '', flag = ''] = (rows[i] || '').split('|')
+    // A line that does not belong to this item is ignored, not misapplied.
+    if (slug !== it.slug) return
+    it.editorial = blog ? (blog.startsWith('~') ? BLOG_BASE + blog.slice(1) : `https://takeuforward.org${blog}`) : null
+    it.video = yt ? `https://www.youtube.com/watch?v=${yt}` : null
+    it.leetcode = lc ? `https://leetcode.com/problems/${lc}/` : null
+    it.plusOnly = flag === 'P'
+  })
+}
+
+// Every free link for an item, in the order to use them.
+// A lesson: the free editorial, the video, then takeUforward's lesson page
+// (which can sit behind Plus). A problem: where to solve it (LeetCode before
+// takeUforward's practice page, which has limited credits; a Plus-only page
+// is left out), then the editorial, then the video. With nothing free at
+// all, a web search for the problem.
+export function resources(item) {
+  const out = []
+  const editorial = item.editorial && { kind: 'editorial', label: 'Editorial', site: 'free', href: item.editorial }
+  const video = item.video && { kind: 'video', label: 'Video', site: 'YouTube', href: item.video }
+  if (item.lesson) {
+    out.push(editorial, video, { kind: 'lesson', label: 'Lesson', site: 'takeUforward', href: strivLink(item) })
+  } else {
+    if (item.leetcode) out.push({ kind: 'problem', label: 'Problem', site: 'LeetCode', href: item.leetcode })
+    else if (!item.plusOnly) out.push({ kind: 'problem', label: 'Problem', site: 'takeUforward', href: strivLink(item) })
+    out.push(editorial, video)
+  }
+  const list = out.filter(Boolean)
+  if (list.length === 0) {
+    const q = encodeURIComponent(`${item.label} problem`)
+    list.push({ kind: 'search', label: 'Search', site: 'web', href: `https://www.google.com/search?q=${q}` })
+  }
+  return list
+}
+
+// The link Start opens: the first free resource.
+export function primaryLink(item) {
+  return resources(item)[0]?.href || strivLink(item)
+}
 
 export function strivLink(item) {
   const slug = encodeURIComponent(item.slug).replace(/'/g, '%27')

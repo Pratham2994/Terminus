@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { ExternalLink, Pause, Play, X } from 'lucide-react'
-import { ITEM_BY_KEY, strivLink } from '../lib/sheet'
+import { ITEM_BY_KEY, primaryLink } from '../lib/sheet'
 import { afterNewSolve, afterReview } from '../lib/schedule'
 import { dayString, prettyDay } from '../lib/dates'
-import { LineBadge, STAGE_TEXT, kindText } from './bits'
+import { LineBadge, LinkSet, STAGE_TEXT, kindText } from './bits'
 import { NoteView, hasNote, splitComplexity } from './noteBits'
 
 // Stops on the solving line, in minutes.
@@ -122,7 +122,7 @@ export default function Ride({ ride, state, actions, run, say, onUpdate, onExit 
   }
 
   const startSolving = () => {
-    window.open(strivLink(item), '_blank', 'noopener')
+    window.open(primaryLink(item), '_blank', 'noopener')
     const t = Date.now()
     setNow(t)
     onUpdate({ ...ride, phase: 'ride', startedAt: t, pausedAt: null, pausedMs: 0 })
@@ -172,9 +172,7 @@ export default function Ride({ ride, state, actions, run, say, onUpdate, onExit 
         <Recall last={last} onStart={startSolving} onRateNow={rateNow} />
       ) : (
         <>
-          <a className="btn btn-line" href={strivLink(item)} target="_blank" rel="noopener noreferrer">
-            Open on takeUforward <ExternalLink size={15} aria-hidden="true" />
-          </a>
+          <LinkSet item={item} />
 
           {item.lesson ? (
             <LessonDone item={item} actions={actions} run={run} say={say} onExit={onExit} minutes={Math.round(minutes)} />

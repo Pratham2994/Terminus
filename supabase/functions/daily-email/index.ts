@@ -11,10 +11,24 @@ import { createClient } from 'npm:@supabase/supabase-js@2.45.4'
 import nodemailer from 'npm:nodemailer@6.9.16'
 
 const SHEET_URL = 'https://raw.githubusercontent.com/Pratham2994/Terminus/master/src/data/a2z.txt'
+const LINKS_URL = 'https://raw.githubusercontent.com/Pratham2994/Terminus/master/src/data/links.txt'
+const BLOG_BASE = 'https://takeuforward.org/blogs/data-structure-and-algorithm/'
 const APP_URL = Deno.env.get('APP_URL') ?? 'https://terminus-lime.vercel.app'
 const REVIEW_GAP: Record<number, number> = { 1: 3, 2: 7, 3: 21 }
 
-type Item = { key: string; slug: string; label: string; lesson: boolean; order: number; line: string; section: string }
+type Item = {
+  key: string
+  slug: string
+  label: string
+  lesson: boolean
+  order: number
+  line: string
+  section: string
+  editorial?: string
+  video?: string
+  leetcode?: string
+  plusOnly?: boolean
+}
 type Row = { user_id: string; item_key: string; status: string; stage: number; next_review: string | null; done_at: string | null }
 type Attempt = { user_id: string; item_key: string; kind: string; result: string; created_at: string }
 
@@ -54,15 +68,37 @@ async function sheet(): Promise<Item[]> {
       section,
     })
   }
+  // Free links, one line per item in the same order (src/data/links.txt).
+  const links = (await (await fetch(LINKS_URL)).text())
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith('#'))
+  items.forEach((it, i) => {
+    const [slug, blog = '', yt = '', lc = '', flag = ''] = (links[i] || '').split('|')
+    if (slug !== it.slug) return
+    it.editorial = blog ? (blog.startsWith('~') ? BLOG_BASE + blog.slice(1) : `https://takeuforward.org${blog}`) : undefined
+    it.video = yt ? `https://www.youtube.com/watch?v=${yt}` : undefined
+    it.leetcode = lc ? `https://leetcode.com/problems/${lc}/` : undefined
+    it.plusOnly = flag === 'P'
+  })
   SHEET = items
   return items
 }
 
+// The first free link, same rules as primaryLink in src/lib/sheet.js.
 function link(it: Item) {
   const slug = encodeURIComponent(it.slug).replace(/'/g, '%27')
-  return it.lesson
+  const tuf = it.lesson
     ? `https://takeuforward.org/learning/dsa/${slug}?source=strivers-a2z-dsa-sheet`
     : `https://takeuforward.org/practice/dsa/${slug}`
+  if (it.lesson) return it.editorial || it.video || tuf
+  return (
+    it.leetcode ||
+    (!it.plusOnly ? tuf : undefined) ||
+    it.editorial ||
+    it.video ||
+    `https://www.google.com/search?q=${encodeURIComponent(`${it.label} problem`)}`
+  )
 }
 
 // ---------- Dates in a user's time zone ----------

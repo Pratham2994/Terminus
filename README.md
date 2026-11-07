@@ -37,6 +37,10 @@ Lessons for Java and Python start as skipped, because the kit is C++. Undo that 
 React + Vite (static), Supabase for Google sign-in and Postgres. There is no server of our own.
 Row-level security limits every row to its owner, so each person sees only their own progress.
 
+Free links per item (editorial, YouTube, LeetCode, and whether takeUforward's practice page needs Plus)
+live in `src/data/links.txt`, in sheet order. Start opens the first free one: LeetCode, then a free
+takeUforward page, then the editorial or video. Lessons open the free editorial first.
+
 The sheet lives in `src/data/a2z.txt` (order, sections, slugs and video lengths read from
 takeuforward.org on 2026-11-07). Terminus links to takeUforward and copies none of its content.
 

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ArrowRight, Brain, Check, ExternalLink } from 'lucide-react'
 import { planToday, projection } from '../lib/schedule'
-import { strivLink } from '../lib/sheet'
+import { primaryLink } from '../lib/sheet'
 import { agoText, dayString, prettyDay } from '../lib/dates'
 import { Clock, LineBadge, STAGE_TEXT, kindText } from './bits'
 
@@ -79,7 +79,7 @@ export default function Today({ state, actions, run, say, onBoard, today, extra,
   // A new station opens its page now. A review starts with recall, so its
   // page opens later, from the Ride screen.
   const start = (item, kind) => {
-    if (kind === 'new') window.open(strivLink(item), '_blank', 'noopener')
+    if (kind === 'new') window.open(primaryLink(item), '_blank', 'noopener')
     onBoard(item, kind)
   }
 

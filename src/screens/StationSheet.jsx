@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { ExternalLink, X } from 'lucide-react'
-import { strivLink } from '../lib/sheet'
+import { primaryLink } from '../lib/sheet'
 import { stationState } from '../lib/schedule'
 import { prettyDay } from '../lib/dates'
-import { LineBadge, STAGE_TEXT, kindText } from './bits'
+import { LineBadge, LinkSet, STAGE_TEXT, kindText } from './bits'
 import { NoteView, RESULT_TEXT, hasNote } from './noteBits'
 
 
@@ -44,7 +44,7 @@ export default function StationSheet({ item, state, actions, run, say, ride, onB
 
   const start = (kind) => {
     // A review starts with recall; its page opens from the Ride screen.
-    if (kind === 'new') window.open(strivLink(item), '_blank', 'noopener')
+    if (kind === 'new') window.open(primaryLink(item), '_blank', 'noopener')
     onBoard(item, kind)
   }
 
@@ -88,15 +88,14 @@ export default function StationSheet({ item, state, actions, run, say, ride, onB
           )}
         </p>
 
+        <LinkSet item={item} />
+
         <div className="sheet-actions">
           {(st === 'open' || st === 'due') && !ride && (
             <button className="btn btn-go" onClick={() => start(st === 'due' ? 'review' : 'new')}>
               {st === 'due' ? 'Start review' : 'Start now'} {st !== 'due' && <ExternalLink size={15} aria-hidden="true" />}
             </button>
           )}
-          <a className="btn btn-line" href={strivLink(item)} target="_blank" rel="noopener noreferrer">
-            Open on takeUforward <ExternalLink size={15} aria-hidden="true" />
-          </a>
           {st === 'open' && (
             <>
               <button className="btn btn-quiet" disabled={busy} onClick={() => act(() => actions.mark(item, 'known'), 'Marked as known.')}>

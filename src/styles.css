@@ -3235,6 +3235,38 @@ button.nc-name:hover {
   }
 }
 
+/* ---------- Free links ---------- */
+
+.link-set {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.link-set .btn {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--c, var(--led)) 45%, var(--rule));
+  gap: 0.4rem;
+}
+
+.link-set .btn small {
+  color: var(--paper-3);
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.link-set .link-problem,
+.link-set .link-lesson {
+  border-color: color-mix(in srgb, var(--led) 70%, var(--rule));
+}
+
+.link-note {
+  flex-basis: 100%;
+  color: var(--paper-3);
+  font-size: 0.85rem;
+}
+
 /* ---------- Phone ---------- */
 
 @media (max-width: 720px) {
