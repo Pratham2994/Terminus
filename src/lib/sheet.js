@@ -6,6 +6,7 @@
 //   P|minutes|slug|Label   (practice problem)
 import raw from '../data/a2z.txt?raw'
 import linksRaw from '../data/links.txt?raw'
+import { editorialHref, hasEditorial } from './editorials'
 
 // One entry per topic, in sheet order: short code shown on the line badge, and line colour.
 const LINE_STYLE = [
@@ -119,6 +120,8 @@ export function resources(item) {
   } else {
     if (item.leetcode) out.push({ kind: 'problem', label: 'Problem', site: 'LeetCode', href: item.leetcode })
     else if (!item.plusOnly) out.push({ kind: 'problem', label: 'Problem', site: 'takeUforward', href: strivLink(item) })
+    // Our own editorial, for problems with nothing free besides the problem.
+    if (hasEditorial(item.key)) out.push({ kind: 'own', label: 'Editorial', site: 'Terminus', href: editorialHref(item.key), internal: true })
     out.push(editorial, video)
   }
   const list = out.filter(Boolean)
@@ -129,9 +132,9 @@ export function resources(item) {
   return list
 }
 
-// The link Start opens: the first free resource.
+// The link Start opens: the first free outside resource.
 export function primaryLink(item) {
-  return resources(item)[0]?.href || strivLink(item)
+  return resources(item).find((r) => !r.internal)?.href || strivLink(item)
 }
 
 export function strivLink(item) {

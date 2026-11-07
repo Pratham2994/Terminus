@@ -12,6 +12,7 @@ import MapView from './screens/MapView'
 import Kit from './screens/Kit'
 import Stats from './screens/Stats'
 import Notes from './screens/Notes'
+import Editorial from './screens/Editorial'
 import Settings from './screens/Settings'
 import StationSheet from './screens/StationSheet'
 
@@ -28,7 +29,14 @@ const REDO_EXTRA_KEY = 'terminus.redoExtra'
 
 function readHash() {
   const h = window.location.hash.replace('#', '')
+  if (h.startsWith('editorial/')) return 'editorial'
   return ['today', 'map', 'notes', 'stats', 'kit', 'settings'].includes(h) ? h : 'today'
+}
+
+// The station key in "#editorial/<key>".
+function readEditorialKey() {
+  const h = window.location.hash.replace('#', '')
+  return h.startsWith('editorial/') ? decodeURIComponent(h.slice('editorial/'.length)) : null
 }
 
 function readJSON(key) {
@@ -110,6 +118,9 @@ export default function App() {
 
 function Shell({ user }) {
   const [tab, setTab] = useState(readHash)
+  const [edKey, setEdKey] = useState(readEditorialKey)
+  // Where Back on an editorial returns to.
+  const [edFrom, setEdFrom] = useState(null)
   const [ride, setRideState] = useState(() => readRide(user.id))
   const [station, setStation] = useState(null)
   const [mapLine, setMapLine] = useState(null)
@@ -123,7 +134,19 @@ function Shell({ user }) {
   const [redoExtra, addRedoExtra] = useDayCount(REDO_EXTRA_KEY, user.id, today)
 
   useEffect(() => {
-    const onHash = () => setTab(readHash())
+    const onHash = () => {
+      const next = readHash()
+      setTab((prev) => {
+        if (next === 'editorial' && prev !== 'editorial') setEdFrom(prev)
+        return next
+      })
+      setEdKey(readEditorialKey())
+      // An editorial link inside the station sheet closes the sheet.
+      if (next === 'editorial') {
+        setStation(null)
+        window.scrollTo(0, 0)
+      }
+    }
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
@@ -221,6 +244,8 @@ function Shell({ user }) {
         onStation={setStation}
       />
     )
+  else if (tab === 'editorial')
+    body = <Editorial itemKey={edKey} onBack={() => go(edFrom && edFrom !== 'editorial' ? edFrom : 'today')} />
   else if (tab === 'stats') body = <Stats user={user} state={state} partners={partners} today={today} onStation={setStation} />
   else if (tab === 'notes')
     body = <Notes user={user} state={state} actions={actions} run={run} say={say} partners={partners} onStation={setStation} />

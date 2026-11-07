@@ -31,15 +31,20 @@ export function kindText(item) {
 export const STAGE_TEXT = { 1: 'Review 1 of 3', 2: 'Review 2 of 3', 3: 'Review 3 of 3' }
 
 // The free links for a station, in the order to use them.
-export function LinkSet({ item }) {
-  const list = resources(item)
+export function LinkSet({ item, hideOwn = false }) {
+  const list = resources(item).filter((r) => !(hideOwn && r.internal))
   return (
     <div className="link-set">
       {list.map((r) => (
-        <a key={r.kind} className={`btn link-${r.kind}`} href={r.href} target="_blank" rel="noopener noreferrer">
+        <a
+          key={r.kind}
+          className={`btn link-${r.kind}`}
+          href={r.href}
+          {...(r.internal ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+        >
           {r.label}
           <small>{r.site}</small>
-          <ExternalLink size={14} aria-hidden="true" />
+          {!r.internal && <ExternalLink size={14} aria-hidden="true" />}
         </a>
       ))}
       {!item.lesson && item.plusOnly && !item.leetcode && (

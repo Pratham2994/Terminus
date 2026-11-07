@@ -1,6 +1,8 @@
 # Free resources per A2Z item, in sheet order (same order as a2z.txt).
 # slug|editorial path (~ = /blogs/data-structure-and-algorithm/)|YouTube id|LeetCode slug|P if takeUforward's practice page needs Plus
-# Read from takeuforward.org (signed-in sheet page) on 2026-11-07.
+# Read from takeuforward.org (signed-in sheet page) on 2026-11-07. LeetCode slugs removed where
+# the LeetCode problem differs from the A2Z one or is LeetCode Premium while the takeUforward page is free:
+# bracket reversals, Rabin-Karp, KMP, connected components.
 breaking-the-myth|~breaking-the-myth-dsa-is-language-independent|qbwJ1U6I-IU||
 programming-and-what-are-computers|~programming-and-computers|y_tiNJXgA2U||
 how-to-think-like-a-programmer|~how-to-think-like-a-programmer|iv7jtDODKrg||
@@ -380,7 +382,7 @@ find-median-from-data-stream|~find-median-data-stream||find-median-from-data-str
 top-k-frequent-elements|~top-k-frequent-elements||top-k-frequent-elements|
 introduction-to-graph|~introduction-to-graph|3oI-34aPMWM||
 traversal-techniques||Qzf1a--rhp8||P
-connected-components|||number-of-connected-components-in-an-undirected-graph|P
+connected-components||||P
 number-of-provinces|~number-of-provinces|ACzkVtewUYA|number-of-provinces|
 number-of-islands||muncqlKJrH0|number-of-islands|
 flood-fill-algorithm|~flood-fill-algorithm||flood-fill|
@@ -485,12 +487,12 @@ number-of-distinct-substrings-in-a-string|~number-of-distinct-substrings-in-a-st
 maximum-xor-of-two-numbers-in-an-array|~maximum-xor-of-two-numbers-in-an-array|EIhAwfHubE8|maximum-xor-of-two-numbers-in-an-array|
 maximum-xor-with-an-element-from-an-array|~maximum-xor-queries-trie|Q8LhG9Pi5KM|maximum-xor-with-an-element-from-array|
 reverse-every-word-in-a-string|~reverse-every-word-in-a-string||reverse-words-in-a-string|
-minimum-number-of-bracket-reversals-to-make-an-expression-balanced|||minimum-add-to-make-parentheses-valid|P
+minimum-number-of-bracket-reversals-to-make-an-expression-balanced||||P
 count-and-say|~count-and-say||count-and-say|
 hashing-in-strings-theory|~string-hashing-rolling-hash|||
-rabin-karp-algorithm|||repeated-string-match|
+rabin-karp-algorithm||||
 z-function|~z-function|||
-kmp-algorithm-or-lps-array|||implement-strstr|
+kmp-algorithm-or-lps-array||||
 shortest-palindrome|~shortest-palindrome||shortest-palindrome|
 longest-happy-prefix|~longest-happy-prefix||longest-happy-prefix|
 print-all-primes-till-n||||
