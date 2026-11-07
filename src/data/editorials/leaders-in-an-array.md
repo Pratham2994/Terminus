@@ -1,70 +1,83 @@
 # Leaders in an Array
 
-> takeUforward's page needs Plus, and its LeetCode link is Premium. Practise on Code360 (the **Similar** link above), "Superior Elements": the same leaders, but it wants them **in sorted order**. GfG's "Array Leaders" is close too, but it counts "greater **or equal**", which differs from takeUforward's "strictly greater". Both versions are below, with a self-check for takeUforward's exact version. The free editorial and video above cover it too.
+> takeUforward's page needs Plus. Practise on Code360 (the **Similar** link above). It is almost the same problem. The box below shows the one small difference.
 
-## The problem
+## What you need to do
 
-A **leader** is an element **strictly greater** than every element to its right. The last element is always a leader. Return the leaders **in the order they appear** in the array.
+Find every number that is **bigger than everything to its right**. These numbers are called **leaders**. The last number always counts, because nothing is to its right.
 
-## Visible tests
+## What is different on Code360
 
-| nums | Leaders |
-|---|---|
-| [1, 2, 5, 3, 1, 2] | [5, 3, 2] |
-| [-3, 4, 5, 1, -4, -5] | [5, 1, -4, -5] |
-| [-3, 4, 5, 1, -30, -10] | [5, 1, -10] |
-
-## Brute force
-
-For each i, scan everything to its right. O(n²).
-
-## Step by step: walk from the right
-
-1. "Greater than everything to my right" only needs **one** number: the **maximum** of the elements to the right.
-2. So walk from the **last** element to the first, keeping `maxRight`, the largest value seen so far.
-3. Element x is a leader if `x > maxRight`. Then it also becomes the new `maxRight`.
-4. You collect leaders right to left, so **reverse** the list at the end to get the original order.
-5. Start `maxRight` as "nothing seen": the last element must always count, even if it is negative. Use `INT_MIN` with care (an element equal to `INT_MIN` would fail `>`), or simply treat the last element separately as below.
-
-## The two judges' versions
-
-| Version | Rule | Output order |
+| | takeUforward | Code360 "Superior Elements" |
 |---|---|---|
-| takeUforward | x > everything to the right | original order |
-| Code360 "Superior Elements" | x > everything to the right | **sorted ascending** |
-| GfG "Array Leaders" | x **≥** everything to the right | original order |
+| Who is a leader | bigger than everything to its right | the same |
+| Order of the answer | the order they appear in the array | **sorted, smallest first** |
+| Function | `vector<int> leaders(vector<int>& nums)` | `vector<int> superiorElements(vector<int>& a)` |
 
-Walking from the right, the leaders come out in **increasing** value order (each new leader beats the previous one). So for Code360 you can simply **not reverse**: the list is already sorted. For GfG, change `>` to `>=`.
+**In short:** the method is the same. Only the order of the answer changes, and that change makes the Code360 version one line shorter (see step 5).
+
+## Example
+
+nums = [1, 2, 5, 3, 1, 2]
+
+- 2 is last → leader.
+- 1 → no (2 is to its right and is bigger).
+- 3 → leader (only 1 and 2 are to its right).
+- 5 → leader.
+- 2 and 1 at the start → no (5 is to their right).
+
+Answer (takeUforward): **[5, 3, 2]**. Answer (Code360): **[2, 3, 5]**.
+
+## How to solve it, step by step
+
+1. **Start from the right end, not the left.**
+
+   **Why:** "bigger than everything to my right" is about the right side. If you walk from the right, you have already seen that whole side when you reach a number.
+
+2. **Keep one number: the biggest value seen so far.** Call it `maxRight`.
+
+   **Why:** to beat everything on the right, a number only has to beat the biggest one. So you never need to look back.
+
+3. **For each number:** if it is bigger than `maxRight`, it is a leader. Save it, and make it the new `maxRight`.
+
+   **Why:** a new leader is now the biggest thing seen, so later numbers must beat it.
+
+4. **The last number goes in first,** before the loop.
+
+   **Why:** nothing is to its right, so it is always a leader.
+
+5. **Fix the order at the end.**
+   - takeUforward wants the original order. You collected the leaders from right to left, so **reverse** the list.
+   - Code360 wants them sorted. Each new leader is bigger than the one before, so the list you collected is **already sorted**. Return it as it is.
 
 ## Code for Code360 (submit this there)
 
 ```cpp
 vector<int> superiorElements(vector<int>& a) {
     vector<int> out;
-    int maxRight = a.back();
-    out.push_back(a.back());                        // the last element always counts
-    for (int i = (int)a.size() - 2; i >= 0; i--) {
-        if (a[i] > maxRight) {                      // strictly greater than all to the right
+    int maxRight = a.back();                        // the last number is always a leader
+    out.push_back(a.back());
+    for (int i = (int)a.size() - 2; i >= 0; i--) {  // walk right to left
+        if (a[i] > maxRight) {                      // beats everything to its right
             out.push_back(a[i]);
-            maxRight = a[i];
+            maxRight = a[i];                        // the new biggest value seen
         }
     }
-    return out;                                     // right-to-left order = ascending values
+    return out;                                     // already smallest first: no reverse
 }
 ```
 
-## Complexity
+The takeUforward version is in the "Full solution" fold at the bottom. It is this code plus one `reverse`.
 
-- Time: O(n). Space: O(1) besides the output.
+## How fast is it?
 
-## Edge cases
+Each number is looked at once, so it is O(n) time, and it uses no extra memory besides the answer.
 
-- Equal values: in [5, 5, 5] only the last 5 is a leader under "strictly greater". (Under GfG's "≥", all three are.)
-- All negative: the last element is still a leader.
+## Watch out for
 
-## Dry run ([1, 2, 5, 3, 1, 2])
-
-From the right: 2 (leader, max 2), 1 (no), 3 (leader, max 3), 5 (leader, max 5), 2 (no), 1 (no). Collected [2, 3, 5] → reversed **[5, 3, 2]**.
+- **Equal numbers:** "bigger" means strictly bigger. In [5, 5, 5] only the last 5 is a leader.
+- **Negative numbers:** the last number is still a leader, even if it is −100. That is why step 4 starts with the last number instead of 0.
+- **GfG's "Array Leaders"** looks similar, but there a number only has to be "bigger **or equal**". Do not use it to check this version.
 
 ## Check takeUforward's version
 

@@ -62,11 +62,40 @@ export function parseMarkdown(text) {
       continue
     }
     if (/^\s*-\s+/.test(line) || /^\s*\d+\.\s+/.test(line)) {
+      // A list. Each item: { text, more: [extra paragraphs], sub: [sub-bullets] }.
+      // Inside an item, indented lines continue it: "   - x" is a sub-bullet,
+      // other indented text continues the current paragraph, and an indented
+      // line after a blank line starts a new paragraph of the same item.
       const ordered = /^\s*\d+\./.test(line)
+      const top = ordered ? /^\d+\.\s+/ : /^-\s+/
       const items = []
-      while (i < lines.length && (/^\s*-\s+/.test(lines[i]) || /^\s*\d+\.\s+/.test(lines[i]) || /^\s{2,}\S/.test(lines[i]))) {
-        if (/^\s{2,}\S/.test(lines[i]) && !/^\s*(-|\d+\.)\s+/.test(lines[i])) items[items.length - 1] += ' ' + lines[i].trim()
-        else items.push(lines[i].replace(/^\s*(-|\d+\.)\s+/, ''))
+      let gap = false
+      while (i < lines.length) {
+        const l = lines[i]
+        if (!l.trim()) {
+          // Keep going only if the list goes on after the blank line(s).
+          let j = i
+          while (j < lines.length && !lines[j].trim()) j++
+          if (j < lines.length && (top.test(lines[j]) || /^\s{2,}\S/.test(lines[j]))) {
+            gap = true
+            i = j
+            continue
+          }
+          break
+        }
+        const item = items[items.length - 1]
+        if (top.test(l) || (!items.length && /^\s*(-|\d+\.)\s+/.test(l))) {
+          items.push({ text: l.replace(/^\s*(-|\d+\.)\s+/, ''), more: [], sub: [] })
+        } else if (item && /^\s{2,}-\s+/.test(l)) {
+          item.sub.push(l.replace(/^\s*-\s+/, ''))
+        } else if (item && /^\s{2,}\S/.test(l)) {
+          const t = l.trim()
+          if (item.sub.length && !gap) item.sub[item.sub.length - 1] += ' ' + t
+          else if (gap || item.sub.length) item.more.push(t)
+          else if (item.more.length) item.more[item.more.length - 1] += ' ' + t
+          else item.text += ' ' + t
+        } else break
+        gap = false
         i++
       }
       blocks.push({ type: ordered ? 'ol' : 'ul', items })

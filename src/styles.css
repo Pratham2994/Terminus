@@ -3345,6 +3345,17 @@ button.nc-name:hover {
   font-weight: 800;
 }
 
+/* A step's extra paragraph, like its "Why:" line. */
+.ed-li-more {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--paper-2);
+}
+
+.ed-body li > ul {
+  margin-top: 0.35rem;
+}
+
 /* Long code in a sentence (function signatures) must wrap on a phone. */
 .ed-body .inline-code {
   white-space: normal;

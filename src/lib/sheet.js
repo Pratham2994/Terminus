@@ -150,8 +150,19 @@ export function resources(item) {
       const j = item.judge
       out.push({ kind: 'problem', label: j.similar ? 'Similar' : 'Problem', site: j.site, href: j.href, title: j.similar ? `Similar problem: ${j.similar}` : undefined })
     }
-    // Our own editorial, for problems with nothing free besides the problem.
-    if (hasEditorial(item.key)) out.push({ kind: 'own', label: 'Editorial', site: 'Terminus', href: editorialHref(item.key), internal: true })
+    // Our own editorial. With no exact free judge, it carries its own judge:
+    // tests and a self-check program to copy into a free online compiler.
+    if (hasEditorial(item.key)) {
+      const ownJudge = item.plusOnly && !item.leetcode && (!item.judge || item.judge.similar)
+      out.push({
+        kind: 'own',
+        label: ownJudge ? 'Editorial + judge' : 'Editorial',
+        site: 'Terminus',
+        href: editorialHref(item.key),
+        internal: true,
+        title: ownJudge ? 'Tests and a copyable self-check program to run in a free online compiler' : undefined,
+      })
+    }
     out.push(editorial, video)
     if (item.leetcodePremium) out.push({ kind: 'premium', label: 'LeetCode', site: 'Premium', href: item.leetcodePremium })
   }

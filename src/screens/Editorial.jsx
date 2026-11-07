@@ -72,9 +72,23 @@ function Blocks({ blocks }) {
       const List = b.type
       return (
         <List key={i}>
-          {b.items.map((t, j) => (
+          {b.items.map((it, j) => (
             <li key={j}>
-              <Inline text={t} />
+              <Inline text={it.text} />
+              {it.sub.length > 0 && (
+                <ul>
+                  {it.sub.map((s, k) => (
+                    <li key={k}>
+                      <Inline text={s} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {it.more.map((m, k) => (
+                <span key={k} className="ed-li-more">
+                  <Inline text={m} />
+                </span>
+              ))}
             </li>
           ))}
         </List>
