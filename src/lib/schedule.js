@@ -42,19 +42,21 @@ export function planToday({ progress, attempts, budget, extra = 0, today = daySt
   }
   due.sort((a, b) => (a.row.next_review < b.row.next_review ? -1 : a.row.next_review > b.row.next_review ? 1 : a.item.order - b.item.order))
 
+  // Count solves from the progress rows, not the attempt log, so a reset
+  // station stops counting and comes back on the board.
   const monday = weekStart(today)
   let doneThisWeek = 0
   let doneToday = 0
-  for (const a of attempts) {
-    if (a.kind !== 'new') continue
-    const d = localDay(a.created_at)
+  for (const row of progress.values()) {
+    if (row.status !== 'done' || !row.done_at) continue
+    const d = localDay(row.done_at)
     if (d >= monday) doneThisWeek++
     if (d === today) doneToday++
   }
   const daysLeft = 7 - daysBetween(monday, today)
   const remainingAtDawn = Math.max(0, budget - (doneThisWeek - doneToday))
   const targetToday = Math.ceil(remainingAtDawn / daysLeft)
-  const count = Math.max(0, targetToday - doneToday) + extra
+  const count = Math.max(0, targetToday + extra - doneToday)
 
   const open = SHEET.items.filter((it) => !progress.has(it.key))
   return {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from './supabase'
 import { DEFAULT_SKIPPED, SHEET } from './sheet'
 import { addDays, dayString, weekStart } from './dates'
@@ -15,8 +15,12 @@ function fail(error, what) {
 // local state changes only after the write succeeds.
 export function useTerminus(user) {
   const [state, setState] = useState({ loading: true, error: null, budget: 4, progress: new Map(), attempts: [] })
+  // Counts local writes. A load that started before a write would bring back
+  // old rows, so its result is dropped.
+  const writes = useRef(0)
 
   const load = useCallback(async () => {
+    const seq = writes.current
     try {
       const uid = user.id
       let { data: settings, error } = await supabase.from('settings').select('weekly_budget').eq('user_id', uid).maybeSingle()
@@ -38,6 +42,7 @@ export function useTerminus(user) {
       ])
       fail(prog.error, 'Could not read progress')
       fail(att.error, 'Could not read attempts')
+      if (seq !== writes.current) return
       setState({
         loading: false,
         error: null,
@@ -46,19 +51,27 @@ export function useTerminus(user) {
         attempts: att.data,
       })
     } catch (e) {
-      setState((s) => ({ ...s, loading: false, error: e.message }))
+      // A failed background refresh keeps the data already on screen.
+      setState((s) => (s.loading || s.error ? { ...s, loading: false, error: e.message } : s))
     }
   }, [user.id])
 
   useEffect(() => {
     load()
+    // Phone and laptop share one account: refresh when the app comes back
+    // into view, so changes made on the other device show up.
+    const onShow = () => document.visibilityState === 'visible' && load()
+    document.addEventListener('visibilitychange', onShow)
+    return () => document.removeEventListener('visibilitychange', onShow)
   }, [load])
 
   const putProgress = useCallback(
     async (item_key, fields) => {
+      writes.current++
       const row = { user_id: user.id, item_key, ...fields, updated_at: new Date().toISOString() }
       const { data, error } = await supabase.from('progress').upsert(row, { onConflict: 'user_id,item_key' }).select(PROGRESS_COLS).single()
       fail(error, 'Could not save')
+      writes.current++
       setState((s) => {
         const progress = new Map(s.progress)
         progress.set(item_key, data)
@@ -70,8 +83,10 @@ export function useTerminus(user) {
 
   const addAttempt = useCallback(
     async (fields) => {
+      writes.current++
       const { data, error } = await supabase.from('attempts').insert({ user_id: user.id, ...fields }).select(ATTEMPT_COLS).single()
       fail(error, 'Could not save your note')
+      writes.current++
       setState((s) => ({ ...s, attempts: [...s.attempts, data] }))
     },
     [user.id],
@@ -83,8 +98,10 @@ export function useTerminus(user) {
 
       async setBudget(n) {
         const weekly_budget = Math.max(1, Math.min(50, n))
+        writes.current++
         const { error } = await supabase.from('settings').update({ weekly_budget }).eq('user_id', user.id)
         fail(error, 'Could not save the budget')
+        writes.current++
         setState((s) => ({ ...s, budget: weekly_budget }))
       },
 
@@ -94,8 +111,10 @@ export function useTerminus(user) {
 
       // Puts an item back on the line as not done (undo "I know this" or skip).
       async clear(item) {
+        writes.current++
         const { error } = await supabase.from('progress').delete().eq('user_id', user.id).eq('item_key', item.key)
         fail(error, 'Could not undo')
+        writes.current++
         setState((s) => {
           const progress = new Map(s.progress)
           progress.delete(item.key)

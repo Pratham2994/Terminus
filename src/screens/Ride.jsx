@@ -74,7 +74,9 @@ export default function Ride({ ride, state, actions, run, onExit }) {
   const elapsed = now - ride.startedAt
   const minutes = elapsed / 60000
   const stop = [...STOPS].reverse().find((s) => minutes >= s.at)
-  const review = ride.kind === 'review'
+  // Use the station as it is now, not as it was when the ride began: it may
+  // have been reset or solved on another device since.
+  const review = row?.status === 'done' && !item.lesson
 
   return (
     <section className="ride" aria-labelledby="ride-title">

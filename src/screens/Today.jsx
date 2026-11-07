@@ -2,12 +2,11 @@ import { useMemo, useState } from 'react'
 import { ArrowRight, Check, ExternalLink } from 'lucide-react'
 import { planToday } from '../lib/schedule'
 import { strivLink } from '../lib/sheet'
-import { agoText, dayString, prettyDay } from '../lib/dates'
+import { agoText, prettyDay } from '../lib/dates'
 import { Clock, LineBadge, STAGE_TEXT, kindText } from './bits'
 
-export default function Today({ state, actions, run, onBoard }) {
-  const [extra, setExtra] = useState(0)
-  const today = dayString()
+export default function Today({ state, actions, run, onBoard, today, extra, onMore }) {
+  const [busyKey, setBusyKey] = useState(null)
   const plan = useMemo(
     () => planToday({ progress: state.progress, attempts: state.attempts, budget: state.budget, extra, today }),
     [state.progress, state.attempts, state.budget, extra, today],
@@ -108,7 +107,12 @@ export default function Today({ state, actions, run, onBoard }) {
                   <button
                     className="btn btn-quiet"
                     title="Skip it with no reviews. You can undo this on the map."
-                    onClick={() => run(() => actions.mark(item, 'known'))}
+                    disabled={busyKey === item.key}
+                    onClick={async () => {
+                      setBusyKey(item.key)
+                      await run(() => actions.mark(item, 'known'))
+                      setBusyKey(null)
+                    }}
                   >
                     <Check size={15} aria-hidden="true" /> I know this
                   </button>
@@ -118,7 +122,7 @@ export default function Today({ state, actions, run, onBoard }) {
           </ol>
         )}
         {plan.nextUp && (
-          <button className="next-up" onClick={() => setExtra((n) => n + 1)}>
+          <button className="next-up" onClick={onMore}>
             <span>
               Ride one more: <strong>{plan.nextUp.label}</strong>
             </span>

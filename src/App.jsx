@@ -3,6 +3,7 @@ import { TrainFront, Map as MapIcon, BookOpen, Settings as Gear } from 'lucide-r
 import { configured, supabase } from './lib/supabase'
 import { useTerminus } from './lib/store'
 import { ITEM_BY_KEY } from './lib/sheet'
+import { dayString } from './lib/dates'
 import SignIn from './screens/SignIn'
 import Today from './screens/Today'
 import Ride from './screens/Ride'
@@ -17,19 +18,50 @@ const TABS = [
   { id: 'kit', label: 'Kit', Icon: BookOpen },
 ]
 const RIDE_KEY = 'terminus.ride'
+const EXTRA_KEY = 'terminus.extra'
 
 function readHash() {
   const h = window.location.hash.replace('#', '')
   return ['today', 'map', 'kit', 'settings'].includes(h) ? h : 'today'
 }
 
-function readRide() {
+function readJSON(key) {
   try {
-    const ride = JSON.parse(localStorage.getItem(RIDE_KEY))
-    return ride && ITEM_BY_KEY.has(ride.key) ? ride : null
+    return JSON.parse(localStorage.getItem(key))
   } catch {
     return null
   }
+}
+
+function writeJSON(key, value) {
+  try {
+    if (value) localStorage.setItem(key, JSON.stringify(value))
+    else localStorage.removeItem(key)
+  } catch {
+    /* storage blocked: the value still works for this page load */
+  }
+}
+
+// A ride belongs to one account. A ride left by another account is ignored.
+function readRide(uid) {
+  const ride = readJSON(RIDE_KEY)
+  // Rides saved before this check have no uid; keep them.
+  return ride && (!ride.uid || ride.uid === uid) && ITEM_BY_KEY.has(ride.key) ? ride : null
+}
+
+// The local day, kept current while the app stays open past midnight.
+function useToday() {
+  const [today, setToday] = useState(dayString)
+  useEffect(() => {
+    const tick = () => setToday(dayString())
+    const t = setInterval(tick, 60000)
+    document.addEventListener('visibilitychange', tick)
+    return () => {
+      clearInterval(t)
+      document.removeEventListener('visibilitychange', tick)
+    }
+  }, [])
+  return today
 }
 
 export default function App() {
@@ -59,10 +91,21 @@ export default function App() {
 
 function Shell({ user }) {
   const [tab, setTab] = useState(readHash)
-  const [ride, setRideState] = useState(readRide)
+  const [ride, setRideState] = useState(() => readRide(user.id))
   const [station, setStation] = useState(null)
+  const [mapLine, setMapLine] = useState(null)
   const [toast, setToast] = useState(null)
   const [state, actions] = useTerminus(user)
+  const today = useToday()
+  // "Ride one more" count for today. It lives here, not on the board, so it
+  // survives a ride and a reload. A new day starts again at zero.
+  const [extraState, setExtraState] = useState(() => readJSON(EXTRA_KEY))
+  const extra = extraState?.uid === user.id && extraState?.day === today ? extraState.n : 0
+  const addExtra = useCallback(() => {
+    const next = { uid: user.id, day: today, n: extra + 1 }
+    writeJSON(EXTRA_KEY, next)
+    setExtraState(next)
+  }, [user.id, today, extra])
 
   useEffect(() => {
     const onHash = () => setTab(readHash())
@@ -77,18 +120,15 @@ function Shell({ user }) {
   }, [toast])
 
   const go = (id) => {
+    // Tapping Map while on the map goes back to all lines.
+    if (id === 'map' && tab === 'map') setMapLine(null)
     window.location.hash = id
     setTab(id)
     window.scrollTo(0, 0)
   }
 
   const setRide = useCallback((r) => {
-    try {
-      if (r) localStorage.setItem(RIDE_KEY, JSON.stringify(r))
-      else localStorage.removeItem(RIDE_KEY)
-    } catch {
-      /* storage blocked: the ride still works for this page load */
-    }
+    writeJSON(RIDE_KEY, r)
     setRideState(r)
   }, [])
 
@@ -107,7 +147,7 @@ function Shell({ user }) {
 
   const board = (item, kind) => {
     setStation(null)
-    setRide({ key: item.key, kind, startedAt: Date.now() })
+    setRide({ uid: user.id, key: item.key, kind, startedAt: Date.now() })
     go('today')
   }
 
@@ -124,8 +164,10 @@ function Shell({ user }) {
     )
   else if (ride && tab === 'today')
     body = <Ride ride={ride} state={state} actions={actions} run={run} onExit={() => setRide(null)} />
-  else if (tab === 'today') body = <Today state={state} actions={actions} run={run} onBoard={board} />
-  else if (tab === 'map') body = <MapView state={state} onStation={setStation} />
+  else if (tab === 'today')
+    body = <Today state={state} actions={actions} run={run} onBoard={board} today={today} extra={extra} onMore={addExtra} />
+  else if (tab === 'map')
+    body = <MapView state={state} today={today} line={mapLine} onLine={setMapLine} onStation={setStation} />
   else if (tab === 'kit') body = <Kit />
   else body = <Settings user={user} state={state} actions={actions} run={run} />
 

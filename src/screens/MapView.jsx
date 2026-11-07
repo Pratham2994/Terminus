@@ -1,8 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { SHEET } from '../lib/sheet'
 import { lineStats, stationState } from '../lib/schedule'
-import { dayString } from '../lib/dates'
 import { LineBadge } from './bits'
 
 const STATE_TEXT = {
@@ -14,10 +13,8 @@ const STATE_TEXT = {
   skipped: 'Skipped',
 }
 
-export default function MapView({ state, onStation }) {
-  const [lineIndex, setLineIndex] = useState(null)
-  const today = dayString()
-
+// The open line lives in the shell, so the map comes back where you left it.
+export default function MapView({ state, today, line: lineIndex, onLine: setLineIndex, onStation }) {
   if (lineIndex !== null) {
     return (
       <LineDetail
