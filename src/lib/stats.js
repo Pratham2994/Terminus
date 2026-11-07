@@ -32,7 +32,7 @@ export function computeStats({ progress, attempts, today = dayString() }) {
 
   // Sessions per local day, for the activity grid.
   const perDay = new Map()
-  const results = { alone: 0, hint: 0, solution: 0, clean: 0, struggled: 0 }
+  const results = { alone: 0, hint: 0, solution: 0, clean: 0, struggled: 0, forgot: 0 }
   const struggles = new Map()
   const patterns = new Map()
   let minutes = 0
@@ -64,7 +64,7 @@ export function computeStats({ progress, attempts, today = dayString() }) {
       newMinutes += a.minutes
       newTimed++
     }
-    if (a.result === 'struggled') {
+    if (a.result === 'struggled' || a.result === 'forgot') {
       const s = struggles.get(a.item_key) || { count: 0, last: '' }
       s.count++
       if (a.created_at > s.last) s.last = a.created_at
@@ -123,7 +123,7 @@ export function computeStats({ progress, attempts, today = dayString() }) {
     reached: solved + known,
     stages,
     results,
-    reviews: results.clean + results.struggled,
+    reviews: results.clean + results.struggled + results.forgot,
     firstSolves: results.alone + results.hint + results.solution,
     minutes,
     avgNewMinutes: newTimed ? Math.round(newMinutes / newTimed) : null,

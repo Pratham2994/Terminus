@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react'
 import { ChevronRight } from 'lucide-react'
 import { computeStats, GRID_WEEKS } from '../lib/stats'
 import { parseDay, prettyDay } from '../lib/dates'
-import { REDO_PER_DAY } from '../lib/schedule'
+import { reviewsPerDay } from '../lib/schedule'
 import { LineBadge } from './bits'
+import { WhoSwitch } from './Notes'
 
 const DAY_NAMES = ['Mon', '', 'Wed', '', 'Fri', '', '']
 
@@ -23,23 +24,33 @@ function sessions(n) {
   return `${n} ${n === 1 ? 'session' : 'sessions'}`
 }
 
-export default function Stats({ state, today, onStation }) {
+export default function Stats({ user, state, partners, today, onStation }) {
+  const [who, setWho] = useState(user.id)
+  const partner = partners.find((p) => p.id === who)
+  // You, or a partner (read only: their stations do not open your sheet).
+  const source = partner || state
   const s = useMemo(
-    () => computeStats({ progress: state.progress, attempts: state.attempts, today }),
-    [state.progress, state.attempts, today],
+    () => computeStats({ progress: source.progress, attempts: source.attempts, today }),
+    [source.progress, source.attempts, today],
   )
+  if (partner) onStation = null
 
   return (
     <section className="stats" aria-labelledby="stats-title">
       <header className="page-head">
         <h1 id="stats-title">Stats</h1>
-        <p>How far you have ridden, and how well it is sticking. Sessions cover the last 26 weeks.</p>
+        <p>
+          {partner ? `${partner.name}’s ride so far.` : 'How far you have ridden, and how well it is sticking.'} Sessions
+          cover the last 26 weeks.
+        </p>
       </header>
+
+      {partners.length > 0 && <WhoSwitch user={user} partners={partners} who={who} onWho={setWho} />}
 
       <div className="kpis">
         <Kpi label="Stations reached" value={s.reached} of={s.total} bar={pct(s.reached, s.total)} />
         <Kpi label="Mastered" value={s.mastered} note="three clean reviews, or a lesson" />
-        <Kpi label="Reviews due" value={s.due} note={s.due === 0 ? 'nothing waiting' : s.due > REDO_PER_DAY ? `${REDO_PER_DAY} a day on your board` : 'on today’s board'} hot={s.due > 0} />
+        <Kpi label="Reviews due" value={s.due} note={s.due === 0 ? 'nothing waiting' : s.due > reviewsPerDay(s.due) ? `${reviewsPerDay(s.due)} a day on the board` : 'on today’s board'} hot={s.due > 0} />
         <Kpi label="Active days" value={s.activeThisMonth} note="this month" />
       </div>
 
@@ -187,6 +198,7 @@ function Reviews({ s }) {
             <span className="mono">{s.reviews ? `${pct(s.results.clean, s.reviews)}%` : '—'}</span>
             <small>
               clean, over {s.reviews} {s.reviews === 1 ? 'review' : 'reviews'}
+              {s.reviews > 0 && ` • ${s.results.struggled} struggled • ${s.results.forgot} forgot`}
             </small>
           </p>
           {inLoop > 0 && (
@@ -286,7 +298,7 @@ function Shaky({ s, onStation }) {
         <ul className="shaky">
           {s.shaky.map(({ item, count }) => (
             <li key={item.key}>
-              <button onClick={() => onStation(item)}>
+              <button onClick={() => onStation(item)} disabled={!onStation}>
                 <LineBadge line={item.line} />
                 <span className="shaky-name">
                   {item.label}

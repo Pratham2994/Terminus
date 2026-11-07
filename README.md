@@ -12,8 +12,17 @@ stations from a small weekly budget. Each one links to its page on takeUforward.
   plan by 5 min, half the video at about 22 min, the full solution at 40 min, then code it from
   memory. When you finish, log how it went, your own time and space complexity, the pattern, the
   key idea and your mistake.
-- **Reviews** — a solved problem returns after 3, 7 and 21 days. *Clean* moves it on,
-  *Struggled* restarts the loop. Lessons have no reviews.
+- **Reviews** — a solved problem returns after 3, 7 and 21 days. A review starts from memory:
+  recall the idea, reveal your old note, then solve again (timer with pause). *Clean* moves it on,
+  *Struggled* restarts the 3-day loop, *Forgot completely* brings it back tomorrow. Two reviews a
+  day, more (up to five) when a backlog builds up. Lessons have no reviews.
+- **Notes** — every note you wrote, one card per station: search all text and code, filter by
+  pattern, read older notes, edit any note.
+- **Partner** — link two accounts with a one-time code. Each sees the other's week on Today, and
+  their stats and notes (read only).
+- **Goal** — optional finish-by date; Today shows whether your weekly budget is on pace.
+- **Emails** — 08:00 board, 21:00 nudge on a day with nothing done, Sunday summary. Sent through
+  Gmail by a Supabase Edge Function on an hourly schedule.
 - **Map** — all 20 lines and 495 stations, with each station's state and your notes.
   Search by name, section or line (press `/`), and filter by state.
   *I know this*, *Skip* and *Reset* live here, each with Undo.
@@ -41,11 +50,15 @@ npm run dev                  # http://localhost:5173
 
 ## Set up your own copy
 
-1. Create a Supabase project. Run `supabase/schema.sql` in its SQL editor.
+1. Create a Supabase project. Run `supabase/schema.sql`, then
+   `supabase/002_reviews_notes_partners_email.sql`, in its SQL editor.
 2. Create a Google OAuth client (Web application). Its redirect URI is the callback URL shown in
    Supabase → Authentication → Sign In / Providers → Google. Paste the client ID and secret there.
 3. Supabase → Authentication → URL Configuration: add your site URL and `http://localhost:5173`.
 4. Deploy to Vercel (framework: Vite) with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+5. Emails (optional): deploy `supabase/functions/daily-email` with *Verify JWT* off, and set the
+   function secrets `GMAIL_USER` and `GMAIL_APP_PASSWORD` (a Gmail app password). The
+   schedule from step 1 calls it every hour.
 
 Only the publishable (anon) key belongs in the client. Never put the secret or service-role key
 in this app or in the repo.

@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
-import { ExternalLink, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ExternalLink, Pause, Play, X } from 'lucide-react'
 import { ITEM_BY_KEY, strivLink } from '../lib/sheet'
 import { afterNewSolve, afterReview } from '../lib/schedule'
 import { dayString, prettyDay } from '../lib/dates'
 import { LineBadge, STAGE_TEXT, kindText } from './bits'
+import { NoteView, hasNote, splitComplexity } from './noteBits'
 
 // Stops on the solving line, in minutes.
 const STOPS = [
@@ -52,7 +53,8 @@ const NEW_RESULTS = [
 ]
 const REVIEW_RESULTS = [
   ['clean', 'Clean', 'Moves to the next review'],
-  ['struggled', 'Struggled', 'Review again in 3 days'],
+  ['struggled', 'Struggled', 'Back to the 3-day review'],
+  ['forgot', 'Forgot completely', 'Starts again, back tomorrow'],
 ]
 
 function mmss(ms) {
@@ -61,33 +63,75 @@ function mmss(ms) {
   return `${String(m).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
 }
 
+// Time on the ride, minus any pauses.
+function elapsedOf(ride, now) {
+  const end = ride.pausedAt ?? now
+  return Math.max(0, end - ride.startedAt - (ride.pausedMs || 0))
+}
+
 // What the arrival toast says: when the station comes back next.
 function arrivalText(row) {
   if (!row.next_review) return 'Arrived. This station is mastered.'
   return `Arrived. Next review on ${prettyDay(row.next_review)}.`
 }
 
-export default function Ride({ ride, state, actions, run, say, onExit }) {
+export default function Ride({ ride, state, actions, run, say, onUpdate, onExit }) {
   const item = ITEM_BY_KEY.get(ride.key)
   const row = state.progress.get(item.key)
+  // Use the station as it is now, not as it was when the ride began: it may
+  // have been reset or solved on another device since.
+  const review = row?.status === 'done' && !item.lesson
+  // A review starts with recall, before the problem is opened.
+  const phase = ride.phase || (review ? 'recall' : 'ride')
   const [now, setNow] = useState(Date.now())
   const [step, setStep] = useState('ride')
   const [leaving, setLeaving] = useState(false)
   // The note typed so far, kept when you go back to the timer.
   const [draft, setDraft] = useState(null)
+  // Your last saved note for this station (reviews only).
+  const [last, setLast] = useState(undefined)
 
   useEffect(() => {
-    if (step !== 'ride') return
+    if (!review) return setLast(null)
+    let live = true
+    actions
+      .history(item)
+      .then((list) => live && setLast(list.find(hasNote) || null))
+      .catch(() => live && setLast(null))
+    return () => {
+      live = false
+    }
+  }, [review, item, actions])
+
+  useEffect(() => {
+    if (step !== 'ride' || phase !== 'ride' || ride.pausedAt) return
     const t = setInterval(() => setNow(Date.now()), 1000)
     return () => clearInterval(t)
-  }, [step])
+  }, [step, phase, ride.pausedAt])
 
-  const elapsed = now - ride.startedAt
+  const elapsed = elapsedOf(ride, now)
   const minutes = elapsed / 60000
   const stop = [...STOPS].reverse().find((s) => minutes >= s.at)
-  // Use the station as it is now, not as it was when the ride began: it may
-  // have been reset or solved on another device since.
-  const review = row?.status === 'done' && !item.lesson
+  const paused = Boolean(ride.pausedAt)
+
+  const togglePause = () => {
+    const t = Date.now()
+    setNow(t)
+    if (paused) onUpdate({ ...ride, pausedAt: null, pausedMs: (ride.pausedMs || 0) + (t - ride.pausedAt) })
+    else onUpdate({ ...ride, pausedAt: t })
+  }
+
+  const startSolving = () => {
+    window.open(strivLink(item), '_blank', 'noopener')
+    const t = Date.now()
+    setNow(t)
+    onUpdate({ ...ride, phase: 'ride', startedAt: t, pausedAt: null, pausedMs: 0 })
+  }
+
+  const rateNow = () => {
+    onUpdate({ ...ride, phase: 'ride' })
+    setStep('note')
+  }
 
   return (
     <section className="ride" aria-labelledby="ride-title">
@@ -104,7 +148,7 @@ export default function Ride({ ride, state, actions, run, say, onExit }) {
           className="icon-btn"
           aria-label="Leave without saving"
           title="Leave without saving"
-          onClick={() => (elapsed < 60000 ? onExit() : setLeaving(true))}
+          onClick={() => (elapsed < 60000 && phase === 'ride' ? onExit() : setLeaving(true))}
         >
           <X size={20} />
         </button>
@@ -124,45 +168,112 @@ export default function Ride({ ride, state, actions, run, say, onExit }) {
         </div>
       )}
 
-      <a className="btn btn-line" href={strivLink(item)} target="_blank" rel="noopener noreferrer">
-        Open on takeUforward <ExternalLink size={15} aria-hidden="true" />
-      </a>
-
-      {item.lesson ? (
-        <LessonDone item={item} actions={actions} run={run} say={say} onExit={onExit} minutes={Math.round(minutes)} />
-      ) : step === 'ride' ? (
-        <>
-          <Track minutes={minutes} color={item.line.color} />
-          <div className="ride-now">
-            <span className="ride-time mono" aria-live="off">
-              {mmss(elapsed)}
-            </span>
-            <p className="ride-tip">
-              <strong>{stop.name}.</strong> {stop.tip}
-            </p>
-          </div>
-          <button className="btn btn-go btn-wide" onClick={() => setStep('note')}>
-            {review ? 'I finished the review' : 'I finished it'}
-          </button>
-        </>
+      {phase === 'recall' ? (
+        <Recall last={last} onStart={startSolving} onRateNow={rateNow} />
       ) : (
-        <NoteForm
-          item={item}
-          row={row}
-          review={review}
-          minutes={Math.max(1, Math.round(minutes))}
-          actions={actions}
-          run={run}
-          say={say}
-          draft={draft}
-          onBack={(d) => {
-            setDraft(d)
-            setStep('ride')
-          }}
-          onSaved={onExit}
-        />
+        <>
+          <a className="btn btn-line" href={strivLink(item)} target="_blank" rel="noopener noreferrer">
+            Open on takeUforward <ExternalLink size={15} aria-hidden="true" />
+          </a>
+
+          {item.lesson ? (
+            <LessonDone item={item} actions={actions} run={run} say={say} onExit={onExit} minutes={Math.round(minutes)} />
+          ) : step === 'ride' ? (
+            <>
+              <Track minutes={minutes} color={item.line.color} />
+              <div className={paused ? 'ride-now paused' : 'ride-now'}>
+                <div className="ride-clock">
+                  <span className="ride-time mono" aria-live="off">
+                    {mmss(elapsed)}
+                  </span>
+                  <button className="btn btn-quiet btn-pause" onClick={togglePause} aria-pressed={paused}>
+                    {paused ? <Play size={16} aria-hidden="true" /> : <Pause size={16} aria-hidden="true" />}
+                    {paused ? 'Resume' : 'Pause'}
+                  </button>
+                </div>
+                <p className="ride-tip">
+                  {paused ? (
+                    <>
+                      <strong>Paused.</strong> The clock waits for you. Resume when you are back.
+                    </>
+                  ) : (
+                    <>
+                      <strong>{stop.name}.</strong> {stop.tip}
+                    </>
+                  )}
+                </p>
+              </div>
+              <button className="btn btn-go btn-wide" onClick={() => setStep('note')}>
+                {review ? 'I finished the review' : 'I finished it'}
+              </button>
+            </>
+          ) : (
+            <NoteForm
+              item={item}
+              row={row}
+              review={review}
+              last={last}
+              minutes={Math.max(1, Math.round(minutes))}
+              actions={actions}
+              run={run}
+              say={say}
+              draft={draft}
+              onBack={(d) => {
+                setDraft(d)
+                setStep('ride')
+              }}
+              onSaved={onExit}
+            />
+          )}
+        </>
       )}
     </section>
+  )
+}
+
+// Step 1 of a review: pull the idea out of memory before seeing anything.
+function Recall({ last, onStart, onRateNow }) {
+  const [text, setText] = useState('')
+  const [shown, setShown] = useState(false)
+  return (
+    <div className="recall">
+      <div className="recall-ask">
+        <h2>From memory first</h2>
+        <p>
+          Before you open the problem: what is the idea, and what are the time and space complexity? Write it here or
+          say it out loud. Then check it against your note.
+        </p>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={4}
+          placeholder="Key idea, approach, complexity…"
+          aria-label="What you remember"
+        />
+      </div>
+
+      {shown ? (
+        <div className="recall-note">
+          <h3>Your note from last time</h3>
+          {last ? <NoteView note={last} /> : <p className="muted">You saved no note last time.</p>}
+        </div>
+      ) : (
+        <button className="btn btn-line btn-wide" onClick={() => setShown(true)} disabled={last === undefined}>
+          {last === undefined ? 'Loading your note…' : 'Reveal my note'}
+        </button>
+      )}
+
+      {shown && (
+        <div className="recall-go">
+          <button className="btn btn-go btn-wide" onClick={onStart}>
+            Open the problem and start the timer <ExternalLink size={15} aria-hidden="true" />
+          </button>
+          <button className="btn btn-quiet" onClick={onRateNow}>
+            Skip solving, rate it now
+          </button>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -218,35 +329,51 @@ function LessonDone({ item, actions, run, say, onExit, minutes }) {
   )
 }
 
-function NoteForm({ item, row, review, minutes, actions, run, say, draft, onBack, onSaved }) {
-  const [result, setResult] = useState(draft?.result ?? null)
-  const [f, setF] = useState(() => ({ pattern: '', time: '', space: '', key_idea: '', mistake: '', ...draft?.f, minutes }))
-  const [busy, setBusy] = useState(false)
-  const [last, setLast] = useState(null)
-  const set = (k) => (e) => setF((s) => ({ ...s, [k]: e.target.value }))
+const EMPTY = { pattern: '', time: '', space: '', key_idea: '', approach: '', mistake: '' }
 
+// The note fields, filled from a saved note.
+function fromNote(note) {
+  if (!note) return EMPTY
+  const { time, space } = splitComplexity(note.complexity)
+  return {
+    pattern: note.pattern || '',
+    time,
+    space,
+    key_idea: note.key_idea || '',
+    approach: note.approach || '',
+    mistake: note.mistake || '',
+  }
+}
+
+function NoteForm({ item, row, review, last, minutes, actions, run, say, draft, onBack, onSaved }) {
+  const [result, setResult] = useState(draft?.result ?? null)
+  // A review starts from your last note, so you edit it instead of retyping.
+  const [f, setF] = useState(() => ({ ...(review ? fromNote(last) : EMPTY), ...draft?.f, minutes }))
+  const touched = useRef(Boolean(draft))
+  const [busy, setBusy] = useState(false)
+  const set = (k) => (e) => {
+    touched.current = true
+    setF((s) => ({ ...s, [k]: e.target.value }))
+  }
+
+  // The last note may arrive after the form opens; fill it in if you have
+  // not typed yet.
   useEffect(() => {
-    if (!review) return
-    let live = true
-    actions
-      .history(item)
-      .then((list) => live && setLast(list.find((a) => a.key_idea || a.pattern || a.mistake) || null))
-      .catch(() => {})
-    return () => {
-      live = false
-    }
-  }, [review, item, actions])
+    if (!review || !last || touched.current) return
+    setF((s) => ({ ...s, ...fromNote(last) }))
+  }, [review, last])
 
   const save = async (e) => {
     e.preventDefault()
     if (!result) return
     setBusy(true)
-    const complexity = [f.time && `T ${f.time}`, f.space && `S ${f.space}`].filter(Boolean).join(' • ')
+    const complexity = [f.time.trim() && `T ${f.time.trim()}`, f.space.trim() && `S ${f.space.trim()}`].filter(Boolean).join(' • ')
     const note = {
       result,
       minutes: Math.max(0, Math.min(1440, Number(f.minutes) || 0)),
       pattern: f.pattern.trim().slice(0, 200) || null,
       key_idea: f.key_idea.trim().slice(0, 2000) || null,
+      approach: f.approach.trim().slice(0, 8000) || null,
       mistake: f.mistake.trim().slice(0, 2000) || null,
       complexity: complexity.slice(0, 200) || null,
     }
@@ -261,42 +388,18 @@ function NoteForm({ item, row, review, minutes, actions, run, say, draft, onBack
 
   return (
     <form className="note" onSubmit={save}>
-      {last && (
-        <aside className="last-note">
-          <h3>Your note from last time</h3>
-          {last.pattern && (
-            <p>
-              <b>Pattern</b> {last.pattern}
-            </p>
-          )}
-          {last.key_idea && (
-            <p>
-              <b>Key idea</b> {last.key_idea}
-            </p>
-          )}
-          {last.mistake && (
-            <p>
-              <b>Mistake</b> {last.mistake}
-            </p>
-          )}
-          {last.complexity && (
-            <p>
-              <b>Complexity</b> {last.complexity}
-            </p>
-          )}
-        </aside>
-      )}
-
       <fieldset className="choice">
         <legend>How did it go?</legend>
         {results.map(([value, label, hint]) => (
-          <label key={value} className={result === value ? 'chip on' : 'chip'}>
+          <label key={value} className={result === value ? `chip on chip-${value}` : `chip chip-${value}`}>
             <input type="radio" name="result" value={value} checked={result === value} onChange={() => setResult(value)} />
             {label}
             {hint && <small>{hint}</small>}
           </label>
         ))}
       </fieldset>
+
+      {review && last && <p className="field-hint">Your last note is filled in below. Change what you understand better now.</p>}
 
       <div className="field-row">
         <label className="field">
@@ -308,7 +411,7 @@ function NoteForm({ item, row, review, minutes, actions, run, say, draft, onBack
           <input value={f.space} onChange={set('space')} placeholder="O(1)" maxLength={60} />
         </label>
       </div>
-      <p className="field-hint">Write these before you check the editorial. Then compare.</p>
+      {!review && <p className="field-hint">Write these before you check the editorial. Then compare.</p>}
 
       <label className="field">
         <span>Pattern</span>
@@ -327,6 +430,20 @@ function NoteForm({ item, row, review, minutes, actions, run, say, draft, onBack
           rows={3}
           maxLength={2000}
           placeholder="The one sentence that makes the solution click."
+        />
+      </label>
+      <label className="field">
+        <span>
+          Approach or code <small>optional</small>
+        </span>
+        <textarea
+          className="mono-input"
+          value={f.approach}
+          onChange={set('approach')}
+          rows={6}
+          maxLength={8000}
+          spellCheck="false"
+          placeholder={'Steps, edge cases, or the code itself.\n1. …\n2. …'}
         />
       </label>
       <label className="field">

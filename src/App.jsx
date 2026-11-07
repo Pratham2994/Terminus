@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { TrainFront, Map as MapIcon, BookOpen, ChartColumn, Settings as Gear } from 'lucide-react'
+import { TrainFront, Map as MapIcon, BookOpen, ChartColumn, NotebookPen, Settings as Gear } from 'lucide-react'
 import { configured, supabase } from './lib/supabase'
 import { useTerminus } from './lib/store'
+import { usePartners } from './lib/partners'
 import { ITEM_BY_KEY } from './lib/sheet'
 import { dayString } from './lib/dates'
 import SignIn from './screens/SignIn'
@@ -10,21 +11,24 @@ import Ride from './screens/Ride'
 import MapView from './screens/MapView'
 import Kit from './screens/Kit'
 import Stats from './screens/Stats'
+import Notes from './screens/Notes'
 import Settings from './screens/Settings'
 import StationSheet from './screens/StationSheet'
 
 const TABS = [
   { id: 'today', label: 'Today', Icon: TrainFront },
   { id: 'map', label: 'Map', Icon: MapIcon },
+  { id: 'notes', label: 'Notes', Icon: NotebookPen },
   { id: 'stats', label: 'Stats', Icon: ChartColumn },
   { id: 'kit', label: 'Kit', Icon: BookOpen },
 ]
 const RIDE_KEY = 'terminus.ride'
 const EXTRA_KEY = 'terminus.extra'
+const REDO_EXTRA_KEY = 'terminus.redoExtra'
 
 function readHash() {
   const h = window.location.hash.replace('#', '')
-  return ['today', 'map', 'stats', 'kit', 'settings'].includes(h) ? h : 'today'
+  return ['today', 'map', 'notes', 'stats', 'kit', 'settings'].includes(h) ? h : 'today'
 }
 
 function readJSON(key) {
@@ -49,6 +53,19 @@ function readRide(uid) {
   const ride = readJSON(RIDE_KEY)
   // Rides saved before this check have no uid; keep them.
   return ride && (!ride.uid || ride.uid === uid) && ITEM_BY_KEY.has(ride.key) ? ride : null
+}
+
+// A "one more" counter for today, kept across rides and reloads. A new day
+// starts again at zero.
+function useDayCount(key, uid, today) {
+  const [saved, setSaved] = useState(() => readJSON(key))
+  const n = saved?.uid === uid && saved?.day === today ? saved.n : 0
+  const add = useCallback(() => {
+    const next = { uid, day: today, n: n + 1 }
+    writeJSON(key, next)
+    setSaved(next)
+  }, [key, uid, today, n])
+  return [n, add]
 }
 
 // The local day, kept current while the app stays open past midnight.
@@ -100,15 +117,10 @@ function Shell({ user }) {
   const [toast, setToast] = useState(null)
   const [state, actions] = useTerminus(user)
   const today = useToday()
-  // "Ride one more" count for today. It lives here, not on the board, so it
-  // survives a ride and a reload. A new day starts again at zero.
-  const [extraState, setExtraState] = useState(() => readJSON(EXTRA_KEY))
-  const extra = extraState?.uid === user.id && extraState?.day === today ? extraState.n : 0
-  const addExtra = useCallback(() => {
-    const next = { uid: user.id, day: today, n: extra + 1 }
-    writeJSON(EXTRA_KEY, next)
-    setExtraState(next)
-  }, [user.id, today, extra])
+  const [{ partners }, reloadPartners] = usePartners(user)
+  // "Ride one more" and "Review one more" for today.
+  const [extra, addExtra] = useDayCount(EXTRA_KEY, user.id, today)
+  const [redoExtra, addRedoExtra] = useDayCount(REDO_EXTRA_KEY, user.id, today)
 
   useEffect(() => {
     const onHash = () => setTab(readHash())
@@ -180,9 +192,23 @@ function Shell({ user }) {
       </div>
     )
   else if (ride && tab === 'today')
-    body = <Ride ride={ride} state={state} actions={actions} run={run} say={say} onExit={endRide} />
+    body = <Ride ride={ride} state={state} actions={actions} run={run} say={say} onUpdate={setRide} onExit={endRide} />
   else if (tab === 'today')
-    body = <Today state={state} actions={actions} run={run} say={say} onBoard={board} today={today} extra={extra} onMore={addExtra} />
+    body = (
+      <Today
+        state={state}
+        actions={actions}
+        run={run}
+        say={say}
+        onBoard={board}
+        today={today}
+        extra={extra}
+        onMore={addExtra}
+        redoExtra={redoExtra}
+        onMoreReview={addRedoExtra}
+        partners={partners}
+      />
+    )
   else if (tab === 'map')
     body = (
       <MapView
@@ -195,9 +221,11 @@ function Shell({ user }) {
         onStation={setStation}
       />
     )
-  else if (tab === 'stats') body = <Stats state={state} today={today} onStation={setStation} />
+  else if (tab === 'stats') body = <Stats user={user} state={state} partners={partners} today={today} onStation={setStation} />
+  else if (tab === 'notes')
+    body = <Notes user={user} state={state} actions={actions} run={run} say={say} partners={partners} onStation={setStation} />
   else if (tab === 'kit') body = <Kit />
-  else body = <Settings user={user} state={state} actions={actions} run={run} />
+  else body = <Settings user={user} state={state} actions={actions} run={run} say={say} partners={partners} onPartners={reloadPartners} />
 
   return (
     <div className="shell">

@@ -4,14 +4,8 @@ import { strivLink } from '../lib/sheet'
 import { stationState } from '../lib/schedule'
 import { prettyDay } from '../lib/dates'
 import { LineBadge, STAGE_TEXT, kindText } from './bits'
+import { NoteView, RESULT_TEXT, hasNote } from './noteBits'
 
-const RESULT_TEXT = {
-  alone: 'Solved alone',
-  hint: 'Needed a hint',
-  solution: 'Needed the solution',
-  clean: 'Review: clean',
-  struggled: 'Review: struggled',
-}
 
 export default function StationSheet({ item, state, actions, run, say, ride, onBoard, onClose }) {
   const [history, setHistory] = useState(null)
@@ -49,7 +43,8 @@ export default function StationSheet({ item, state, actions, run, say, ride, onB
   }
 
   const start = (kind) => {
-    window.open(strivLink(item), '_blank', 'noopener')
+    // A review starts with recall; its page opens from the Ride screen.
+    if (kind === 'new') window.open(strivLink(item), '_blank', 'noopener')
     onBoard(item, kind)
   }
 
@@ -96,7 +91,7 @@ export default function StationSheet({ item, state, actions, run, say, ride, onB
         <div className="sheet-actions">
           {(st === 'open' || st === 'due') && !ride && (
             <button className="btn btn-go" onClick={() => start(st === 'due' ? 'review' : 'new')}>
-              {st === 'due' ? 'Start review' : 'Start now'} <ExternalLink size={15} aria-hidden="true" />
+              {st === 'due' ? 'Start review' : 'Start now'} {st !== 'due' && <ExternalLink size={15} aria-hidden="true" />}
             </button>
           )}
           <a className="btn btn-line" href={strivLink(item)} target="_blank" rel="noopener noreferrer">
@@ -148,26 +143,7 @@ export default function StationSheet({ item, state, actions, run, say, ride, onB
                       {a.minutes ? ` • ${a.minutes} min` : ''}
                     </span>
                   </p>
-                  {a.pattern && (
-                    <p>
-                      <b>Pattern</b> {a.pattern}
-                    </p>
-                  )}
-                  {a.key_idea && (
-                    <p>
-                      <b>Key idea</b> {a.key_idea}
-                    </p>
-                  )}
-                  {a.mistake && (
-                    <p>
-                      <b>Mistake</b> {a.mistake}
-                    </p>
-                  )}
-                  {a.complexity && (
-                    <p>
-                      <b>Complexity</b> <span className="mono">{a.complexity}</span>
-                    </p>
-                  )}
+                  {hasNote(a) && <NoteView note={a} />}
                 </li>
               ))}
             </ol>

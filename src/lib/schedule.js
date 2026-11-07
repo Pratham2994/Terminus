@@ -5,6 +5,13 @@ import { addDays, dayString, daysBetween, weekStart } from './dates'
 export const REVIEW_GAP = { 1: 3, 2: 7, 3: 21 }
 export const GRADUATED = 4
 export const REDO_PER_DAY = 2
+export const REDO_MAX = 5
+
+// Reviews a day: 2 normally, more when a backlog builds up (a third of the
+// pile, at most 5), so the pile shrinks instead of growing.
+export function reviewsPerDay(dueAtDawn) {
+  return Math.min(REDO_MAX, Math.max(REDO_PER_DAY, Math.ceil(dueAtDawn / 3)))
+}
 
 // Progress row after a first solve.
 export function afterNewSolve(item, today) {
@@ -14,6 +21,8 @@ export function afterNewSolve(item, today) {
 
 // Progress row after a review. Clean moves the item one stage on; struggled starts again.
 export function afterReview(row, result, today) {
+  // Forgot completely: start the loop again, and see it again tomorrow.
+  if (result === 'forgot') return { status: 'done', stage: 1, next_review: addDays(today, 1) }
   if (result === 'struggled') return { status: 'done', stage: 1, next_review: addDays(today, REVIEW_GAP[1]) }
   const stage = Math.min((row.stage || 1) + 1, GRADUATED)
   return { status: 'done', stage, next_review: stage >= GRADUATED ? null : addDays(today, REVIEW_GAP[stage]) }
@@ -24,7 +33,7 @@ function localDay(ts) {
 }
 
 // Builds the two lists on the Today board.
-export function planToday({ progress, attempts, budget, extra = 0, today = dayString() }) {
+export function planToday({ progress, attempts, budget, extra = 0, redoExtra = 0, today = dayString() }) {
   const lastSeen = new Map()
   for (const a of attempts) {
     const d = localDay(a.created_at)
@@ -58,10 +67,25 @@ export function planToday({ progress, attempts, budget, extra = 0, today = daySt
   const targetToday = Math.ceil(remainingAtDawn / daysLeft)
   const count = Math.max(0, targetToday + extra - doneToday)
 
+  // Reviews done today count against today's review number, which is fixed
+  // from the pile as it was in the morning. Without this, finishing one
+  // review would pull the next one in, all day long.
+  const reviewedToday = new Set()
+  for (const a of attempts) {
+    if (a.kind === 'review' && localDay(a.created_at) === today && progress.get(a.item_key)?.status === 'done') {
+      reviewedToday.add(a.item_key)
+    }
+  }
+  const pending = due.filter((d) => !reviewedToday.has(d.item.key))
+  const redoTarget = reviewsPerDay(pending.length + reviewedToday.size)
+  const redoCount = Math.max(0, redoTarget + redoExtra - reviewedToday.size)
+
   const open = SHEET.items.filter((it) => !progress.has(it.key))
   return {
-    redo: due.slice(0, REDO_PER_DAY),
-    redoWaiting: Math.max(0, due.length - REDO_PER_DAY),
+    redo: pending.slice(0, redoCount),
+    redoWaiting: Math.max(0, pending.length - redoCount),
+    redoTarget,
+    reviewedToday: reviewedToday.size,
     fresh: open.slice(0, count),
     nextUp: open[count] || null,
     doneThisWeek,
@@ -93,4 +117,19 @@ export function stationState(item, progress, today = dayString()) {
   if (row.next_review && row.next_review <= today) return 'due'
   if (row.stage >= GRADUATED) return 'mastered'
   return 'done'
+}
+
+// When the sheet ends at the current budget, and what a goal date needs.
+export function projection({ progress, budget, finishBy, today = dayString() }) {
+  const remaining = SHEET.items.filter((it) => !progress.has(it.key)).length
+  const weeks = budget > 0 ? Math.ceil(remaining / budget) : Infinity
+  const finishAt = remaining === 0 ? today : Number.isFinite(weeks) ? addDays(today, weeks * 7) : null
+  let need = null
+  let onPace = null
+  if (finishBy && remaining > 0) {
+    const days = daysBetween(today, finishBy)
+    need = days <= 0 ? null : Math.ceil(remaining / (days / 7))
+    onPace = need !== null && budget >= need
+  }
+  return { remaining, finishAt, need, onPace, late: Boolean(finishBy) && daysBetween(today, finishBy) <= 0 && remaining > 0 }
 }
