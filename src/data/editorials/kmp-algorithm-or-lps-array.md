@@ -1,32 +1,38 @@
 # KMP Algorithm or LPS array
 
-> Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> search(string pat, string txt)`. Return every 0-based start index of pat in txt, in increasing order.
+> Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> search(string pat, string txt)`. Return every starting index (from 0) where pat appears in txt, smallest first.
 
-## The problem
+## What you need to do
 
-Find all occurrences of a pattern in a text, in **guaranteed** O(n + m), using Knuth-Morris-Pratt.
+Find every place the pattern appears in the text, in time that is **always** O(n + m), using the Knuth-Morris-Pratt (KMP) method.
 
-Examples: text "abracadabra", pattern "abra" → **[0, 7]**. text "abcabcabc", pattern "abc" → **[0, 3, 6]**.
+## Examples
 
-## Why is brute force slow?
+- text "abracadabra", pattern "abra" → **[0, 7]**
+- text "abcabcabc", pattern "abc" → **[0, 3, 6]**
 
-After a mismatch, brute force moves the start one step right and **re-compares characters it has already seen**. KMP never moves backwards in the text.
+## How to solve it, step by step
 
-## The LPS array
+1. **See why the simple search is slow.** After a mismatch, it moves the start one step right and compares characters it has **already** seen again.
 
-For each position i of the pattern, `lps[i]` = the length of the longest **proper prefix** of pat[0..i] that is also a **suffix** of it.
+   **Why this matters:** KMP never steps back in the text. It reuses what it already matched.
 
-Example: "aabaaab" → lps = [0, 1, 0, 1, 2, 2, 3].
+2. **Build the LPS array for the pattern.** `lps[i]` = the length of the longest beginning of pat[0..i] that is also its ending (not the whole thing). Example: "aabaaab" → [0, 1, 0, 1, 2, 2, 3].
 
-Why it helps: suppose we matched j characters of the pattern, and then the next character mismatches. Those j characters were pat[0..j−1]. Their longest prefix-that-is-also-suffix is `lps[j−1]` characters long. The text's last `lps[j−1]` characters already equal the pattern's first `lps[j−1]` characters, so continue matching from j = lps[j−1] instead of 0. Nothing is lost, and the text pointer never goes back.
+   **Why:** it tells you how much of a partial match you can keep after a mismatch.
 
-## Building the LPS array
+3. **When j pattern characters matched and the next one fails, jump to j = lps[j − 1] instead of 0.**
 
-Use the same trick on the pattern itself. `len` = the length of the current prefix-suffix:
+   **Why:** the last lps[j − 1] characters of the text already equal the first lps[j − 1] characters of the pattern. You can carry on from there, and the text pointer never goes back.
 
-- pat[i] == pat[len] → it grows: lps[i] = ++len.
-- Mismatch and len > 0 → fall back: len = lps[len − 1]. Do not advance i.
-- Mismatch and len == 0 → lps[i] = 0, advance i.
+4. **Build the LPS array with the same jump.** Keep `len`, the current matching length:
+   - pat[i] == pat[len] → it grows: lps[i] = ++len, move i on.
+   - mismatch and len > 0 → fall back: len = lps[len − 1]; keep i.
+   - mismatch and len == 0 → lps[i] = 0, move i on.
+
+5. **Scan the text the same way. On a full match, record it and set j = lps[m − 1].**
+
+   **Why:** setting j to lps[m − 1] (not 0) also finds matches that overlap, like "aa" in "aaaa" at 0, 1 and 2.
 
 ## Code (C++)
 
@@ -57,22 +63,20 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n + m), guaranteed. Every step either moves i forward or makes j smaller, and j can only shrink as much as it has grown.
-- Space: O(m) for the LPS array.
+O(n + m), always: every step either moves forward in the text or shrinks j, and j can only shrink as much as it grew. Memory: O(m) for the LPS array.
 
-## Edge cases
+## Watch out for
 
-- After a full match, set j = lps[m − 1], not 0. That finds **overlapping** matches: "aa" in "aaaa" → 0, 1, 2.
-- Only `lps[len − 1]` when len > 0. The `else if` order guarantees it.
+- Only read `lps[len − 1]` when len > 0. The order of the `if` / `else if` makes sure of that.
 
-## Dry run (LPS for "abab")
+## Walk through (LPS for "abab")
 
-- i = 1: b ≠ a, len 0 → lps[1] = 0.
-- i = 2: a == pat[0] → lps[2] = 1.
-- i = 3: b == pat[1] → lps[3] = 2.
+- i = 1: b ≠ a and len = 0 → lps[1] = 0.
+- i = 2: a == a → lps[2] = 1.
+- i = 3: b == b → lps[3] = 2.
 
-lps = [0, 0, 1, 2]. In "ababab", after matching "abab" at 0, j becomes 2, and the next "ab" completes a match at 2.
+lps = [0, 0, 1, 2]. In "ababab", after matching "abab" at 0, j jumps to 2, and the next "ab" completes a match at 2.
 
 (Tested on 4 000 random texts and patterns against a plain search.)

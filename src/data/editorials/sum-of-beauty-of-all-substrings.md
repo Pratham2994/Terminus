@@ -2,23 +2,29 @@
 
 > Solve it on [LeetCode 1781 · Sum of Beauty of All Substrings](https://leetcode.com/problems/sum-of-beauty-of-all-substrings/).
 
-## The problem
+## What you need to do
 
-The **beauty** of a string is (frequency of its most frequent letter) − (frequency of its least frequent letter), counting only letters that appear. Return the sum of the beauty of **all substrings** of s. n ≤ 500, lowercase letters.
+The **beauty** of a string is: (count of its most common letter) − (count of its least common letter), counting only letters that appear. Add up the beauty of **every** connected piece of s. s has at most 500 lowercase letters.
 
-Example: "aabcb" → **5**. The substrings with beauty 1 are "aab", "aabc", "aabcb", "abcb" and "bcb".
+## Example
 
-## Brute force
+"aabcb" → **5**. The pieces with beauty 1 are "aab", "aabc", "aabcb", "abcb" and "bcb"; all others have beauty 0.
 
-For every substring (O(n²)), count its letters from scratch (O(n)), then take max − min.
+## How to solve it, step by step
 
-- Time: O(n³), about 1.25 × 10⁸ for n = 500. It might pass, but there is easy waste to remove.
+1. **Fix a start i, then grow the end j one letter at a time.**
 
-## The better idea: extend, do not recount
+   **Why:** this visits every piece exactly once.
 
-Fix the start i, then move the end j one step at a time. The substring s[i..j] is s[i..j−1] plus **one** letter, so add 1 to that letter's count instead of recounting everything.
+2. **Keep 26 letter counts, and when j moves, add 1 to just the new letter.**
 
-For each (i, j), scan the 26 counts once to find the max and the min over the letters that appear.
+   **Why:** the piece s[i..j] is the previous piece plus one letter. Recounting everything from scratch would waste time.
+
+3. **For each piece, look at the 26 counts once: find the biggest, and the smallest that is above 0.** Add biggest − smallest to the total.
+
+   **Why:** letters with count 0 are not in the piece, so they must not count as the smallest.
+
+4. **When i moves on, reset the counts.**
 
 ## Code (C++)
 
@@ -42,20 +48,19 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n² · 26), about 6.5 × 10⁶ for n = 500. Fast.
-- Space: O(26).
+About n² pieces, 26 checks each: O(26 · n²), around 6.5 million steps for n = 500. Memory: 26 counters.
 
-## Edge cases
+## Watch out for
 
-- The minimum must skip letters with count 0. Otherwise every beauty would be "max − 0".
-- A substring with one distinct letter has beauty 0 (max = min).
+- Skipping zero counts (step 3) is the main trap. Without it, every beauty becomes "biggest − 0".
+- A piece made of one kind of letter has beauty 0.
 
-## Dry run ("aab", i = 0)
+## Walk through ("aab", start i = 0)
 
-- j = 0 "a": a=1 → 1 − 1 = 0.
-- j = 1 "aa": a=2 → 0.
-- j = 2 "aab": a=2, b=1 → 2 − 1 = **1**.
+- "a": a = 1 → 0.
+- "aa": a = 2 → 0.
+- "aab": a = 2, b = 1 → 2 − 1 = **1**.
 
-Starts i = 1 and i = 2 add 0. Sum for "aab": **1**.
+The pieces starting at i = 1 and i = 2 add 0. Total for "aab": **1**.

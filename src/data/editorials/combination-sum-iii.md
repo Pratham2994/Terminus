@@ -2,20 +2,30 @@
 
 > Solve it on [LeetCode 216 · Combination Sum III](https://leetcode.com/problems/combination-sum-iii/).
 
-## The problem
+## What you need to do
 
-Find all combinations of **k distinct digits from 1 to 9** that add up to n. Each digit is used at most once, and no combination may appear twice.
+Find every way to pick **k different digits from 1 to 9** that add up to n. Each digit can be used once, and the same group must not appear twice.
 
-Examples: k = 3, n = 7 → **[[1,2,4]]**. k = 3, n = 9 → **[[1,2,6],[1,3,5],[2,3,4]]**.
+## Examples
 
-## The idea: choose digits in increasing order
+- k = 3, n = 7 → **[[1, 2, 4]]**
+- k = 3, n = 9 → **[[1, 2, 6], [1, 3, 5], [2, 3, 4]]**
 
-To avoid duplicates such as [1,2,4] and [2,1,4], only build combinations in **increasing** order. After choosing digit d, the next digit must be at least d + 1.
+## How to solve it, step by step
 
-`build(start, k, n)`: choose the remaining digits from start…9, with remaining sum n.
+1. **Always pick digits in increasing order.** After picking d, the next digit must be at least d + 1.
 
-- When the combination has k digits: keep it only if n == 0.
-- Otherwise try every d from start to 9, while d ≤ n (a larger digit would overshoot the sum).
+   **Why:** this stops repeats like [1, 2, 4] and [2, 1, 4]: only one order of each group is ever built.
+
+2. **Write `build(start, k, n)`:** choose the remaining digits from start to 9, with n still to reach.
+
+3. **When you have k digits, keep the group only if n is exactly 0.**
+
+   **Why:** the group must add up to n exactly.
+
+4. **Otherwise, try every digit d from start to 9, but only while d ≤ n.** Add d, recurse with d + 1 and n − d, then remove d.
+
+   **Why:** a digit bigger than what is left would overshoot, and so would every bigger digit after it. Stopping early saves work.
 
 ## Code (C++)
 
@@ -42,20 +52,18 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- At most C(9, k) ≤ 126 combinations are ever built, so time and space are tiny. In general, O(C(9, k) · k).
+There are at most 126 groups of digits to look at (choosing k of 9), so it is instant. In general: O(C(9, k) · k).
 
-## Edge cases
+## Watch out for
 
-- n too large (k = 3, n = 30: the most 3 digits can make is 7 + 8 + 9 = 24) → [].
-- k larger than possible → [].
-- `d <= n` prunes branches early. The answer is correct without it, but faster with it.
+- If n is too big (k = 3, n = 30; the most is 7 + 8 + 9 = 24), the answer is [].
 
-## Dry run (k = 3, n = 7)
+## Walk through (k = 3, n = 7)
 
-- 1 → 2 → need 4: d = 3 gives 3 ≠ 4 at size 3 ✗, d = 4 ✓ → [1,2,4].
-- 1 → 3 → need 3: d starts at 4 > 3, nothing.
-- 2 → 3 → need 2: nothing.
+- 1, 2, then need 4: 3 gives 6 ✗, 4 ✓ → [1, 2, 4].
+- 1, 3, then need 3: the next digit must be at least 4 → nothing.
+- 2, 3, then need 2: nothing.
 
-Answer: **[[1,2,4]]**. (Tested for every k = 1…9 and n = 1…60 against trying all 512 digit subsets.)
+Answer: **[[1, 2, 4]]**. (Tested for every k = 1…9 and n = 1…60 against trying all 512 groups of digits.)

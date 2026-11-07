@@ -2,26 +2,35 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<string> generateBinaryStrings(int n)`.
 
-## The problem
+## What you need to do
 
-Return every binary string of length n (n ≤ 20) with no "11" in it, in **lexicographically increasing** order.
+List every string of 0s and 1s of length n that has **no "11"** in it, in sorted order.
 
-Example: n = 3 → **["000", "001", "010", "100", "101"]**.
+## Example
 
-## Brute force
+n = 3 → **["000", "001", "010", "100", "101"]**.
 
-Loop over all 2ⁿ numbers, turn each into an n-bit string, and keep the ones without "11".
+## How to solve it, step by step
 
-- Time: O(2ⁿ · n), about 2 × 10⁷ for n = 20. It works, but it wastes time on strings we throw away.
+1. **The slow idea:** write out all 2ⁿ strings and throw away the ones with "11".
 
-## The better idea: build only valid strings
+   **Why it is wasteful:** most of the work goes into strings you then throw away.
 
-Build the string left to right:
+2. **Build the string one character at a time, and only add characters that keep it valid.**
 
-- You can **always** add '0'.
-- You can add '1' only if the string is empty, or the last character is '0'.
+   **Why:** then every string you finish is a good one; nothing is wasted.
 
-Try '0' **before** '1' at every position. Then the strings come out in lexicographic order on their own, and no sort is needed.
+3. **You can always add '0'.**
+
+4. **You can add '1' only if the string is empty or ends in '0'.**
+
+   **Why:** that is exactly the rule "no two 1s next to each other".
+
+5. **Try '0' before '1' at every position.**
+
+   **Why:** then the strings come out in sorted order on their own, and no sort is needed.
+
+6. **When the string reaches length n, save it.**
 
 ## Code (C++)
 
@@ -48,19 +57,18 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- The number of valid strings is the Fibonacci number F(n + 2), about 1.6ⁿ. For n = 20 that is 17 711 strings.
-- Time: O(F(n+2) · n). Space: O(n) recursion depth, plus the output.
+The number of valid strings grows like the Fibonacci numbers (about 1.6ⁿ): 17 711 strings for n = 20. Each takes O(n) to save, so O(1.6ⁿ · n) in total. Recursion depth: n.
 
-## Edge cases
+## Watch out for
 
+- If you try '1' before '0', the order breaks.
 - n = 1 → ["0", "1"].
-- The order "0 first, then 1" is what makes the output sorted. Swap the two blocks and the order breaks.
 
-## Dry run (n = 2)
+## Walk through (n = 2)
 
 - "0" → "00" ✓, "01" ✓.
-- "1" → "10" ✓. "11" is blocked, because the last character is '1'.
+- "1" → "10" ✓. "11" is blocked, because the string ends in '1'.
 
-Answer: **["00", "01", "10"]**. (Tested for n = 1…16 against the brute force, including the order.)
+Answer: **["00", "01", "10"]**. (Tested for n = 1…16 against the slow idea, including the order.)

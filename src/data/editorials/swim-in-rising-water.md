@@ -2,27 +2,37 @@
 
 > Solve it on [LeetCode 778 · Swim in Rising Water](https://leetcode.com/problems/swim-in-rising-water/).
 
-## The problem
+## What you need to do
 
-grid is n × n (n ≤ 50) and holds every value 0 … n² − 1 once. At time t, the water level is t, and you may move to a neighbouring cell (4 directions) only if **both** cells have elevation ≤ t. Moving takes no time. Return the earliest time you can get from (0, 0) to (n − 1, n − 1).
+Each cell of an n × n grid has a height (every value from 0 to n² − 1 appears once). At time t the water is at level t, and you can swim between neighbouring cells (up, down, left, right) only if **both** are at most t. Swimming takes no time. What is the earliest time you can get from the top-left to the bottom-right?
 
-Example: [[0,2],[1,3]] → **3**. You cannot reach the corner before the water covers cell 3.
+## Example
 
-## Restating it
+[[0, 2], [1, 3]] → **3**. You cannot reach the corner before the water covers the cell of height 3.
 
-Any path works once t reaches the **highest cell on that path**. So the answer is the path whose maximum cell is as small as possible. It is a shortest path where a path's "length" is its **max**, not its sum.
+## How to solve it, step by step
 
-## Way 1: Dijkstra with max instead of sum (shown below)
+1. **A path works as soon as t reaches the highest cell on it.**
 
-Dijkstra works for any path cost that never decreases as the path grows, and max qualifies:
+   **Why:** every cell on the path must be under water.
 
-- `best[r][c]` = the lowest possible max-height on a path to (r, c).
-- Moving into a neighbour costs `max(current, grid[nr][nc])`.
-- Always expand the cell with the smallest cost so far (min-heap). The first time you pop the target, its cost is the answer.
+2. **So find the path whose highest cell is as low as possible.** It is a shortest-path problem where a path's "length" is its **maximum**, not its sum.
 
-## Way 2: binary search + BFS
+3. **Use Dijkstra with max instead of plus.** `best[r][c]` is the lowest possible "highest cell" on a path to (r, c). Moving into a neighbour costs `max(current, height of the neighbour)`.
 
-The answer is some t in [0, n² − 1]. For a fixed t, a BFS over cells ≤ t tells you whether the target is reachable. Reachability only improves as t grows, so binary search on t. That is O(n² log n²).
+   **Why:** Dijkstra works for any path cost that never goes down as the path grows, and max never goes down.
+
+4. **Always expand the cell with the smallest cost so far (a min-heap). When the target comes out of the heap, its cost is the answer.**
+
+   **Why:** nothing left in the heap can lead to a cheaper path.
+
+5. **Start the heap with the start cell's own height, not 0.**
+
+   **Why:** you are standing in that cell, so it must be under water too.
+
+## Another way: binary search
+
+For a fixed t, a BFS over cells ≤ t tells you whether you can reach the corner. A bigger t never makes things worse, so binary search on t. Also O(n² log n).
 
 ## Code (C++)
 
@@ -53,21 +63,19 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n² log n²).
-- Space: O(n²).
+O(n² log n) time, O(n²) memory.
 
-## Edge cases
+## Watch out for
 
-- The start cell's own height counts: you are standing in it. That is why the heap starts with `grid[0][0]`, not 0.
-- n = 1 → grid[0][0].
+- n = 1: the answer is just the start cell's height.
 
-## Dry run ([[0,2],[1,3]])
+## Walk through ([[0, 2], [1, 3]])
 
-- Pop (0, 0) at cost 0. Push (1, 0) at cost 1 and (0, 1) at cost 2.
-- Pop (1, 0) at cost 1. Push (1, 1) at cost max(1, 3) = 3.
-- Pop (0, 1) at cost 2. (1, 1) via here also costs 3, not better.
-- Pop (1, 1) at cost 3 → the target.
+- Take (0, 0), cost 0. Add (1, 0) at cost 1 and (0, 1) at cost 2.
+- Take (1, 0), cost 1. Add (1, 1) at cost max(1, 3) = 3.
+- Take (0, 1), cost 2: reaching (1, 1) from here also costs 3, no better.
+- Take (1, 1), cost 3: the target.
 
 Answer: **3**. (Tested on 1 500 random grids against trying every t with BFS.)

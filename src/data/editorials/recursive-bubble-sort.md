@@ -2,27 +2,31 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> bubbleSort(vector<int>& nums)`. No built-in sort.
 
-## The problem
+## What you need to do
 
-Sort nums in non-decreasing order with **Bubble Sort written recursively**, and return it. n ≤ 1000, values may repeat.
+Sort the numbers from small to big with **Bubble Sort, written recursively**, and return them.
 
-Example: [7, 4, 1, 5, 3] → **[1, 3, 4, 5, 7]**.
+## Example
 
-## Bubble Sort in one sentence
+[7, 4, 1, 5, 3] → **[1, 3, 4, 5, 7]**.
 
-One **pass** walks left to right and swaps every neighbouring pair that is out of order. After the pass, the **largest** value has "bubbled" to the last position, which is now final.
+## How to solve it, step by step
 
-## Making it recursive
+1. **One "pass" walks left to right and swaps every neighbouring pair that is in the wrong order.**
 
-The loop version runs passes on shorter and shorter prefixes: n, then n − 1, …
+   **Why:** after one pass, the biggest number has "bubbled" all the way to the end, so it is in its final place.
 
-So define `bubble(a, n)` = "sort the first n elements":
+2. **So after a pass over the first n numbers, only the first n − 1 still need sorting.** Write `bubble(a, n)` as: do one pass, then call `bubble(a, n − 1)`.
 
-1. **Base case:** n ≤ 1. Nothing to sort.
-2. Do **one pass** over a[0..n−1]. The largest of them lands at a[n−1].
-3. Recurse on the first n − 1 elements: `bubble(a, n − 1)`.
+   **Why:** that is the same problem, one number smaller. That is the recursive step.
 
-**Early exit:** if a pass made no swaps, the prefix is already sorted, so stop. On sorted input this makes the sort O(n).
+3. **Base case: n ≤ 1.** Nothing to sort.
+
+   **Why:** one number is always sorted, and the recursion must stop somewhere.
+
+4. **Early exit: if a pass made no swaps, stop.**
+
+   **Why:** no swaps means everything is already in order. On a sorted array, this makes the sort take only one pass.
 
 ## Code (C++)
 
@@ -44,19 +48,17 @@ public:
 };
 ```
 
-The pass itself can be recursive too, as `pass(a, i, n)` that compares a[i] and a[i+1], then calls `pass(a, i + 1, n)`. That is only needed if your judge forbids every loop. The standard "recursive bubble sort" recurses over the passes, as above.
+The pass itself could also be recursive, but that is only needed if your judge forbids every loop. The usual "recursive bubble sort" recurses over the passes, as above.
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²) in the worst and average case, and O(n) when the input is already sorted, thanks to the early exit.
-- Space: O(n) recursion depth, at most n calls.
+O(n²) in general, and O(n) on an already sorted array (thanks to the early exit). The recursion goes up to n calls deep, so O(n) memory.
 
-## Edge cases
+## Watch out for
 
-- Use `>` and not `>=` in the comparison. Equal values never swap, so the sort stays **stable**.
-- One element → returned as is.
+- Swap only when `>`, not `>=`. Equal numbers then keep their order (the sort is "stable").
 
-## Dry run ([7, 4, 1, 5, 3])
+## Walk through ([7, 4, 1, 5, 3])
 
 - bubble(5): pass → [4, 1, 5, 3, 7].
 - bubble(4): pass → [1, 4, 3, 5, 7].

@@ -2,11 +2,11 @@
 
 > Solve it on [LeetCode 79 · Word Search](https://leetcode.com/problems/word-search/).
 
-## The problem
+## What you need to do
 
-Given an m × n grid of letters (m, n ≤ 6) and a word (length ≤ 15), return true if the word can be traced through **adjacent** cells: up, down, left or right. No cell may be used twice in one path.
+You get a grid of letters and a word. Can you trace the word by moving between **neighbouring** cells (up, down, left, right), without using any cell twice? Return true or false.
 
-Example grid:
+## Example
 
 ```text
 A B C E
@@ -14,19 +14,29 @@ S F C S
 A D E E
 ```
 
-"ABCCED" → **true**. "SEE" → **true**. "ABCB" → **false**, because it would need the same B twice.
+- "ABCCED" → **true**
+- "SEE" → **true**
+- "ABCB" → **false** (it would need the same B twice)
 
-## The idea: DFS from every cell, with backtracking
+## How to solve it, step by step
 
-Try every cell as the starting point. From a cell, `dfs(i, r, c)` asks: "can word[i..] be traced starting at (r, c)?"
+1. **Try every cell as the starting point.**
 
-1. If i == word length → true. Every letter matched.
-2. If (r, c) is outside the grid, or its letter ≠ word[i] → false.
-3. **Mark** the cell as used (replace its letter with '#'), so this path cannot step on it again.
-4. Try the 4 neighbours with i + 1.
-5. **Unmark** the cell (put the letter back). Other paths may still use it.
+   **Why:** the word can start anywhere.
 
-Step 5 is the backtracking. Without it, a failed path would leave cells blocked for later starts.
+2. **From a cell, `dfs(i, r, c)` asks: can the rest of the word, from letter i, be traced starting here?**
+
+3. **If i equals the word length, return true. If the cell is outside the grid, or its letter is wrong, return false.**
+
+   **Why:** these are the "done" and "dead end" cases.
+
+4. **Mark the cell as used (put '#' in it), then try its 4 neighbours with i + 1.**
+
+   **Why:** marking stops the path from stepping on the same cell twice. Using the grid itself means no extra visited array.
+
+5. **Put the letter back before returning.**
+
+   **Why:** this is the backtracking. A failed path must not leave cells blocked for other starting points.
 
 ## Code (C++)
 
@@ -53,19 +63,17 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(m · n · 3ᴸ), where L is the word length. After the first step, each step has at most 3 new directions, since the way back is marked.
-- Space: O(L) recursion depth. The grid itself is the "visited" set, so no extra array is needed.
+For each of the m · n starting cells, the path can branch up to 3 ways per letter (the way back is marked): O(m · n · 3ᴸ) for a word of length L. Memory: O(L) for the recursion.
 
-## Edge cases
+## Watch out for
 
-- The board must look exactly the same afterwards. The unmarking guarantees that, even when we return true, because the `||` chain returns only after `b[r][c] = keep` runs.
-- '#' must not occur in the word. It never does, since words are letters.
+- The grid must be unchanged afterwards. The code always puts the letter back, even when it returns true.
 
 ## Speed-ups worth knowing
 
-- If the board has fewer of some letter than the word needs, return false at once.
-- If the word's last letter is rarer on the board than its first letter, search for the reversed word. There are fewer starting points.
+- If the grid has fewer of some letter than the word needs, return false at once.
+- If the word's last letter is rarer than its first, search for the reversed word: fewer starting points.
 
-(Tested on 3 000 random boards against a search that keeps an explicit visited array. It also checks that the board is restored afterwards.)
+(Tested on 3 000 random grids against a search with a separate visited array, also checking that the grid is restored.)

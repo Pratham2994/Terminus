@@ -2,23 +2,32 @@
 
 > Solve it on [LeetCode 846 · Hand of Straights](https://leetcode.com/problems/hand-of-straights/).
 
-## The problem
+## What you need to do
 
-Can all the cards in `hand` be split into groups of exactly `groupSize` **consecutive** values, with every card used exactly once?
+Can all the cards be split into groups of exactly `groupSize` **consecutive** values, using every card once?
 
-Examples: [1,2,3,6,2,3,4,7,8], groupSize = 3 → **true** ([1,2,3], [2,3,4], [6,7,8]). [1,2,3,4,5], groupSize = 4 → **false**.
+## Examples
 
-## The key observation (greedy)
+- [1, 2, 3, 6, 2, 3, 4, 7, 8], groupSize = 3 → **true**: [1, 2, 3], [2, 3, 4], [6, 7, 8]
+- [1, 2, 3, 4, 5], groupSize = 4 → **false**
 
-Look at the **smallest card** left. Nothing smaller exists, so it can only be the **start** of a group. It must be in some group, so that group is forced: smallest, smallest + 1, …, smallest + groupSize − 1.
+## How to solve it, step by step
 
-So, repeatedly:
+1. **If the number of cards is not a multiple of groupSize, return false.**
 
-1. Take the smallest remaining value.
-2. Remove one copy each of that value and the next groupSize − 1 values.
-3. If any of them is missing → false.
+   **Why:** the groups could never come out even.
 
-If the cards run out cleanly → true.
+2. **Count each value** in a sorted map (`map<int,int>`).
+
+   **Why:** a sorted map always tells you the smallest card left.
+
+3. **Look at the smallest card left. It must start a group.**
+
+   **Why:** nothing smaller is left, so it cannot be in the middle or at the end of a group. Its group is forced: smallest, smallest + 1, …, smallest + groupSize − 1.
+
+4. **Remove one copy of each card in that group. If any is missing, return false.**
+
+5. **Repeat until no cards are left, then return true.**
 
 ## Code (C++)
 
@@ -42,22 +51,19 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n log n). Each card is removed once, and each map operation is O(log n).
-- Space: O(n).
+Each card is removed once, and each map step is O(log n): O(n log n) time, O(n) memory.
 
-## Edge cases
+## Watch out for
 
-- If the total is not a multiple of groupSize → false at once.
-- groupSize = 1 → always true.
-- Erase a value when its count reaches 0, so that `count.begin()` is always a card that is really left.
+- Erase a value from the map when its count reaches 0, so the "smallest card left" is really still there.
+- groupSize = 1 is always true.
 
-## Dry run ([1,2,3,6,2,3,4,7,8], 3)
+## Walk through ([1, 2, 3, 6, 2, 3, 4, 7, 8], 3)
 
-- Counts: 1:1, 2:2, 3:2, 4:1, 6:1, 7:1, 8:1.
-- Smallest 1 → remove 1, 2, 3. Left: 2:1, 3:1, 4:1, 6, 7, 8.
-- Smallest 2 → remove 2, 3, 4. Left: 6, 7, 8.
-- Smallest 6 → remove 6, 7, 8. Empty.
+- Smallest 1 → remove 1, 2, 3.
+- Smallest 2 → remove 2, 3, 4.
+- Smallest 6 → remove 6, 7, 8. Nothing left → **true**.
 
-Answer: **true**. (Tested on 4 000 random hands against a brute-force search.)
+(Tested on 4 000 random hands against trying every split.)

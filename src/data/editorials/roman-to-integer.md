@@ -2,24 +2,29 @@
 
 > Solve it on [LeetCode 13 · Roman to Integer](https://leetcode.com/problems/roman-to-integer/).
 
-## The problem
+## What you need to do
 
-Convert a valid Roman numeral (1 to 3999) to an integer. The symbols are I 1, V 5, X 10, L 50, C 100, D 500 and M 1000.
+Turn a Roman numeral (1 to 3999) into a normal number. The symbols are I 1, V 5, X 10, L 50, C 100, D 500 and M 1000.
 
-Usually symbols go from large to small and you **add** them: XII = 10 + 1 + 1 = 12. Six special pairs **subtract** instead: IV 4, IX 9, XL 40, XC 90, CD 400, CM 900.
+Usually you **add** the symbols: XII = 10 + 1 + 1 = 12. Six pairs **subtract** instead: IV 4, IX 9, XL 40, XC 90, CD 400, CM 900.
 
-Examples: "III" → **3**. "LVIII" → **58**. "MCMXCIV" → **1994**.
+## Examples
 
-## Key observation
+- "III" → **3**
+- "LVIII" → **58**
+- "MCMXCIV" → **1994**
 
-A symbol is subtracted **exactly when a larger symbol comes right after it**. In "IV", I (1) comes before V (5), so the I counts as −1.
+## How to solve it, step by step
 
-So look one step ahead:
+1. **A symbol is subtracted exactly when a bigger symbol comes right after it.**
 
-- If value(s[i]) < value(s[i+1]) → subtract value(s[i]).
-- Otherwise → add it.
+   **Why:** in "IV", I (1) comes before V (5), so that I counts as −1. In "VI", the I comes after, so it adds.
 
-The last symbol is always added.
+2. **Go left to right and look one step ahead.** If this symbol is smaller than the next one, subtract it; otherwise add it.
+
+3. **The last symbol is always added.**
+
+   **Why:** nothing comes after it.
 
 ## Code (C++)
 
@@ -45,17 +50,16 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n), with n ≤ 15.
-- Space: O(1).
+One pass over at most 15 symbols: O(n) time, O(1) memory.
 
-## Edge cases
+## Watch out for
 
-- Equal neighbours ("II", "XX") add, because the rule is strictly smaller.
-- Check `i + 1 < size` before looking ahead.
+- Equal neighbours ("II", "XX") add, because the rule is "strictly smaller".
+- Check that there is a next symbol before looking ahead.
 
-## Dry run ("MCMXCIV")
+## Walk through ("MCMXCIV")
 
 | symbol | next | action | total |
 |---|---|---|---|
@@ -65,6 +69,6 @@ public:
 | X 10 | C | subtract | 1890 |
 | C 100 | I | add | 1990 |
 | I 1 | V | subtract | 1989 |
-| V 5 | — | add | **1994** |
+| V 5 | – | add | **1994** |
 
 (Tested: every number from 1 to 3999 converts back correctly.)

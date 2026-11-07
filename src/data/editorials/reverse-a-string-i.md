@@ -1,23 +1,30 @@
 # Reverse a String I
 
-> Solve it on [LeetCode 344 · Reverse String](https://leetcode.com/problems/reverse-string/). This station is in the **Recursion** line, so write it recursively. LeetCode accepts both versions.
+> Solve it on [LeetCode 344 · Reverse String](https://leetcode.com/problems/reverse-string/). This station is in the **Recursion** line, so practise writing it recursively. LeetCode accepts both ways.
 
-## The problem
+## What you need to do
 
-Reverse a `vector<char>` in place.
+Reverse a `vector<char>` in place, using **recursion**.
 
-Example: ['H','a','n','n','a','h'] → **['h','a','n','n','a','H']**.
+## Example
 
-## Thinking recursively
+['H','a','n','n','a','h'] → **['h','a','n','n','a','H']**.
 
-Reversing s[l..r] is the same as:
+## How to solve it, step by step
 
-1. swapping the two ends, s[l] and s[r], and then
-2. reversing the inside part, s[l+1..r−1].
+1. **Look at the two ends, l and r. Swap them.**
 
-Base case: when l ≥ r, the part has 0 or 1 characters. It is already reversed, so stop.
+   **Why:** in the reversed string, the first and last characters trade places.
 
-This is the two-pointer loop written as recursion. Each call does one swap and hands the smaller middle to the next call.
+2. **Then reverse the part in between, from l + 1 to r − 1, with the same function.**
+
+   **Why:** after the ends are swapped, what is left is the same problem, just smaller. That is the recursive step.
+
+3. **Stop when l ≥ r.**
+
+   **Why:** a part with 0 or 1 characters is already reversed. This is the base case.
+
+It is the two-pointer loop from "Reverse a String II", written as recursion: each call does one swap and passes the middle on.
 
 ## Code (C++)
 
@@ -35,20 +42,19 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n). There are n/2 calls, each doing one swap.
-- Space: O(n) for the call stack, about n/2 frames. The loop version uses O(1). That is the price of recursion.
+n/2 calls, one swap each: O(n) time. The waiting calls use O(n) memory on the call stack; the loop version uses O(1). That is the price of recursion.
 
-## Edge cases
+## Watch out for
 
-- Pass s **by reference** (`vector<char>&`). By value, every call would swap a copy, and the original would never change.
-- One character: the first call already has l = r and returns.
+- Pass s **by reference** (`vector<char>&`). Without the `&`, every call swaps a copy and the original never changes.
+- One character: the first call already has l = r and stops.
 
-## Dry run (a b c d)
+## Walk through (a b c d)
 
-- rev(0, 3): swap a and d → d b c a, then call rev(1, 2).
-- rev(1, 2): swap b and c → d c b a, then call rev(2, 1).
-- rev(2, 1): l > r, return.
+- rev(0, 3): swap a and d → d b c a, then rev(1, 2).
+- rev(1, 2): swap b and c → d c b a, then rev(2, 1).
+- rev(2, 1): l > r → stop.
 
 Answer: **d c b a**.

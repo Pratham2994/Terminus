@@ -2,27 +2,32 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> primeTillN(int n)`.
 
-## The problem
+## What you need to do
 
-Given n (2 ≤ n ≤ 5 × 10⁵), return every prime from 2 up to **and including** n, in increasing order.
+Return every prime from 2 up to **and including** n, smallest first. n can be up to 500 000.
 
-Example: n = 7 → **[2, 3, 5, 7]**. n = 2 → **[2]**.
+## Examples
 
-## Brute force
+- n = 7 → **[2, 3, 5, 7]**
+- n = 2 → **[2]**
 
-For every x from 2 to n, check divisors d with d × d ≤ x. If none divides x, add x.
+## How to solve it, step by step
 
-- Time: O(n √n), about 3.5 × 10⁸ steps for n = 5 × 10⁵. That is too slow for comfort.
+1. **The slow idea:** test each number on its own. That is about 350 million steps for n = 500 000: too slow.
 
-## The better idea: Sieve of Eratosthenes
+2. **Use the Sieve of Eratosthenes.** Keep a flag `composite[x]` for every x from 0 to n, all false at the start.
 
-Do not test numbers one by one. Mark the multiples of each prime as "not prime":
+   **Why:** crossing out multiples is far cheaper than testing every number.
 
-1. Keep a flag `composite[x]` for every x from 0 to n. At the start, every flag is false.
-2. For i = 2 … n: if `composite[i]` is still false, i is prime. Add it to the answer, then mark i², i² + i, … up to n.
-3. Start marking at i², because any smaller multiple k × i (k < i) was already marked by a smaller prime factor of k.
+3. **Walk i from 2 to n. If `composite[i]` is still false, i is prime: add it to the answer.**
 
-Because we walk i in increasing order, the answer is already sorted.
+   **Why:** any non-prime was crossed out by a smaller prime before you reached it.
+
+4. **Then mark i², i² + i, … up to n as composite.**
+
+   **Why start at i²:** smaller multiples were already marked by smaller primes.
+
+5. **The answer comes out sorted,** because i only goes up.
 
 ## Code (C++)
 
@@ -42,22 +47,20 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n log log n).
-- Space: O(n) for the flags, plus the output.
+O(n log log n), almost linear. Memory: n + 1 flags, plus the answer.
 
-## Edge cases
+## Watch out for
 
-- n itself can be prime (n = 7). The array has size n + 1 and the loops use `<= n`, so n is included.
-- `i * i` needs `long long`. With n ≤ 5 × 10⁵, `i * i` can reach 2.5 × 10¹¹.
+- n itself can be prime. Size the array n + 1 and loop with `<= n`.
+- `i * i` can reach 2.5 × 10¹¹ here, so use `long long`.
 
-## Dry run (n = 10)
+## Walk through (n = 10)
 
-- i = 2: prime → [2]. Mark 4, 6, 8, 10.
-- i = 3: prime → [2, 3]. Mark 9.
-- i = 4: marked, skip.
-- i = 5: prime → [2, 3, 5]. 25 > 10, nothing to mark.
-- i = 6: skip. i = 7: prime → [2, 3, 5, 7]. i = 8, 9, 10: skip.
+- 2: prime → [2]. Mark 4, 6, 8, 10.
+- 3: prime → [2, 3]. Mark 9.
+- 4: marked. 5: prime → [2, 3, 5].
+- 6: marked. 7: prime → [2, 3, 5, 7]. 8, 9, 10: marked.
 
 Answer: **[2, 3, 5, 7]**.

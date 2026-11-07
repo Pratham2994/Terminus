@@ -1,20 +1,29 @@
 # Deletion of the tail of Linked List
 
-> Solve it on takeUforward's free practice page (the Problem link above). The function is `ListNode* deleteTail(ListNode* &head)`, and nodes store their value in `data`.
+> Solve it on takeUforward's free practice page (the Problem link above). The function is `ListNode* deleteTail(ListNode* &head)`. Nodes keep their value in `data`.
 
-## The problem
+## What you need to do
 
-Delete the **last** node of a singly linked list (1 to 1000 nodes) and return the head.
+Remove the **last** node of a linked list (1 to 1000 nodes) and return the head.
 
-Examples: [1, 2, 3] → **[1, 2]**. [1] → **[]** (return nullptr).
+## Examples
 
-## The idea
+- [1, 2, 3] → **[1, 2]**
+- [1] → **[]** (return `nullptr`)
 
-In a singly linked list you cannot step backwards. To cut off the tail, you must stand on the node **before** it, the second-last node, and set its `next` to nullptr.
+## How to solve it, step by step
 
-So walk while `cur->next->next != nullptr`. When the loop stops, cur is the second-last node.
+1. **If there is only one node, delete it and return `nullptr`.**
 
-Handle the one-node list first. There is no second-last node, so the list becomes empty.
+   **Why:** the list becomes empty, and there is no node before the tail to fix.
+
+2. **Otherwise walk to the second-last node:** move while `cur->next->next` is not `nullptr`.
+
+   **Why:** in a singly linked list you cannot step back. To cut off the tail, you must stand on the node **before** it.
+
+3. **Delete the tail and set `cur->next = nullptr`.**
+
+   **Why:** the second-last node is now the last, so nothing comes after it.
 
 ## Code (C++)
 
@@ -36,19 +45,18 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n), one walk to the end.
-- Space: O(1).
+One walk to the end: O(n) time, O(1) memory.
 
-## Edge cases
+## Watch out for
 
-- One node → return nullptr. Without the first check, `cur->next->next` would read through a null pointer and crash.
-- `delete` the removed node so it does not leak. The judge does not check this, but interviewers notice.
+- Without step 1, `cur->next->next` crashes on a one-node list.
+- `delete` the removed node so its memory is freed. The judge does not check this, but interviewers notice.
 
-## Dry run ([1, 2, 3])
+## Walk through ([1, 2, 3])
 
-- cur = 1: 1→2→3, so cur->next->next = 3 is not null → move.
-- cur = 2: 2→3→null → stop. Delete 3, set 2->next = null.
+- At 1: 1 → 2 → 3, so keep going.
+- At 2: 2 → 3 → nothing, so stop. Delete 3 and set 2's next to `nullptr`.
 
 Answer: **[1, 2]**.

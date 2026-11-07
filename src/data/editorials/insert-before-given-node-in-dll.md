@@ -1,23 +1,31 @@
 # Insert before given node in Doubly Linked List
 
-> Solve it on takeUforward's free practice page (the Problem link above). The function is `void insertBeforeGivenNode(ListNode* node, int X)`. You get the **node**, not the head.
+> Solve it on takeUforward's free practice page (the Problem link above). The function is `void insertBeforeGivenNode(ListNode* node, int X)`. You are given the **node**, not the head.
 
-## The problem
+## What you need to do
 
-Given a pointer to a node of a doubly linked list (never the head), insert a new node with value X **just before** it.
+You get a node of a doubly linked list (never the head). Insert a new node with value X **just before** it.
 
-Examples: [1, 2, 6], node = 6, X = 7 → **[1, 2, 7, 6]**. [7, 5, 15], node = 5, X = 10 → **[7, 10, 5, 15]**.
+## Examples
 
-## The idea
+- [1, 2, 6], node = 6, X = 7 → **[1, 2, 7, 6]**
+- [7, 5, 15], node = 5, X = 10 → **[7, 10, 5, 15]**
 
-Because the node is not the head, `node->prev` always exists. The new node goes between `before = node->prev` and `node`. Set the four links:
+## How to solve it, step by step
 
-1. fresh->prev = before
-2. fresh->next = node
-3. before->next = fresh
-4. node->prev = fresh
+1. **Save the node before it:** `before = node->prev`.
 
-The head never changes, so nothing is returned. The whole operation is O(1), with no search, because the node already knows its neighbour.
+   **Why:** the node is never the head, so `before` always exists. You must save it first, because the next steps change `node->prev`.
+
+2. **Make the new node, pointing back to `before` and forward to `node`.**
+
+   **Why:** the new node sits between these two.
+
+3. **Point `before->next` and `node->prev` at the new node.**
+
+   **Why:** a node in the middle of a doubly linked list needs four links in total: two of its own, and one from each neighbour.
+
+The head never changes, so nothing is returned. No search is needed, because the node already knows its neighbour: O(1).
 
 ## Code (C++)
 
@@ -33,18 +41,14 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(1).
-- Space: O(1).
+Four link changes: O(1) time and memory.
 
-## Edge cases
+## Watch out for
 
-- Save `before` **before** changing `node->prev`. If you set node->prev = fresh first, you lose the way back to the node before.
+- If you change `node->prev` before saving `before`, you lose the way back to the node in front.
 
-## Dry run ([7, 5, 15], node = 5, X = 10)
+## Walk through ([7, 5, 15], node = 5, X = 10)
 
-- before = 7. fresh = 10 (prev = 7, next = 5).
-- 7->next = 10 and 5->prev = 10.
-
-Answer: **[7, 10, 5, 15]**.
+before = 7. New node 10 points back to 7 and forward to 5. Then 7's next and 5's prev point to 10. Answer: **[7, 10, 5, 15]**.

@@ -2,23 +2,28 @@
 
 > Solve it on [LeetCode 14 · Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix/).
 
-## The problem
+## What you need to do
 
-Given an array of strings, return the longest string that is a prefix of **all** of them. If there is none, return "".
+Find the longest beginning (prefix) that **all** the strings share. Return "" if they share nothing.
 
-Examples: ["flower","flow","flight"] → **"fl"**. ["dog","racecar","car"] → **""**.
+## Examples
 
-## Brute force
+- ["flower", "flow", "flight"] → **"fl"**
+- ["dog", "racecar", "car"] → **""**
 
-Try every prefix of the first string, longest first, and check it against every other string.
+## How to solve it, step by step
 
-- Time: O(L² · n), where L is the first string's length and n the number of strings.
+1. **Start with the whole first string as your guess.** Keep its length in `len`.
 
-## The better idea: shrink the prefix
+   **Why:** the answer can never be longer than any one string, including the first.
 
-The answer can never be longer than the first string. Start with the full first string as the candidate, with length `len`. For each other string, count how many leading characters match the candidate, and cut `len` down to that count. After all strings, the first `len` characters are the answer.
+2. **For each other string, count how many first characters match the guess, and cut `len` down to that count.**
 
-Once `len` becomes 0, it stays 0, and every later comparison stops at once.
+   **Why:** a prefix that one string does not have cannot be shared by all.
+
+3. **After the last string, the first `len` characters of the first string are the answer.**
+
+4. **If `len` reaches 0, it stays 0,** and every later comparison stops at once.
 
 ## Code (C++)
 
@@ -38,26 +43,23 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(S), where S is the total number of characters. Each character is compared at most once.
-- Space: O(1) besides the answer (and the copy of the first string).
+Each character is compared at most once: O(S), where S is the total number of characters. No extra memory besides the answer.
 
-## Edge cases
+## Watch out for
 
-- One string → the string itself.
-- An empty string in the list → "", because `i < s.size()` stops at once.
-- Always check `i < s.size()` before reading `s[i]`. A shorter string must cut the prefix, not read past its end.
+- Check `i < s.size()` before reading `s[i]`. A shorter string must cut the guess, not read past its end.
+- One string → the answer is that string. An empty string in the list → "".
 
-## Another way: sort
+## Another neat way: sort
 
-Sort the strings. The common prefix of the whole list equals the common prefix of the **first and last** strings after sorting, since they differ the most. That takes O(S log n), slower but neat.
+After sorting, the first and last strings differ the most. Their common prefix is the answer for the whole list. It costs O(S log n), a bit slower.
 
-## Dry run (flower, flow, flight)
+## Walk through (flower, flow, flight)
 
-- Start: len = 6 ("flower").
-- "flower": all 6 match → len = 6.
+- Guess "flower", len = 6.
 - "flow": f, l, o, w match, then "flow" ends → len = 4.
-- "flight": f, l match, o ≠ i → len = 2.
+- "flight": f, l match, then o ≠ i → len = 2.
 
 Answer: **"fl"**.

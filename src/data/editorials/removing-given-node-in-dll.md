@@ -1,21 +1,29 @@
 # Removing given node in Doubly Linked List
 
-> Solve it on takeUforward's free practice page (the Problem link above). The function is `void deleteGivenNode(ListNode *node)`. You get the **node**, not the head.
+> Solve it on takeUforward's free practice page (the Problem link above). The function is `void deleteGivenNode(ListNode *node)`. You are given the **node**, not the head.
 
-## The problem
+## What you need to do
 
-You are given a pointer to one node of a doubly linked list (2 to 100 nodes). It is guaranteed **not to be the head**. Remove it from the list.
+You get a node of a doubly linked list (never the head). Remove it from the list.
 
-Examples: [1, 3, 5], node = 3 → **[1, 5]**. [1, 3, 7], node = 7 → **[1, 3]**.
+## Examples
 
-## The idea
+- [1, 3, 5], node = 3 → **[1, 5]**
+- [1, 3, 7], node = 7 → **[1, 3]**
 
-This is why doubly linked lists are useful: a node knows **both** neighbours, so you can unlink it without searching from the head.
+## How to solve it, step by step
 
-- `node->prev` always exists, because the node is never the head. Make it skip the node: `node->prev->next = node->next`.
-- `node->next` exists unless the node is the tail. If it exists, make it skip back: `node->next->prev = node->prev`.
+1. **Make the node before it skip over it:** `node->prev->next = node->next`.
 
-The head never changes, which is why the function returns nothing.
+   **Why:** the node is never the head, so `node->prev` always exists.
+
+2. **If there is a node after it, make that node point back past it:** `node->next->prev = node->prev`.
+
+   **Why:** if the removed node was the tail, there is no next node, and nothing needs fixing on that side.
+
+3. **Delete the node.**
+
+This is why doubly linked lists are useful: the node knows both neighbours, so you can remove it without walking from the head.
 
 ## Code (C++)
 
@@ -30,19 +38,15 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(1).
-- Space: O(1).
+Two link changes: O(1) time and memory.
 
-## Edge cases
+## Watch out for
 
-- The tail (node = 7 in [1, 3, 7]): next is null, so only the first line runs, and 3 becomes the tail. ✓
-- With a singly linked list you could not do this in O(1). You would need the node before it, and finding that takes a walk from the head.
+- Removing the tail: only step 1 runs, and the node before it becomes the new tail.
+- In a singly linked list this would take a walk from the head, because you could not reach the node before.
 
-## Dry run ([1, 3, 5], node = 3)
+## Walk through ([1, 3, 5], node = 3)
 
-- 3->prev = 1 → set 1->next = 5.
-- 3->next = 5 → set 5->prev = 1.
-
-Answer: **[1, 5]**.
+1's next becomes 5. 5's prev becomes 1. Answer: **[1, 5]**.

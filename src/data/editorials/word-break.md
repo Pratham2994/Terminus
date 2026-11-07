@@ -2,28 +2,37 @@
 
 > Solve it on [LeetCode 139 · Word Break](https://leetcode.com/problems/word-break/).
 
-## The problem
+## What you need to do
 
-Given a string s and a dictionary of words, can s be split into a sequence of dictionary words? Words may be reused.
+Can the string s be cut into pieces that are all words from the dictionary? Words may be used more than once.
 
-Examples: "leetcode", ["leet","code"] → **true**. "applepenapple", ["apple","pen"] → **true**. "catsandog", ["cats","dog","sand","and","cat"] → **false**.
+## Examples
 
-## Brute force
+- "leetcode", ["leet", "code"] → **true**
+- "applepenapple", ["apple", "pen"] → **true**
+- "catsandog", ["cats", "dog", "sand", "and", "cat"] → **false**
 
-Recursively try every word that matches at the current position, then solve the rest.
+## How to solve it, step by step
 
-- Exponential in the worst case. With s = "aaaa…ab" and words "a", "aa", "aaa", …, every split is tried, and they all fail at the 'b'.
+1. **The slow idea:** at each position, try every word that fits, then solve the rest. It can take exponential time, because the same rest is solved again and again.
 
-## The DP
+2. **Notice there are only n + 1 different questions:** "can the first i characters be cut into words?"
 
-The recursion keeps re-solving the same question: "can the **suffix starting at i** be split?" There are only n + 1 such questions.
+   **Why:** that is what makes a table (dynamic programming) possible: answer each question once and reuse it.
 
-Work forwards: `can[i]` = true if the first i characters can be split.
+3. **Let `can[i]` mean "the first i characters can be cut into words". Set `can[0] = true`.**
 
-- can[0] = true (the empty prefix).
-- can[i] = true if there is some length `len` with can[i − len] true **and** s[i − len … i − 1] in the dictionary.
+   **Why:** the empty start can always be "cut", and every real answer builds on it.
 
-Only lengths up to the **longest word** need checking. That bounds the inner loop to at most 20 for LeetCode.
+4. **`can[i]` is true if some word fits at the end:** there is a length `len` where `can[i − len]` is true **and** the last `len` characters are a word.
+
+   **Why:** a good cut of the first i characters ends with some word, and before that word the cut must also be good.
+
+5. **Only try lengths up to the longest word.**
+
+   **Why:** no word is longer, so longer pieces can never match. This keeps the inner loop short.
+
+6. **The answer is `can[n]`.**
 
 ## Code (C++)
 
@@ -48,20 +57,18 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n · L · L), where L is the longest word length (the substring costs O(L)). That is about 300 × 20 × 20 for LeetCode.
-- Space: O(n + total dictionary size).
+For each of the n positions, up to L lengths, and each piece costs up to L to check: O(n · L²), where L is the longest word. Memory: O(n) plus the dictionary.
 
-## Edge cases
+## Watch out for
 
 - Words can be reused: "aaaa" with ["a"] → true.
-- A trie over the dictionary avoids building substrings. It is worth it for large dictionaries.
 
-## Dry run ("leetcode", ["leet","code"])
+## Walk through ("leetcode", ["leet", "code"])
 
-- can[0] = T.
-- can[4]: s[0..3] = "leet" ∈ dict and can[0] → T.
-- can[8]: s[4..7] = "code" ∈ dict and can[4] → T.
+- can[0] = true.
+- can[4]: "leet" is a word and can[0] is true → true.
+- can[8]: "code" is a word and can[4] is true → true.
 
 Answer: **true**. (Tested on 4 000 random cases against the plain recursion.)

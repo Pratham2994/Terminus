@@ -2,19 +2,28 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `ListNode *deleteTail(ListNode *&head)`. Nodes have `data`, `prev` and `next`.
 
-## The problem
+## What you need to do
 
 Remove the last node of a doubly linked list (1 to 100 nodes) and return the head.
 
-Examples: [1, 2, 3] → **[1, 2]**. [7] → **[]**.
+## Examples
 
-## The idea
+- [1, 2, 3] → **[1, 2]**
+- [7] → **[]**
 
-In a **doubly** linked list, every node knows the node before it. So walk to the tail itself, then use `tail->prev` to reach the new last node and cut the link: `tail->prev->next = nullptr`.
+## How to solve it, step by step
 
-Compare that with a singly linked list, where you have to stop one node early. Here you can stand on the tail and still step back.
+1. **If there is only one node, delete it and return `nullptr`.**
 
-One node: there is no previous node, so the list becomes empty.
+   **Why:** the list becomes empty.
+
+2. **Otherwise walk to the last node itself.**
+
+   **Why:** in a doubly linked list every node knows the node before it, so you can stand on the tail and still step back. (In a singly linked list you would have to stop one node early.)
+
+3. **Go back one with `tail->prev`, and set that node's `next` to `nullptr`. Delete the tail.**
+
+   **Why:** only this one link has to change. The new last node's `prev` is already right.
 
 ## Code (C++)
 
@@ -36,18 +45,14 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n) to reach the tail.
-- Space: O(1).
+One walk to the end: O(n) time, O(1) memory.
 
-## Edge cases
+## Watch out for
 
-- One node → nullptr.
-- Only **one** link changes here. The new tail's `prev` stays correct, and the removed node's pointers no longer matter.
+- The one-node case (step 1): there is no `prev` to step back to.
 
-## Dry run ([1, 2, 3])
+## Walk through ([1, 2, 3])
 
-- Walk to 3. 3->prev = 2. Set 2->next = null and delete 3.
-
-Answer: **[1, 2]**.
+Walk to 3. Its prev is 2. Set 2's next to `nullptr` and delete 3. Answer: **[1, 2]**.

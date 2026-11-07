@@ -1,35 +1,33 @@
 # Rabin Karp Algorithm
 
-> Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> search(string pat, string txt)`. Return every 0-based start index of pat in txt.
+> Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> search(string pat, string txt)`. Return every starting index (from 0) where pat appears in txt.
 
-## The problem
+## What you need to do
 
-Find all occurrences of `pattern` in `text`, using the Rabin-Karp idea.
+Find every place the pattern appears in the text, using the Rabin-Karp idea.
 
-Examples: text "ababcabcababc", pattern "abc" → **[2, 5, 10]**. text "hello", pattern "ll" → **[2]**.
+## Examples
 
-## Brute force
+- text "ababcabcababc", pattern "abc" → **[2, 5, 10]**
+- text "hello", pattern "ll" → **[2]**
 
-Compare pattern against text at every start index.
+## How to solve it, step by step
 
-- Time: O(n · m) in the worst case (text "aaaa…a", pattern "aa…ab").
+1. **The simple search compares the pattern at every position.** In the worst case ("aaaa…a" against "aa…ab") that is O(n · m).
 
-## The Rabin-Karp idea: compare numbers, not strings
+2. **Turn each window of m characters into a number, its "hash", and compare numbers instead of strings.**
 
-Turn every length-m window into a number, its **hash**, and compare that with the pattern's hash. Comparing two numbers is O(1).
+   **Why:** comparing two numbers takes one step; comparing two strings takes m steps.
 
-The trick is the **rolling** hash. Treat a string as a number in base B (we use 131), taken mod a big prime M:
+3. **Treat the window as a number in base B (131 here), kept small with mod M (a big prime).**
 
-hash("c₀c₁…c_{m−1}") = c₀·B^(m−1) + c₁·B^(m−2) + … + c_{m−1} (mod M)
+4. **Slide the window with a "rolling" hash:** subtract the leftmost character's part (txt[i] × B^(m − 1)), multiply by B, and add the new character.
 
-Sliding the window right by one:
+   **Why:** this updates the hash in one step instead of recomputing it from scratch.
 
-1. **Remove** the leftmost character: subtract txt[i] · B^(m−1).
-2. **Shift and add** the new one: multiply by B, add txt[i + m].
+5. **When the hashes match, confirm with a real string comparison.**
 
-So each new window's hash costs O(1).
-
-**Collisions:** two different strings can have the same hash. When the hashes match, **confirm** with a real string comparison. Then the answer is always correct, and only the speed depends on the hash.
+   **Why:** two different strings can sometimes share a hash (a "collision"). Confirming makes the answer always correct; the hash only makes it fast.
 
 ## Code (C++)
 
@@ -58,16 +56,14 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n + m) on average. A real comparison only happens when the hashes match: for true matches, and for rare collisions.
-- Worst case O(n · m), if an attacker forces many collisions. Using two different mods (double hashing) makes that practically impossible.
-- Space: O(1) besides the output.
+O(n + m) on average: the real comparison only runs on true matches and rare collisions. The worst case is O(n · m) if collisions are forced; using two different mods makes that practically impossible. Memory: O(1) besides the answer.
 
-## Edge cases
+## Watch out for
 
-- `+ MOD` before the final `% MOD` keeps the hash non-negative after the subtraction.
-- `power` is BASE^(m−1), not BASE^m. It is the weight of the window's **first** character.
-- Overlapping matches are found ("aa" in "aaaa" → 0, 1, 2), because we check every window.
+- Add M before the final `% M` after subtracting, so the hash never goes negative.
+- The leftmost character's weight is B^(m − 1), not B^m.
+- Overlapping matches are found ("aa" in "aaaa" → 0, 1, 2), because every window is checked.
 
-(Tested on 4 000 random texts and patterns against a plain search. KMP gives the same answers with a guaranteed O(n + m). See the KMP station.)
+(Tested on 4 000 random texts and patterns against a plain search. KMP gives the same answers with a guaranteed O(n + m); see the KMP station.)

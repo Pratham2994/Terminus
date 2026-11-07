@@ -2,38 +2,38 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `long long countSubstrings(string s)`. The same problem is free on [LeetCode 1915 · Number of Wonderful Substrings](https://leetcode.com/problems/number-of-wonderful-substrings/).
 
-## The problem
+## What you need to do
 
-The name hides what this problem asks. s has only the letters 'a' to 'j' (10 letters) and length up to 10⁵. A substring is **valid** when **at most one** letter appears an **odd** number of times in it. Count the valid non-empty substrings.
+The name hides the real question. s uses only the letters 'a' to 'j' (10 letters) and can be 100 000 long. Count the connected pieces where **at most one letter appears an odd number of times**.
 
-Examples: "aba" → **4** ("a", "b", "a", "aba"). "aabb" → **9** (all 10 substrings except "ab").
+## Examples
 
-## Brute force
+- "aba" → **4**: "a", "b", "a", "aba"
+- "aabb" → **9**: every piece except "ab"
 
-For every start i, extend the end j and keep 10 counters. Check how many counters are odd.
+## How to solve it, step by step
 
-- Time: O(n² · 10). For n = 10⁵ that is 10¹¹ steps, too slow.
+1. **The slow idea:** try every piece and count its letters. That is about 10¹¹ steps for n = 100 000.
 
-## Key idea 1: only parity matters
+2. **Only odd or even matters, so store it as bits.** Keep a 10-bit number `mask`: bit c is 1 when letter c has appeared an odd number of times so far.
 
-We only care whether each letter's count is **odd or even**. Store that as a 10-bit **mask**: bit c is 1 when letter c has appeared an odd number of times.
+   **Why:** 10 yes/no answers fit in one small number, and flipping a bit (XOR) adds one letter.
 
-Let `mask(k)` be the mask of the first k characters, the prefix. The mask of the substring s[i..j−1] is
+3. **The mask of a piece is (mask at its end) XOR (mask at its start).**
 
-**mask(j) XOR mask(i)**
+   **Why:** XOR cancels the part before the piece, just like subtracting prefix sums.
 
-because XOR cancels the part they share, and a parity is just a count mod 2.
+4. **A piece is valid when its mask has zero or one bit set.** So, at each end, count earlier masks that are **equal** to the current mask, or differ from it in **exactly one** bit (10 choices).
 
-## Key idea 2: what "valid" means for the masks
+   **Why:** equal masks XOR to 0 (every letter even); masks one bit apart XOR to a single bit (one letter odd).
 
-A substring is valid when its mask has **zero or one** bit set, so:
+5. **Keep counts of the masks seen so far** in an array of 1024 (= 2¹⁰). Start with `seen[0] = 1`.
 
-- mask(j) XOR mask(i) = 0, which means mask(i) = mask(j), or
-- mask(j) XOR mask(i) = one bit b, which means mask(i) = mask(j) XOR (1 << b), for one of the 10 letters b.
+   **Why:** `seen[0] = 1` stands for the empty start, so pieces that begin at index 0 are counted too.
 
-So walk through s and keep the current prefix mask. For each end j, count how many earlier prefixes i had one of these 11 masks. Store those counts in an array `seen` of size 2¹⁰ = 1024.
+6. **Add the current mask to `seen` only after counting.**
 
-Start with `seen[0] = 1`: that is the empty prefix, so substrings starting at index 0 are counted too.
+   **Why:** otherwise the current position pairs with itself and counts an empty piece.
 
 ## Code (C++)
 
@@ -56,22 +56,18 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n · 10). For each character, 11 array lookups.
-- Space: O(2¹⁰) = 1024 counters.
+For each letter, 11 lookups: O(10 · n) time. Memory: 1024 counters.
 
-## Edge cases
+## Watch out for
 
-- The answer can reach about n²/2 = 5 × 10⁹, which overflows `int`. Use `long long`, as the function signature says.
-- Add the current mask to `seen` **after** counting. Otherwise the current prefix would pair with itself, and count an empty substring.
+- The answer can be about n²/2 = 5 billion, too big for `int`. Use `long long`.
 
-## Dry run ("aba")
+## Walk through ("aba")
 
-Masks: a = bit 0, b = bit 1. seen = {0: 1}.
+a = bit 0, b = bit 1. seen = {00: 1}.
 
-- 'a' → mask 01. seen[01] = 0. One bit off: seen[00] = 1 → +1 ("a"). seen = {00:1, 01:1}.
-- 'b' → mask 11. seen[11] = 0. Flip bit 0 → 10: 0. Flip bit 1 → 01: 1 → +1 ("b"). seen adds 11.
-- 'a' → mask 10. seen[10] = 0. Flip bit 0 → 11: 1 ("a"). Flip bit 1 → 00: 1 ("aba") → +2.
-
-Total **4** ✓.
+- 'a' → mask 01. Equal: 0. One bit off: 00 → 1. Total 1 ("a").
+- 'b' → mask 11. Equal: 0. One bit off: 01 → 1. Total 2 ("b").
+- 'a' → mask 10. Equal: 0. One bit off: 11 → 1 ("a"), 00 → 1 ("aba"). Total **4**.

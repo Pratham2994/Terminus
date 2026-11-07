@@ -2,19 +2,30 @@
 
 > Solve it on [LeetCode 17 · Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/).
 
-## The problem
+## What you need to do
 
-Given a string of digits 2–9 (length ≤ 4), return every letter string the digits could spell on an old phone keypad:
-2 abc · 3 def · 4 ghi · 5 jkl · 6 mno · 7 pqrs · 8 tuv · 9 wxyz.
+Old phones put letters on the number keys: 2 abc · 3 def · 4 ghi · 5 jkl · 6 mno · 7 pqrs · 8 tuv · 9 wxyz. Given a string of digits (2 to 9, at most 4 of them), list every word the digits could type.
 
-Examples: "23" → **["ad","ae","af","bd","be","bf","cd","ce","cf"]**. "" → **[]**.
+## Examples
 
-## The idea: one level per digit
+- "23" → **["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]**
+- "" → **[]**
 
-This is a tree. Level i chooses one letter for digit i:
+## How to solve it, step by step
 
-- At position i, loop over the letters of digits[i]. Add each one and recurse to i + 1.
-- At i == length, one full string is built. Record it.
+1. **Work through the digits one at a time.** At digit i, try each of its letters.
+
+   **Why:** each digit needs exactly one letter, and every choice is allowed.
+
+2. **For each letter: add it to the word, move on to digit i + 1, then remove it again.**
+
+   **Why:** removing it ("backtracking") lets the next letter take its place, using one shared string.
+
+3. **When you have used every digit, save the word.**
+
+4. **If the input is empty, return [] straight away.**
+
+   **Why:** otherwise the recursion would save one empty word and return [""], which is wrong.
 
 ## Code (C++)
 
@@ -40,19 +51,18 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Up to 4ⁿ answers (7 and 9 have 4 letters), each of length n.
-- Time: O(4ⁿ · n). Space: O(n) recursion depth, plus the output.
+Up to 4 letters per digit, so up to 4ⁿ words of length n: O(4ⁿ · n). With n ≤ 4 that is at most 256 words.
 
-## Edge cases
+## Watch out for
 
-- Empty input must return **[]**, not [""]. Without the check, the recursion would record the empty string once.
+- The empty input case (step 4).
 
-## Dry run ("23")
+## Walk through ("23")
 
 - 'a' → "ad", "ae", "af".
 - 'b' → "bd", "be", "bf".
 - 'c' → "cd", "ce", "cf".
 
-Answer: 9 strings, in the order shown above.
+Nine words, in the order shown above.

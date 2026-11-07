@@ -1,26 +1,30 @@
 # Minimum Window Subsequence
 
-> LeetCode 727 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks: use the Problem link above. GfG's function is `string minWindow(string& s1, string& s2)`: the same code works with the `&` added.
+> LeetCode 727 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks (the Problem link above). GfG's function is `string minWindow(string& s1, string& s2)`: the code below works there with the `&` added.
 
-## The problem
+## What you need to do
 
-Given strings s1 and s2, find the **shortest substring** of s1 that contains s2 as a **subsequence**: the characters of s2 in order, not necessarily adjacent. If several have the same length, return the one that starts **leftmost**. If none exists, return "".
+Find the **shortest piece of s1** that contains s2 as a subsequence: the letters of s2 in order, but not necessarily next to each other. If several are equally short, return the one that starts first. If none exists, return "".
 
-Example: s1 = "abcdebdde", s2 = "bde" → **"bcde"**. ("bdde" is also length 4 and valid, but it starts later.)
+## Example
 
-## Brute force
+s1 = "abcdebdde", s2 = "bde" → **"bcde"**. ("bdde" is also 4 long, but it starts later.)
 
-For every start i, scan right and match s2 greedily. The first end where all of s2 is matched gives the shortest window starting at i.
+## How to solve it, step by step
 
-- Time: O(n²), where n = |s1|.
+1. **Forward pass:** from a start position, walk through s1 and match the letters of s2 in order. Stop where the **last** letter of s2 matches. That is the end of a window.
 
-## The better idea: forward, then backward
+   **Why:** this finds a valid window, but its start may be too early.
 
-1. **Forward:** from position i, scan s1 and match s2's characters in order. Stop at the index `end` where the last character of s2 matches. The window ends there.
-2. **Backward:** from `end`, walk **left** and match s2 from its last character back to its first. Where s2[0] matches is the **latest possible start** for this end. That gives the shortest window ending at `end`.
-3. Record the window if it is the shortest so far, then restart the forward scan from **start + 1** to look for another window.
+2. **Backward pass:** from that end, walk **left** and match s2 from its last letter back to its first. Where s2's first letter matches is the **latest possible start**.
 
-Why does the backward pass help? The forward pass finds some valid window, but it may start too early. Matching backwards from the end pushes the start as far right as possible.
+   **Why:** going backwards pushes the start as far right as possible, which gives the shortest window with this end.
+
+3. **Keep the window if it is shorter than the best so far.**
+
+   **Why:** only replace on "strictly shorter", so on a tie the earlier window stays.
+
+4. **Start the next forward pass one position after that start,** and repeat until no more windows are found.
 
 ## Code (C++)
 
@@ -53,21 +57,22 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n · m) in typical cases. Each window costs a forward and a backward scan, and windows restart from successive starts. With n ≤ 2 × 10⁴ and m ≤ 100 it is fast.
-- Space: O(1).
-- DP alternative: dp[i][j] = the latest start index such that s2[0..j] is a subsequence of s1[start..i]. That is O(n · m) time and space.
+About O(n · m) in practice, where n is the length of s1 and m of s2. Memory: O(1).
 
-## Edge cases
+## Another way
 
-- Ties: we only replace the best on a **strictly** shorter window, and windows are found left to right, so the leftmost one wins.
-- No window → "".
+A DP table where dp[i][j] = the latest start such that s2[0..j] fits inside s1[start..i]. It is also O(n · m), but uses O(n · m) memory.
 
-## Dry run (s1 = "abcdebdde", s2 = "bde")
+## Watch out for
 
-- Forward from 0: b (1), d (3), e (4) → end = 4. Backward: e (4), d (3), b (1) → start = 1 → "bcde", length 4.
-- Forward from 2: b (5), d (6), e (8) → end = 8. Backward: e (8), d (7), b (5) → start = 5 → "bdde", length 4, not shorter.
+- If no window exists, return "".
+
+## Walk through (s1 = "abcdebdde", s2 = "bde")
+
+- Forward from 0: b (1), d (3), e (4) → end 4. Backward: e (4), d (3), b (1) → "bcde", length 4.
+- Forward from 2: b (5), d (6), e (8) → end 8. Backward: e (8), d (7), b (5) → "bdde", length 4, not shorter.
 - Forward from 6: no b left → stop.
 
-Answer: **"bcde"**. (Tested on 3 000 random cases against the O(n²) brute force.)
+Answer: **"bcde"**. (Tested on 3 000 random cases against the slow way.)

@@ -2,23 +2,44 @@
 
 > Solve it on [LeetCode 8 · String to Integer (atoi)](https://leetcode.com/problems/string-to-integer-atoi/).
 
-## The problem
+## What you need to do
 
-Turn a string into a 32-bit signed integer, the way C's `atoi` does, in this order:
+Turn a string into a 32-bit integer, following these rules in order:
 
 1. Skip leading **spaces**.
-2. Read an optional sign, '+' or '−'. Only one sign is allowed.
-3. Read **digits** until the first non-digit. Ignore the rest of the string.
+2. Read one optional sign, `+` or `-`.
+3. Read **digits** until the first non-digit; ignore the rest.
 4. No digits read → 0.
-5. **Clamp** to the int range: below −2³¹ → −2³¹, above 2³¹ − 1 → 2³¹ − 1.
+5. If the number is too big or too small for an `int`, return the nearest limit.
 
-Examples: "42" → **42**. "   -042" → **−42**. "1337c0d3" → **1337**. "0-1" → **0**. "words and 987" → **0**.
+## Examples
 
-## The approach: follow the steps exactly
+- "42" → **42**
+- "   -042" → **−42**
+- "1337c0d3" → **1337**
+- "words and 987" → **0**
 
-There is no clever trick here. The difficulty is doing each step exactly as written, and handling **overflow**.
+## How to solve it, step by step
 
-Overflow: build the number in a `long long`. After each digit, check whether sign × result has already left the int range, and return the limit **right away**. If you only checked at the end, a 30-digit string would overflow even the `long long`.
+There is no trick here. The skill is following each rule exactly, plus handling overflow.
+
+1. **Move an index past the spaces.**
+
+   **Why:** rule 1. Only spaces count; tabs do not.
+
+2. **If the next character is `+` or `-`, remember the sign and move on.**
+
+   **Why:** rule 2. Only one sign is allowed, so "+-12" stops at the `-` and gives 0.
+
+3. **Read the digits one at a time,** with `result = result * 10 + digit`. Keep `result` in a `long long`.
+
+   **Why:** this builds the number left to right, the same way you read it.
+
+4. **After every digit, check whether sign × result is outside the int range. If it is, return the limit at once.**
+
+   **Why:** if you only checked at the end, a 30-digit string would overflow even a `long long`.
+
+5. **Return sign × result.**
 
 ## Code (C++)
 
@@ -42,25 +63,18 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n).
-- Space: O(1).
+One pass: O(n) time, O(1) memory.
 
-## Edge cases
+## Watch out for
 
-- "+-12" → 0. After '+', the next character '−' is not a digit, so reading stops.
-- "   " and "" → 0.
-- "-2147483648" → exactly INT_MIN, which is allowed (−2³¹ fits). "2147483648" → clamped to INT_MAX.
-- "00000000000012345678" → 12345678. Leading zeros never overflow, because the result stays 0.
-- Only spaces are skipped, not tabs or other whitespace.
+- "-2147483648" is exactly the smallest `int`, which is allowed. "2147483648" is one too big → return 2147483647.
+- Leading zeros like "0000012345" are fine: the result stays 0 while reading them.
+- "" or "   " → 0.
 
-## Dry run ("   -042")
+## Walk through ("   -042")
 
-- Skip 3 spaces → i = 3.
-- '−' → sign = −1, i = 4.
-- '0' → 0, '4' → 4, '2' → 42. End of string.
+Skip 3 spaces. `-` → sign −1. Digits 0, 4, 2 → 42. End. Return **−42**.
 
-Return −1 × 42 = **−42**.
-
-(Tested on 20 000 random strings of spaces, signs, digits and letters, against a reference that follows the rules literally.)
+(Tested on 20 000 random strings against a version that follows the rules word for word.)

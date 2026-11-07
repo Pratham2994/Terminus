@@ -2,21 +2,28 @@
 
 > Solve it on [LeetCode 1614 · Maximum Nesting Depth of the Parentheses](https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/).
 
-## The problem
+## What you need to do
 
-s is a valid expression with digits, + - * / and parentheses. Return the maximum number of parentheses open at the same time.
+s is a valid maths expression with brackets. Find the **most brackets open at the same time**.
 
-Examples: "(1+(2*3)+((8)/4))+1" → **3** (around the 8). "(1)+((2))+(((3)))" → **3**.
+## Examples
 
-## Idea: a running counter
+- "(1+(2*3)+((8)/4))+1" → **3** (around the 8)
+- "(1)+((2))+(((3)))" → **3**
 
-You do not need a stack. A counter is enough:
+## How to solve it, step by step
 
-- '(' → depth + 1, and update the best seen so far.
-- ')' → depth − 1.
-- Anything else → ignore.
+1. **Keep a counter `depth`,** starting at 0.
 
-The answer is the highest value depth ever reaches. Because s is valid, depth never goes below 0.
+   **Why:** you only need to know how many brackets are open, not which ones, so a counter is enough. No stack needed.
+
+2. **On `(`, add 1, and remember the biggest depth seen so far.**
+
+   **Why:** the moment right after opening a bracket is when depth is highest.
+
+3. **On `)`, subtract 1. Ignore every other character.**
+
+4. **Return the biggest depth seen.**
 
 ## Code (C++)
 
@@ -34,18 +41,14 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n).
-- Space: O(1).
+One pass: O(n) time, O(1) memory.
 
-## Edge cases
+## Watch out for
 
-- No parentheses ("1+2") → 0.
-- Update `best` right after the increment, at the moment depth is highest.
+- No brackets at all ("1+2") → 0.
 
-## Dry run ("(1+(2*3)+((8)/4))+1")
+## Walk through ("(1+(2*3)+((8)/4))+1")
 
-- ( → 1, best 1. ( → 2, best 2. ) → 1. ( → 2. ( → 3, best **3**. ) → 2. ) → 1. ) → 0.
-
-Answer: **3**.
+( → 1, ( → 2, ) → 1, ( → 2, ( → **3**, ) → 2, ) → 1, ) → 0. Answer: **3**.

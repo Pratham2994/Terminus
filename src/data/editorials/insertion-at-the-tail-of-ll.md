@@ -2,17 +2,30 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `ListNode* insertAtTail(ListNode* &head, int X)`.
 
-## The problem
+## What you need to do
 
-Add a node with value X at the **end** of a singly linked list and return the head. The list may be **empty** (0 nodes).
+Add a new node with value X at the **end** of a linked list, and return the head. The list may be empty.
 
-Examples: [1, 2, 3], X = 7 → **[1, 2, 3, 7]**. [], X = 0 → **[0]**.
+## Examples
 
-## The idea
+- [1, 2, 3], X = 7 → **[1, 2, 3, 7]**
+- [], X = 0 → **[0]**
 
-1. Create the new node. Its `next` is nullptr, because it will be the last node.
-2. If the list is empty, the new node **is** the list: it becomes the head.
-3. Otherwise walk to the current last node (the one whose `next` is nullptr) and link the new node after it.
+## How to solve it, step by step
+
+1. **Make the new node.** Its `next` is `nullptr`.
+
+   **Why:** it will be the last node, so nothing comes after it.
+
+2. **If the list is empty, the new node becomes the head. Return it.**
+
+   **Why:** there is no last node to attach to.
+
+3. **Otherwise walk to the current last node:** keep moving while `cur->next` is not `nullptr`.
+
+   **Why:** you must stop **on** the last node, because that is the one whose `next` you change.
+
+4. **Set `cur->next` to the new node, and return the head.**
 
 ## Code (C++)
 
@@ -33,19 +46,15 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n) to find the tail. If you keep a `tail` pointer, as many real implementations do, it becomes O(1).
-- Space: O(1) besides the new node.
+O(n) to walk to the end, O(1) extra memory. (Real lists often keep a `tail` pointer, which makes this O(1).)
 
-## Edge cases
+## Watch out for
 
-- Empty list: without the check, `cur->next` reads through a null pointer.
-- The loop condition is `cur->next != nullptr`, not `cur != nullptr`. We need to stop **on** the last node, not after it.
+- Skipping the empty-list check makes `cur->next` read through a null pointer and crash.
+- The loop condition is `cur->next != nullptr`, not `cur != nullptr`. The second walks one step too far.
 
-## Dry run ([1, 2, 3], X = 7)
+## Walk through ([1, 2, 3], X = 7)
 
-- cur = 1 → 2 → 3, where 3->next is null, so stop.
-- Set 3->next = 7.
-
-Answer: **[1, 2, 3, 7]**.
+Walk 1 → 2 → 3 (3 has no next). Set 3's next to 7. Answer: **[1, 2, 3, 7]**.

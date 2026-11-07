@@ -1,26 +1,36 @@
 # Connected Components
 
-> takeUforward's page for this needs Plus, and LeetCode 323 is Premium. The **same problem** (count components from an edge list) is free on GeeksforGeeks: use the Problem link above. GfG's function is `int countConnected(int V, vector<vector<int>>& edges)`; the code below calls it `findNumberOfComponent`, with the same body.
+> takeUforward's page needs Plus, and LeetCode 323 is Premium. The **same problem** is free on GeeksforGeeks (the Problem link above). GfG's function is `int countConnected(int V, vector<vector<int>>& edges)`; the code below calls it `findNumberOfComponent`, with the same body.
 
-## The problem
+## What you need to do
 
-An undirected graph has V vertices (0 … V − 1) and an edge list. Count its **connected components**: the groups of vertices that can reach each other.
+A graph has V vertices (0 to V − 1) and a list of edges. Count its **connected components**: the separate groups of vertices that can reach each other.
 
-Example: V = 4, edges = [[0,1],[1,2]] → **2** ({0, 1, 2} and {3}).
+## Example
 
-## Way 1: DFS or BFS
+V = 4, edges [[0, 1], [1, 2]] → **2**: {0, 1, 2} and {3}.
 
-Build an adjacency list. Walk the vertices: every vertex not yet visited starts a **new component**. Flood it with DFS or BFS, marking everything reachable. Count how many floods you start.
+## How to solve it, step by step
 
-- Time: O(V + E). Space: O(V + E).
+There are two good ways. The code uses the second one.
 
-## Way 2: Disjoint Set Union (shown below)
+1. **Way 1, DFS or BFS:** go through the vertices; each one not yet visited starts a new group. Visit everything it can reach, and count how many times you start.
 
-Start with V separate components, one per vertex. For each edge (u, v), if u and v are in **different** sets, merge the two sets, which leaves one component fewer. If they are already in the same set, the edge changes nothing.
+   **Why:** each start finds exactly one whole group.
 
-`find` returns a set's representative, its root. **Path compression** points each node straight at its root, which keeps later finds almost O(1).
+2. **Way 2, Disjoint Set Union (DSU): start with V groups, one per vertex.**
 
-DSU needs no adjacency list, and it handles edges arriving one at a time. That is why the Graphs line teaches it.
+   **Why:** before looking at any edge, every vertex is on its own.
+
+3. **For each edge (u, v): find both groups' leaders. If they are different, join the groups and subtract 1 from the count.**
+
+   **Why:** an edge between two separate groups turns them into one. An edge inside one group changes nothing.
+
+4. **Path compression:** when finding a leader, point every node on the way straight at it.
+
+   **Why:** later searches then take about one step.
+
+DSU needs no neighbour lists, and it handles edges arriving one at a time, which is why the Graphs line teaches it here.
 
 ## Code (C++)
 
@@ -46,20 +56,19 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(V + E · α(V)), where α is the inverse Ackermann function, effectively a constant.
-- Space: O(V).
+O(V + E) for DFS/BFS; almost the same for DSU (each step is close to O(1)). Memory: O(V).
 
-## Edge cases
+## Watch out for
 
-- Isolated vertices (like 3 in the example) count as their own component. Starting at V components handles that.
-- Self-loops and repeated edges: `a == b`, so nothing changes. ✓
+- A vertex with no edges is its own group (3 in the example). Starting the count at V handles that.
+- Repeated edges and self-loops change nothing, because both ends already share a leader.
 
-## Dry run (V = 4, edges [0,1], [1,2])
+## Walk through (V = 4, edges [0, 1], [1, 2])
 
-- Start: 4 components.
-- [0,1]: roots 0 and 1 differ → merge → 3.
-- [1,2]: root of 1 is now 1, and the root of 2 is 2 → merge → 2.
+- Start: 4 groups.
+- [0, 1]: different leaders → join → 3.
+- [1, 2]: different leaders → join → 2.
 
 Answer: **2**. (Tested on 3 000 random graphs against a DFS count.)

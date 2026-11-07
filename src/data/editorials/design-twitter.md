@@ -2,29 +2,35 @@
 
 > Solve it on [LeetCode 355 · Design Twitter](https://leetcode.com/problems/design-twitter/).
 
-## The problem
+## What you need to do
 
-Build a tiny Twitter with four operations:
+Build a tiny Twitter with four actions:
 
-- `postTweet(userId, tweetId)`: the user posts a tweet.
-- `getNewsFeed(userId)`: the **10 most recent** tweet ids from the user and everyone they follow, newest first.
+- `postTweet(userId, tweetId)`: a user posts a tweet.
+- `getNewsFeed(userId)`: the **10 newest** tweets from the user and everyone they follow, newest first.
 - `follow(followerId, followeeId)` and `unfollow(followerId, followeeId)`.
 
-## What to store
+## How to solve it, step by step
 
-- A global **clock**. Every tweet gets the next time value, so "most recent" is just "biggest time".
-- `posts[user]`: that user's tweets as (time, tweetId), in the order posted, so the newest is at the back.
-- `follows[user]`: a set of the users they follow.
+1. **Keep a global clock.** Every new tweet gets the next number.
 
-## The feed: merge k sorted lists
+   **Why:** then "newest" simply means "biggest number".
 
-Each followed user's posts are already sorted by time. The feed is a **merge** of those lists, and we only need the first 10. That is the classic "merge k sorted lists with a heap":
+2. **Store each user's tweets as (time, tweetId), in the order posted.**
 
-1. Push the **newest** post of the user and of each followee into a **max-heap** keyed by time.
-2. Pop the newest overall and add it to the feed. Then push the **next older** post from the same user.
-3. Stop after 10 posts, or when the heap is empty.
+   **Why:** the newest tweet is always at the back, so each user's list is already sorted by time.
 
-So we never look at more than 10 + (number of followees) posts, however many tweets exist.
+3. **Store who each user follows in a set.**
+
+   **Why:** follow and unfollow are then a single insert or erase.
+
+4. **For the feed, merge the sorted lists with a max-heap.** Put the newest tweet of the user and of each person they follow into the heap.
+
+   **Why:** the newest tweet overall must be the newest of one of these lists.
+
+5. **Take the newest from the heap, add it to the feed, then push that same user's next older tweet.** Stop after 10 tweets or when the heap is empty.
+
+   **Why:** you never look at more than about 10 + (number followed) tweets, however many tweets exist.
 
 ## Code (C++)
 
@@ -70,15 +76,13 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- post, follow, unfollow: O(1) on average.
-- getNewsFeed: O((F + 10) log F), where F = the number of followees.
+Posting, following and unfollowing are O(1) on average. A feed takes O((F + 10) log F), where F is the number of people followed.
 
-## Edge cases
+## Watch out for
 
-- A user must always see **their own** tweets, even though they do not "follow" themselves. Ignoring self-follows avoids double counting.
-- Unfollowing someone you do not follow: `erase` on a missing key does nothing. ✓
-- A user with no posts and no followees → empty feed.
+- Users always see **their own** tweets, even though they do not "follow" themselves. Ignore a user following themself, so nothing is counted twice.
+- Unfollowing someone you do not follow does nothing; `erase` of a missing item is safe.
 
-(Tested on 300 random sequences of 60 operations against a brute force that scans every tweet ever posted.)
+(Tested on 300 random sequences of 60 actions against a version that scans every tweet ever posted.)

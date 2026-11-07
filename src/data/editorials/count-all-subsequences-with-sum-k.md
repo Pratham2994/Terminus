@@ -2,28 +2,32 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `int countSubsequenceWithTargetSum(vector<int>& nums, int k)`.
 
-## The problem
+## What you need to do
 
-Given nums (length ≤ 20, values 1…100) and k (1…2000), count the **non-empty** subsequences whose sum is exactly k. Equal values at different positions count as different subsequences.
+Count how many ways you can pick some of the numbers (at least one) so that they add up to exactly k. Equal numbers at different positions count as different picks.
 
-Examples: [4, 9, 2, 5, 1], k = 10 → **2** ([9, 1] and [4, 5, 1]). [4, 2, 10, 5, 1, 3], k = 5 → **3**.
+## Examples
 
-## The idea: pick or skip, and add up the ways
+- [4, 9, 2, 5, 1], k = 10 → **2** (9 + 1, and 4 + 5 + 1)
+- [4, 2, 10, 5, 1, 3], k = 5 → **3**
 
-This is the same pick-or-skip recursion as "Check if there exists a subsequence with sum K", but we **count** instead of stopping at the first success:
+## How to solve it, step by step
 
-`countWays(i, k)` = number of ways to choose elements from index i onwards with sum k.
+1. **Same pick-or-skip idea as "Check if there exists a subsequence with sum K",** but count instead of stopping at the first success.
 
-- Pick nums[i] → countWays(i + 1, k − nums[i]).
-- Skip nums[i] → countWays(i + 1, k).
-- Answer = pick + skip.
+   **Why:** every group is one path of pick/skip choices, so counting the paths that work counts the groups.
 
-Base cases:
+2. **`countWays(i, k)` = (ways if you pick nums[i]) + (ways if you skip it).**
 
-- i == n → 1 if k == 0, else 0. We check at the **end**, not when k hits 0 early, because skipping all the remaining elements is exactly one way, and the end of the array is where that way is counted.
-- k < 0 → 0. Values are positive, so it can only get worse.
+   **Why:** the two choices lead to different groups, so their counts add up.
 
-k ≥ 1 means the empty subsequence (sum 0) is never counted.
+3. **At the end of the array, return 1 if k is 0, else 0.**
+
+   **Why:** reaching the end with k = 0 is exactly one finished group. Checking only at the end (not as soon as k hits 0) makes sure each group is counted once.
+
+4. **If k goes below 0, return 0.**
+
+   **Why:** the numbers are positive, so k cannot come back up.
 
 ## Code (C++)
 
@@ -42,18 +46,17 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(2ⁿ), about 10⁶ calls for n = 20.
-- Space: O(n) recursion depth.
+Up to 2ⁿ paths, about a million for n = 20. Recursion depth: n.
 
 ## Going further
 
-With memoisation on (i, k), this becomes O(n · k). It is the DP line's "Count subsets with sum K".
+Remembering answers for each (i, k) makes it O(n · k). That is "Count subsets with sum K" on the DP line.
 
-## Dry run ([2, 3, 5], k = 5)
+## Walk through ([2, 3, 5], k = 5)
 
 - Pick 2 → need 3: pick 3 → need 0, skip 5 → **1** way. Skip 3 → need 3 from [5] → 0.
-- Skip 2 → need 5: pick 3 → need 2 from [5] → 0. Skip 3: pick 5 → **1** way.
+- Skip 2 → need 5: pick 3 → need 2 from [5] → 0. Skip 3 → pick 5 → **1** way.
 
 Answer: **2** ([2, 3] and [5]).

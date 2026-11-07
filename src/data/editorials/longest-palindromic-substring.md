@@ -2,26 +2,28 @@
 
 > Solve it on [LeetCode 5 · Longest Palindromic Substring](https://leetcode.com/problems/longest-palindromic-substring/).
 
-## The problem
+## What you need to do
 
-Return the longest substring of s that reads the same forwards and backwards. n ≤ 1000. If two have the same length, either is accepted.
+Find the longest connected piece of s that reads the same forwards and backwards (a palindrome). s has at most 1000 characters. If two are equally long, either is fine.
 
-Examples: "babad" → **"bab"** (or "aba"). "cbbd" → **"bb"**.
+## Examples
 
-## Brute force
+- "babad" → **"bab"** (or "aba")
+- "cbbd" → **"bb"**
 
-Check every substring (O(n²) of them), and test each for being a palindrome in O(n).
+## How to solve it, step by step
 
-- Time: O(n³), about 10⁹ for n = 1000. Too slow.
+1. **The slow idea:** check every piece and test whether it is a palindrome. That is O(n³), about a billion steps for n = 1000.
 
-## The better idea: expand around the centre
+2. **Every palindrome mirrors around its middle.** The middle is either one character ("aba") or the gap between two characters ("abba").
 
-Every palindrome is symmetric around its **centre**:
+   **Why:** this means you can grow palindromes outwards from their middle instead of testing every piece.
 
-- odd length ("aba"): the centre is one character;
-- even length ("abba"): the centre is the gap between two characters.
+3. **There are only 2n − 1 possible middles.** For each one, step outwards while the characters on both sides match.
 
-So there are only 2n − 1 possible centres. For each one, expand outwards while the characters on both sides match. The longest expansion over all centres is the answer.
+   **Why:** you stop as soon as they differ, so you never test a piece that cannot work.
+
+4. **Keep the longest one found.**
 
 ## Code (C++)
 
@@ -44,25 +46,24 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²): 2n centres, each expanding up to n/2 steps. Fast enough for n ≤ 1000.
-- Space: O(1).
+2n − 1 middles, each growing up to n/2 steps: O(n²) time, fast enough for n = 1000. O(1) memory.
+
+## Watch out for
+
+- When the growing loop stops, l and r have gone **one step too far**. The palindrome is from l + 1 to r − 1.
+- One character is its own answer.
 
 ## Going further
 
-- **DP**: dp[i][j] = s[i] == s[j] and dp[i+1][j−1]. It is also O(n²), but uses O(n²) memory.
-- **Manacher's algorithm** solves it in O(n). It is worth reading once, but rarely expected in interviews.
+- A DP table (`dp[i][j]` = s[i] == s[j] and `dp[i+1][j−1]`) also takes O(n²), but uses O(n²) memory.
+- Manacher's algorithm does it in O(n). It is worth reading once, but rarely asked.
 
-## Edge cases
+## Walk through ("cbbd")
 
-- One character → itself (bestLen starts at 1).
-- After the while loop, l and r have gone **one step too far**, so the palindrome is s[l+1..r−1].
-
-## Dry run ("cbbd")
-
-- c = 0: odd "c" (1); even c≠b.
-- c = 1: odd "b"; even s[1] = s[2] = b → expand to l = 0, r = 3: c ≠ d, stop → "bb", length 2, best.
-- c = 2, c = 3: nothing longer.
+- Middle at "c": just "c". Gap c|b: c ≠ b.
+- Middle at the first "b": just "b". Gap b|b: they match → "bb". Next step: c ≠ d → stop. Length 2, the best.
+- The rest find nothing longer.
 
 Answer: **"bb"**.

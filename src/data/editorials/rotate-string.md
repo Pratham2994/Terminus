@@ -2,30 +2,28 @@
 
 > Solve it on [LeetCode 796 · Rotate String](https://leetcode.com/problems/rotate-string/).
 
-## The problem
+## What you need to do
 
 One **shift** moves the first character of s to the end ("abcde" → "bcdea"). Return true if some number of shifts turns s into goal.
 
-Examples: s = "abcde", goal = "cdeab" → **true**. s = "abcde", goal = "abced" → **false**.
+## Examples
 
-## Brute force
+- s = "abcde", goal = "cdeab" → **true**
+- s = "abcde", goal = "abced" → **false**
 
-Try all n rotations of s and compare each one with goal.
+## How to solve it, step by step
 
-- Time: O(n²). Fine for LeetCode's n ≤ 100, but there is a neater way.
+1. **The simple idea:** make every rotation of s and compare each one with goal.
 
-## The better idea: s + s
+   **Why it works but is clumsy:** n rotations of length n each is O(n²) work.
 
-Write s twice: "abcdeabcde". **Every** rotation of s appears inside this string as a window of length n:
+2. **Write s twice: s + s.** For "abcde" that is "abcdeabcde".
 
-- abcde | bcdea | cdeab | deabc | eabcd
+   **Why:** every rotation of s appears inside s + s as a piece of length n: abcde, bcdea, cdeab, deabc, eabcd.
 
-So goal is a rotation of s exactly when:
+3. **So goal is a rotation exactly when it has the same length as s, and it appears inside s + s.**
 
-1. goal has the same length as s, **and**
-2. goal appears inside s + s.
-
-The length check matters. Without it, goal = "ab" would pass for s = "abc", since "ab" appears inside "abcabc".
+   **Why the length check matters:** without it, goal = "ab" would pass for s = "abc", because "ab" appears inside "abcabc".
 
 ## Code (C++)
 
@@ -38,19 +36,15 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²) in the worst case with `find`, but it is one line and fast in practice. With KMP (see the KMP station), the search is O(n).
-- Space: O(n) for s + s.
+`find` is O(n²) in the worst case, but this is one line and fast in practice. With KMP (see the KMP station) the search is O(n). It uses O(n) memory for s + s.
 
-## Edge cases
+## Watch out for
 
-- Different lengths → false at once.
-- goal == s → true, after zero shifts.
+- Different lengths → false straight away.
+- goal == s → true: zero shifts.
 
-## Dry run (abcde, cdeab)
+## Walk through (abcde, cdeab)
 
-- Lengths match: 5 = 5.
-- s + s = "abcdeabcde". Find "cdeab": it starts at index 2.
-
-Answer: **true**.
+Lengths match (5 = 5). s + s = "abcdeabcde", and "cdeab" starts at index 2 → **true**.

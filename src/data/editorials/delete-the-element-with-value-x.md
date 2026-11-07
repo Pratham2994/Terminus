@@ -2,21 +2,28 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `ListNode* deleteNodeWithValueX(ListNode* &head, int X)`.
 
-## The problem
+## What you need to do
 
-Delete the node whose value is X from a singly linked list and return the head. **At most one** node has value X. If none does, return the list unchanged.
+Remove the node whose value is X and return the head. **At most one** node has value X. If none does, leave the list as it is.
 
-Examples: [3, 4, 5], X = 5 → **[3, 4]**. [3, 4, 5], X = 7 → **[3, 4, 5]**.
+## Examples
 
-## The idea
+- [3, 4, 5], X = 5 → **[3, 4]**
+- [3, 4, 5], X = 7 → **[3, 4, 5]**
 
-Like deleting by position, but the search is by value:
+## How to solve it, step by step
 
-1. If the **head** holds X, the new head is `head->next`.
-2. Otherwise walk with `prev`, and look one node ahead: stop when `prev->next` holds X, or when there is nothing left.
-3. If found, skip it: `prev->next = prev->next->next`.
+1. **If the head holds X, the new head is `head->next`.**
 
-Looking ahead is what lets us re-link. Once we stand **on** the X node, we can no longer reach the node before it.
+   **Why:** there is no node before the head to re-link.
+
+2. **Otherwise walk with `prev`, and look one node ahead:** stop when `prev->next` holds X, or when there is no next node.
+
+   **Why:** once you stand **on** the X node, you can no longer reach the node before it. Looking ahead keeps you one step behind, where the re-linking happens.
+
+3. **If you found it, skip over it:** `prev->next = prev->next->next`, and delete it.
+
+4. **If you reached the end without finding X, change nothing.**
 
 ## Code (C++)
 
@@ -43,21 +50,15 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n).
-- Space: O(1).
+At most one walk through the list: O(n) time, O(1) memory.
 
-## Edge cases
+## Watch out for
 
-- X not present → the loop ends at the tail, and nothing changes.
-- X at the tail → prev is the second-last node, and it becomes the new tail.
-- If X could appear **several** times, you would keep going instead of stopping after the first. This problem promises at most one.
+- X in the last node: the node before it becomes the new last node, with no extra code.
+- If X could appear several times, you would keep going instead of stopping. Here it appears at most once.
 
-## Dry run ([3, 4, 5], X = 5)
+## Walk through ([3, 4, 5], X = 5)
 
-- The head holds 3 ≠ 5.
-- prev = 3: next holds 4 ≠ 5 → move. prev = 4: next holds 5 → stop.
-- Set 4->next = null and delete 5.
-
-Answer: **[3, 4]**.
+The head holds 3, not 5. At 3, the next holds 4; move on. At 4, the next holds 5: stop. Set 4's next to `nullptr` and delete 5. Answer: **[3, 4]**.

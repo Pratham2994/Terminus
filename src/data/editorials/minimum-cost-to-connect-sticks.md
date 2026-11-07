@@ -1,24 +1,30 @@
 # Minimum Cost to Connect Sticks
 
-> LeetCode 1167 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks as "Min Cost to Connect Ropes": use the Problem link above. GfG's function is `int minCost(vector<int>& arr)`: the same body as `connectSticks` below.
+> LeetCode 1167 is **Premium**, and takeUforward's page needs Plus. The **same problem** is free on GeeksforGeeks as "Min Cost to Connect Ropes" (the Problem link above). GfG's function is `int minCost(vector<int>& arr)`: use the same body as `connectSticks` below.
 
-## The problem
+## What you need to do
 
-You have sticks with positive lengths. Joining two sticks of lengths x and y costs x + y and makes one stick of length x + y. Join until one stick remains, with the **minimum total cost**.
+Joining two sticks of lengths x and y costs x + y and gives one stick of length x + y. Join all the sticks into one, as cheaply as possible.
 
-Examples: [2, 4, 3] → **14** (2 + 3 = 5, then 5 + 4 = 9, total 14). [1, 8, 3, 5] → **30**. [5] → **0**.
+## Examples
 
-## Brute force
+- [2, 4, 3] → **14** (2 + 3 = 5, then 5 + 4 = 9; total 14)
+- [1, 8, 3, 5] → **30**
+- [5] → **0**
 
-Try every order of joining. That is exponential, so it is useless beyond tiny inputs.
+## How to solve it, step by step
 
-## The key observation (greedy)
+1. **Notice that a stick's length is paid again every time its piece is joined later.**
 
-A stick's length is paid again **every time** its piece takes part in a later join. Sticks joined early get paid many times. So the **shortest** sticks should be joined first, and the longest ones as late as possible.
+   **Why:** a stick joined early becomes part of every bigger stick after it, so its length is counted many times.
 
-Greedy rule: **always join the two shortest sticks.** This is the same idea as Huffman coding, which proves it is optimal.
+2. **So join the two shortest sticks first, every time.**
 
-A **min-heap** gives the two shortest in O(log n) each time.
+   **Why:** short lengths are the cheapest to pay many times. Long sticks should be joined as late as possible. (This is the same idea as Huffman coding, which proves it is the best choice.)
+
+3. **Use a min-heap** to get the two shortest sticks quickly. Pop two, add their sum to the cost, push the new stick back.
+
+4. **Stop when one stick is left.**
 
 ## Code (C++)
 
@@ -39,24 +45,22 @@ public:
 };
 ```
 
-On GeeksforGeeks ("Minimum Cost of ropes") the total can exceed `int`, so use `long long` for the heap and the cost there.
+On GeeksforGeeks the total can be bigger than an `int`; use `long long` there.
 
-## Complexity
+## How fast is it?
 
-- Time: O(n log n). There are n − 1 joins, each with 3 heap operations.
-- Space: O(n).
+n − 1 joins, each with 3 heap steps: O(n log n) time, O(n) memory.
 
-## Edge cases
+## Watch out for
 
-- One stick → 0.
-- Equal lengths → any order of ties gives the same cost.
+- One stick → cost 0.
 
-## Dry run ([1, 8, 3, 5])
+## Walk through ([1, 8, 3, 5])
 
-| heap | join | cost so far |
+| sticks | join | cost so far |
 |---|---|---|
 | 1, 3, 5, 8 | 1 + 3 = 4 | 4 |
 | 4, 5, 8 | 4 + 5 = 9 | 13 |
 | 8, 9 | 8 + 9 = 17 | 30 |
 
-Answer: **30**. (Tested on 500 random cases against trying every joining order.)
+Answer: **30**. (Tested on 500 random cases against trying every order.)

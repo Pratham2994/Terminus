@@ -1,22 +1,32 @@
 # Reverse a String II
 
-> Solve it on [LeetCode 344 · Reverse String](https://leetcode.com/problems/reverse-string/). The string arrives as a `vector<char>`, and you must reverse it **in place** with O(1) extra memory.
+> Solve it on [LeetCode 344 · Reverse String](https://leetcode.com/problems/reverse-string/). The string is a `vector<char>`, and you must reverse it **in place**, with no second array.
 
-## The problem
+## What you need to do
 
-Reverse the characters of the array s. Do not create a second array.
+Reverse the characters of s without making a copy.
 
-Example: ['h','e','l','l','o'] → **['o','l','l','e','h']**.
+## Example
 
-## Brute force
+['h','e','l','l','o'] → **['o','l','l','e','h']**.
 
-Copy the characters into a new array from the back, then copy them back.
+## How to solve it, step by step
 
-- Time O(n), but space O(n). That breaks the "in place" rule.
+1. **The simple idea:** copy the characters into a new array from the back.
 
-## The better idea: two pointers
+   **Why it is not allowed:** the copy uses O(n) extra memory, and the task says "in place".
 
-Swap the first and last characters, then the second and second-last, and so on, moving inwards. Stop when the pointers meet: the middle character, if there is one, stays where it is.
+2. **Use two pointers instead:** l at the start, r at the end.
+
+   **Why:** in the reversed string, these two characters trade places.
+
+3. **Swap s[l] and s[r], then move l right and r left.**
+
+   **Why:** each swap puts two characters in their final spots, so the pointers walk towards the middle.
+
+4. **Stop when l is no longer less than r.**
+
+   **Why:** by then every pair has been swapped. A middle character (odd length) stays where it is.
 
 ## Code (C++)
 
@@ -30,17 +40,16 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n). There are n/2 swaps.
-- Space: O(1).
+n/2 swaps: O(n) time, O(1) extra memory.
 
-## Edge cases
+## Watch out for
 
-- One character: l = r = 0 from the start, so the loop never runs.
-- Even length: the pointers cross without meeting, and every character is swapped exactly once.
+- One character: l = r = 0 from the start, so nothing happens. That is correct.
+- Even length: the pointers cross without meeting, and every character is swapped once.
 
-## Dry run (h e l l o)
+## Walk through (h e l l o)
 
 - l = 0, r = 4: swap h and o → o e l l h.
 - l = 1, r = 3: swap e and l → o l l e h.

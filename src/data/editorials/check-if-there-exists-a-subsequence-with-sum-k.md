@@ -2,27 +2,36 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `bool checkSubsequenceSum(vector<int>& nums, int k)`.
 
-## The problem
+## What you need to do
 
-Given nums (length ≤ 20, values 1…100) and k (1…2000), return true if **some subsequence** (any subset of elements, keeping order) sums to exactly k.
+Can you pick some of the numbers (keeping their order, not necessarily next to each other) so that they add up to exactly k? Return true or false. There are at most 20 numbers, each from 1 to 100.
 
-Examples: [1, 2, 3, 4, 5], k = 8 → **true** ([3, 5]). [4, 3, 9, 2], k = 10 → **false**.
+## Examples
 
-## The idea: pick or skip
+- [1, 2, 3, 4, 5], k = 8 → **true** (3 + 5)
+- [4, 3, 9, 2], k = 10 → **false**
 
-Every element is either **in** the subsequence or **not**. That gives a binary recursion:
+## How to solve it, step by step
 
-`canMake(i, k)` = "can elements from index i onwards make sum k?"
+1. **Each number is either picked or skipped.** Write `canMake(i, k)`: "can the numbers from index i onwards make k?"
 
-- **Pick** nums[i]: canMake(i + 1, k − nums[i]).
-- **Skip** nums[i]: canMake(i + 1, k).
+   **Why:** two choices per number cover every possible group.
 
-Base cases:
+2. **Pick:** try `canMake(i + 1, k − nums[i])`. **Skip:** try `canMake(i + 1, k)`. If either works, return true.
 
-- k == 0 → true. We have chosen elements that add up exactly. Because k ≥ 1 at the start, at least one element was picked.
-- i == n, or k < 0 → false. All values are positive, so once k is negative, adding more cannot help.
+   **Why:** picking uses up part of k; skipping leaves k as it is.
 
-`||` stops at the first true, so we stop as soon as one subsequence works.
+3. **If k is exactly 0, return true.**
+
+   **Why:** the picked numbers add up exactly.
+
+4. **If you run out of numbers, or k goes below 0, return false.**
+
+   **Why:** all numbers are positive, so a negative k can never come back up to 0.
+
+5. **Use `||` between the two tries.**
+
+   **Why:** it stops at the first success, so you do not search further than needed.
 
 ## Code (C++)
 
@@ -41,18 +50,17 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(2ⁿ) worst case, about 10⁶ for n = 20. Fine.
-- Space: O(n) recursion depth.
+Up to 2ⁿ choices, about a million for n = 20: fine. Recursion depth: n.
 
 ## Going further
 
-This is the **Subset Sum** problem. With bigger n, memoise on (i, k), or use the DP on the Dynamic Programming line ("Subset sum equals to target"), which is O(n · k).
+This is the Subset Sum problem. For bigger inputs, remember answers for each (i, k), or use the DP version on the Dynamic Programming line ("Subset sum equals to target"), which is O(n · k).
 
-## Dry run ([4, 3, 9, 2], k = 10)
+## Walk through ([4, 3, 9, 2], k = 10)
 
-- Pick 4 → need 6 from [3, 9, 2]: pick 3 → need 3 from [9, 2]: 9 is too big, 2 leaves 1 → fail; skip 3 → need 6 from [9, 2] → fail.
-- Skip 4 → need 10 from [3, 9, 2]: 3 + 9 = 12, 3 + 2 = 5, 9 + 2 = 11 → fail.
+- Pick 4 → need 6 from [3, 9, 2]: 3 leaves 3 (9 too big, 2 leaves 1) ✗; without 3: 9 too big, 2 leaves 4 ✗.
+- Skip 4 → need 10 from [3, 9, 2]: 3 + 9 = 12, 3 + 2 = 5, 9 + 2 = 11 ✗.
 
 Answer: **false**.

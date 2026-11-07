@@ -1,28 +1,30 @@
 # Count of Prime Numbers till N
 
-> Solve it on [LeetCode 204 · Count Primes](https://leetcode.com/problems/count-primes/). LeetCode counts primes **strictly less than** n. If your version says "till N" including N, run the same sieve up to n.
+> Solve it on [LeetCode 204 · Count Primes](https://leetcode.com/problems/count-primes/). LeetCode counts primes **below** n (not including n). If your version includes n, run the same sieve up to n.
 
-## The problem
+## What you need to do
 
-Given an integer n, count how many prime numbers are smaller than n. A prime has exactly two divisors: 1 and itself. So 0 and 1 are not prime.
+Count the prime numbers smaller than n. A prime has exactly two divisors, 1 and itself, so 0 and 1 are not prime.
 
-Example: n = 10 → the primes below 10 are 2, 3, 5, 7 → answer **4**.
+## Example
 
-## Brute force
+n = 10 → the primes below 10 are 2, 3, 5, 7 → **4**.
 
-Test every number x from 2 to n − 1. To test x, try every divisor d with d × d ≤ x. If none divides x, it is prime.
+## How to solve it, step by step
 
-- Time: O(n √n). For n = 5 × 10⁶ this is about 10¹⁰ steps, far too slow.
+1. **The slow idea:** test every number on its own (try divisors up to its square root). For n = 5 000 000 that is about 10¹⁰ steps: far too slow.
 
-## The better idea: Sieve of Eratosthenes
+2. **Cross out instead of testing (the Sieve of Eratosthenes).** Start by assuming every number from 2 up is prime.
 
-Instead of testing each number, **cross out the multiples** of every prime.
+   **Why:** crossing out multiples is much cheaper than testing each number from scratch.
 
-1. Assume every number from 2 to n − 1 is prime.
-2. Walk i = 2, 3, 4, … If i is still not crossed out, it is prime: count it.
-3. Cross out every multiple of that prime: i², i² + i, i² + 2i, …
+3. **Walk i = 2, 3, 4, … If i is not crossed out, it is prime: count it.**
 
-Why start at i² and not 2i? Every smaller multiple, k × i with k < i, has a prime factor smaller than i, so an earlier prime already crossed it out.
+   **Why:** every non-prime has a smaller prime factor, so it was crossed out before you reached it.
+
+4. **Then cross out the multiples of i, starting at i × i:** i², i² + i, i² + 2i, …
+
+   **Why start at i²:** a smaller multiple, k × i with k < i, has a smaller prime factor, so it was already crossed out earlier.
 
 ## Code (C++)
 
@@ -43,23 +45,20 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n log log n). The inner loops add up to n/2 + n/3 + n/5 + … over the primes, which grows like n log log n. In practice that is nearly linear.
-- Space: O(n) for the `composite` array.
+O(n log log n), which is almost linear in practice. Memory: one flag per number; `vector<bool>` uses 1 bit each, so 5 million numbers fit in under 1 MB.
 
-## Edge cases
+## Watch out for
 
-- n = 0, 1 or 2 → 0, because there is no prime below 2.
-- `i * i` overflows `int` once i passes 46 340, so use `long long` for i and j.
-- `vector<bool>` stores 1 bit per number, so even n = 5 × 10⁶ uses under 1 MB.
+- n = 0, 1 or 2 → 0 (no prime is below 2).
+- `i * i` overflows an `int` once i passes 46 340, so use `long long`.
 
-## Dry run (n = 10)
+## Walk through (n = 10)
 
-- i = 2: prime (count 1). Cross out 4, 6, 8.
-- i = 3: prime (count 2). Cross out 9.
-- i = 4: crossed out, skip.
-- i = 5: prime (count 3). 25 ≥ 10, nothing to cross out.
-- i = 6: skip. i = 7: prime (count 4). i = 8, 9: skip.
+- 2: prime (1). Cross out 4, 6, 8.
+- 3: prime (2). Cross out 9.
+- 4: crossed out. 5: prime (3); 25 is past 10.
+- 6: crossed out. 7: prime (4). 8, 9: crossed out.
 
 Answer: **4**.

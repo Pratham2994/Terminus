@@ -2,28 +2,33 @@
 
 > Solve it on [LeetCode 1903 · Largest Odd Number in String](https://leetcode.com/problems/largest-odd-number-in-string/).
 
-## The problem
+## What you need to do
 
-`num` is a string of digits that represents a large integer, with no leading zeros. Return the largest-valued odd integer that is a **non-empty substring** of num, as a string. If there is none, return "".
+`num` is a very long number written as a string (no leading zeros). Find the **biggest odd number** you can cut out of it as one connected piece, and return it as a string. Return "" if there is none.
 
-Examples: "52" → **"5"**. "4206" → **""**. "35427" → **"35427"**.
+## Examples
 
-## Brute force
+- "52" → **"5"**
+- "4206" → **""** (no odd digit at all)
+- "35427" → **"35427"**
 
-Try every substring. Keep the odd ones (last digit odd), and compare them as numbers to find the largest.
+## How to solve it, step by step
 
-- Time: O(n³) with string comparisons, far too slow for n up to 10⁵.
+1. **A number is odd exactly when its last digit is odd.**
 
-## The key observation
+   **Why:** only the last digit decides odd or even.
 
-A number is odd exactly when its **last digit** is odd. Two facts follow:
+2. **A longer number is bigger than a shorter one,** as long as it has no leading zeros.
 
-1. A longer number (with no leading zeros) is always larger than a shorter one.
-2. Every substring that starts at index 0 has no leading zeros, because num has none.
+   **Why:** more digits means a bigger value.
 
-So the best answer starts at index 0 and ends at the **rightmost odd digit**. That is the longest odd prefix, and no odd substring can be longer.
+3. **Any piece that starts at index 0 has no leading zeros,** because num has none.
 
-Scan from the right. At the first odd digit you meet, return the prefix up to it. If no digit is odd, return "".
+4. **So the best piece starts at index 0 and ends at the rightmost odd digit.**
+
+   **Why:** that is the longest piece that still ends in an odd digit, so nothing odd can be longer, and longer means bigger.
+
+5. **Scan from the right. At the first odd digit, return everything up to it. If there is none, return "".**
 
 ## Code (C++)
 
@@ -38,19 +43,15 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n). One scan, plus O(n) to build the answer.
-- Space: O(1) besides the answer.
+One scan, plus building the answer: O(n). No extra memory besides the answer.
 
-## Edge cases
+## Watch out for
 
-- All digits even ("4206") → "".
-- The last digit is already odd → the whole string.
-- Do not convert to `int` or `long long`: num can have 10⁵ digits.
+- Do not turn num into an `int` or `long long`: it can have 100 000 digits.
+- If the last digit is already odd, the answer is the whole string.
 
-## Dry run ("35427")
+## Walk through ("52")
 
-From the right, '7' is odd → return num[0..4] = **"35427"**.
-
-For "52": '2' is even, '5' is odd → return **"5"**.
+From the right: '2' is even, '5' is odd → return **"5"**.

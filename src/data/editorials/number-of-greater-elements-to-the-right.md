@@ -2,19 +2,28 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> count_NGE(vector<int> &arr, vector<int> &indices)`.
 
-## The problem
+## What you need to do
 
-Given arr (n ≤ 10⁴, values 1…10⁵) and up to 100 query indices, for each query index i count the elements **after** position i that are **strictly greater** than arr[i].
+For each index in `indices`, count how many numbers **after** that position are **strictly bigger** than the number there.
 
-Example: arr = [3, 4, 2, 7, 5, 8, 10, 6], indices = [0, 5] → **[6, 1]**. After 3 come 4, 7, 5, 8, 10, 6 (6 of them). After 8 comes only 10.
+## Example
 
-## The direct solution is enough here
+arr = [3, 4, 2, 7, 5, 8, 10, 6], indices = [0, 5] → **[6, 1]**.
 
-For each query, scan the rest of the array and count.
+- After 3 (index 0): 4, 7, 5, 8, 10, 6 are bigger → 6.
+- After 8 (index 5): only 10 → 1.
 
-- Cost: q × n ≤ 100 × 10⁴ = **10⁶** steps. That is fast.
+## How to solve it, step by step
 
-Do not over-engineer it. Despite its place on the stack line, a monotonic stack does **not** help here: it finds the *next* greater element, not *how many* greater elements there are.
+1. **Check the sizes first:** at most 100 queries and 10 000 numbers.
+
+   **Why:** 100 × 10 000 = 1 000 000 steps is fast, so the direct way is enough. Checking the limits before reaching for a clever method saves time.
+
+2. **For each query index i, look at every number after i and count those bigger than arr[i].**
+
+   **Why:** that is exactly the question, done directly.
+
+3. **Note:** a monotonic stack does not help here, even though this station is on the Stack line. A stack finds the **next** bigger number, not **how many** there are.
 
 ## Code (C++)
 
@@ -34,25 +43,19 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(q · n).
-- Space: O(1) besides the answer.
+O(q · n) time, about a million steps at most. No extra memory besides the answer.
 
-## If there were many queries
+## If there were many more queries
 
-If every index were a query (q = n = 10⁵), you would need the answer for **all** positions at once. Walk from right to left with a **Fenwick tree** (Binary Indexed Tree) over the values:
+If every index were a query (100 000 of them), use a **Fenwick tree** (Binary Indexed Tree): walk from right to left, and for each number ask "how many numbers already added are bigger than me?" before adding it. That is O(n log V). The tests compare the simple solution against this version.
 
-- before adding arr[i], the elements to its right are already in the tree;
-- greater-to-the-right = (elements to the right) − (elements to the right with value ≤ arr[i]).
+## Watch out for
 
-That is O(n log V). Our tests compare the simple solution against this Fenwick version on random arrays.
-
-## Edge cases
-
-- "Greater" is **strict**. Equal values do not count.
+- "Greater" is **strict**: equal numbers do not count.
 - The last index always gives 0.
 
-## Dry run (arr = [1, 2, 3, 4, 1], index 0)
+## Walk through (arr = [1, 2, 3, 4, 1], index 0)
 
-- arr[0] = 1. Elements after it: 2 ✓, 3 ✓, 4 ✓, 1 ✗ → **3**.
+The number is 1. After it: 2 ✓, 3 ✓, 4 ✓, 1 ✗ → **3**.

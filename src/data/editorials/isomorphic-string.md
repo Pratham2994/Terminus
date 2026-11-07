@@ -2,34 +2,31 @@
 
 > Solve it on [LeetCode 205 · Isomorphic Strings](https://leetcode.com/problems/isomorphic-strings/).
 
-## The problem
+## What you need to do
 
-Two strings s and t of the same length are **isomorphic** if you can replace the characters of s to get t, where:
+Can you turn s into t by renaming its characters? The rules: every copy of a character gets the **same** new name, and two **different** characters never get the same new name. A character may keep its own name.
 
-- every occurrence of a character becomes the same character, and
-- no two different characters become the same character. A character may map to itself.
+## Examples
 
-Examples: "egg", "add" → **true** (e→a, g→d). "foo", "bar" → **false** (o would need to become both a and r). "badc", "baba" → **false** (b→b and d→b both map to b).
+- "egg", "add" → **true** (e → a, g → d)
+- "foo", "bar" → **false** (o would have to become both a and r)
+- "badc", "baba" → **false** (b → b and d → b: two characters with the same new name)
 
-## Brute force
+## How to solve it, step by step
 
-For every pair of positions i, j: s[i] == s[j] must hold exactly when t[i] == t[j].
+1. **Walk both strings together,** looking at a = s[i] and b = t[i].
 
-- Time: O(n²).
+2. **Remember each renaming in a map from s to t:** `sToT[a] = b`.
 
-## The better idea: two maps
+   **Why:** a character must always become the same thing, so you check new copies against what you saved.
 
-Keep a map in **each direction**:
+3. **Also keep a map back from t to s:** `tToS[b] = a`.
 
-- `sToT[c]`: the character c in s is mapped to.
-- `tToS[c]`: the character in s that c in t came from.
+   **Why:** the map from s to t alone cannot see two different characters getting the same name. In "badc" → "baba", b → b and d → b both look fine one at a time. The back map catches that b is already taken.
 
-Walk i from left to right with a = s[i] and b = t[i]:
+4. **If neither a nor b is in a map yet, save both directions. Otherwise both must already point at each other; if not, return false.**
 
-- If neither a nor b has a mapping yet, record a→b and b→a.
-- Otherwise both must already point at each other. If either points somewhere else, return false.
-
-One map alone is not enough. "badc" → "baba" passes a check of s→t only (b→b, a→a, d→b, c→a), because nothing stops two letters from mapping to the same b. The reverse map catches that.
+5. **If you reach the end, return true.**
 
 ## Code (C++)
 
@@ -50,18 +47,15 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n).
-- Space: O(1), two arrays of 256 entries, one per possible character.
+One pass: O(n) time. The two maps are arrays of 256 entries, so O(1) memory.
 
-## Edge cases
+## Watch out for
 
-- s contains any valid ASCII character, not only letters. Arrays of size 256 cover all of them. Index with `unsigned char` so a negative `char` never becomes a negative index.
-- A character mapping to itself is allowed ("ab" → "ab" is true).
+- The strings can hold any ASCII character, not only letters. Arrays of 256 cover them all. Index with `unsigned char`, so a negative `char` never becomes a negative index.
+- Keeping the same name is fine: "ab" → "ab" is true.
 
-## Dry run ("paper", "title")
+## Walk through ("paper", "title")
 
-- p→t, a→i, then p again: sToT[p] = t matches t ✓, e→l, r→e.
-
-Every check passes → **true**.
+p → t, a → i, then p again: it already maps to t, and the letter is t ✓. e → l, r → e. Everything matches → **true**.

@@ -2,26 +2,29 @@
 
 > Solve it on [LeetCode 1021 · Remove Outermost Parentheses](https://leetcode.com/problems/remove-outermost-parentheses/).
 
-## The problem
+## What you need to do
 
-s is a valid parentheses string. Split it into **primitive** parts: the smallest balanced pieces that cannot be split further. Remove the outermost pair of every primitive part and return what is left.
+s is a valid bracket string. Split it into its smallest balanced pieces (called **primitive** pieces). From each piece, remove its outer pair of brackets, and return what is left.
 
-Example: "(()())(())" → primitives "(()())" and "(())" → remove their outer pairs → "()()" + "()" = **"()()()"**.
+## Example
 
-## Brute force
+"(()())(())" splits into "(()())" and "(())". Removing their outer pairs leaves "()()" and "()". Answer: **"()()()"**.
 
-Track the balance. Each time it returns to 0, a primitive part ends: cut it out, drop its first and last character, and append the rest.
+## How to solve it, step by step
 
-That is already O(n), but it builds substrings. We can do it in one pass, character by character.
+1. **Keep a counter `depth`:** how many `(` are open right now.
 
-## The better idea: depth counter
+   **Why:** the outer brackets of a piece are exactly the ones at depth 0.
 
-Keep `depth` = how many '(' are open right now.
+2. **On `(`: if depth is already above 0, keep this bracket. Then add 1 to depth.**
 
-- On '(': if depth is already > 0, this bracket is **inside** a primitive, so keep it. Then depth++.
-- On ')': depth−− first. If depth is still > 0, this ')' is inside, so keep it. If depth hits 0, it is the outer closing bracket, so drop it.
+   **Why:** a `(` seen at depth 0 opens a new piece, so it is an outer bracket. Any other `(` is inside a piece.
 
-The outer '(' of a primitive is exactly the one seen at depth 0, and the outer ')' is exactly the one that brings depth back to 0.
+3. **On `)`: first subtract 1 from depth. If depth is still above 0, keep this bracket.**
+
+   **Why:** the `)` that brings depth back to 0 closes the piece, so it is the outer bracket. Any other `)` is inside.
+
+4. **The order is the whole trick:** check before adding on `(`, and check after subtracting on `)`.
 
 ## Code (C++)
 
@@ -45,25 +48,23 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n).
-- Space: O(1) besides the output string.
+One pass: O(n) time. No extra memory besides the answer.
 
-## Edge cases
+## Watch out for
 
-- "()" → "" (one primitive with nothing inside).
-- The order of the check and the update is the whole trick: check **before** incrementing on '(', and **after** decrementing on ')'.
+- "()" → "": one piece with nothing inside.
 
-## Dry run ("(()())(())")
+## Walk through (the first piece, "(()())")
 
-| char | depth before | keep? | depth after |
+| bracket | depth before | keep? | depth after |
 |---|---|---|---|
 | ( | 0 | no (outer) | 1 |
 | ( | 1 | yes | 2 |
-| ) | 2 | yes (after: 1) | 1 |
+| ) | 2 | yes | 1 |
 | ( | 1 | yes | 2 |
 | ) | 2 | yes | 1 |
-| ) | 1 | no (after: 0) | 0 |
+| ) | 1 | no (back to 0) | 0 |
 
-The second primitive works the same way. Answer: **"()()()"**.
+Kept: "()()". The second piece works the same way. Answer: **"()()()"**.

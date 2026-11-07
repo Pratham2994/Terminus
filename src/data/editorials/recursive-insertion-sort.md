@@ -1,32 +1,30 @@
 # Recursive Insertion Sort
 
-> Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> insertionSort(vector<int>& nums)`. **No loops** and no built-in sort.
+> Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> insertionSort(vector<int>& nums)`. **No loops**, and no built-in sort.
 
-## The problem
+## What you need to do
 
-Sort nums in non-decreasing order with **Insertion Sort**, using recursion instead of every loop. n ≤ 1000, values may repeat.
+Sort the numbers from small to big with **Insertion Sort**, using recursion instead of any loop.
 
-Example: [5, 4, 4, 1, 1] → **[1, 1, 4, 4, 5]**.
+## Example
 
-## Insertion Sort in one sentence
+[5, 4, 4, 1, 1] → **[1, 1, 4, 4, 5]**.
 
-Keep the front part a[0..i−1] sorted. Take the next value a[i] and slide it left past every bigger value, until it sits in place. Now a[0..i] is sorted.
+## How to solve it, step by step
 
-The loop version has **two** loops: the outer one over i, and the inner one that slides a[i] left. Without loops, **both** become recursive functions.
+Insertion Sort keeps the front part sorted and slides each new number left into its place. The loop version has two loops, so you need **two** recursive functions.
 
-## Two recursive functions
+1. **`placeLast(a, j)`: slide a[j] left until it fits.** If j is 0, or a[j − 1] ≤ a[j], stop. Otherwise swap them and call `placeLast(a, j − 1)`.
 
-**`placeLast(a, j)`** slides a[j] left into the sorted part before it:
+   **Why:** the part before j is already sorted, so the new number only has to move left past bigger numbers. This replaces the inner loop.
 
-- Base case: j == 0 (it is at the front), or a[j−1] ≤ a[j] (it is already in place).
-- Otherwise swap a[j−1] and a[j], then `placeLast(a, j − 1)`.
+2. **`insertion(a, i)`: insert every number from position i onwards.** If i equals n, stop. Otherwise call `placeLast(a, i)`, then `insertion(a, i + 1)`.
 
-**`insertion(a, i)`**: a[0..i−1] is sorted, so insert everything from i onwards:
+   **Why:** after placing a[i], the front part a[0..i] is sorted, so the next number can be placed the same way. This replaces the outer loop.
 
-- Base case: i == n. Everything is inserted.
-- Otherwise `placeLast(a, i)`, then `insertion(a, i + 1)`.
+3. **Start with `insertion(a, 1)`.**
 
-Start with `insertion(a, 1)`, because a single element a[0] is already sorted.
+   **Why:** a single number, a[0], is already a sorted front part.
 
 ## Code (C++)
 
@@ -52,20 +50,18 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n²) worst case (reversed input), O(n) best case (sorted input: every `placeLast` stops at once).
-- Space: O(n) recursion depth. `insertion` goes n calls deep, and `placeLast` up to n more, so with n ≤ 1000 the stack is safe.
+O(n²) in the worst case (numbers in reverse order), O(n) on an already sorted array, because each `placeLast` stops at once. The recursion can go about 2n calls deep; with n ≤ 1000 that is safe.
 
-## Edge cases
+## Watch out for
 
-- `<=` in the base case keeps equal values in their original order: the sort is stable.
-- One element: `insertion(a, 1)` returns at once.
+- Stop on `a[j − 1] <= a[j]` (with the `=`). Equal numbers then keep their order.
 
-## Dry run ([7, 4, 1])
+## Walk through ([7, 4, 1])
 
-- insertion(1): placeLast(1): 7 > 4 → swap → [4, 7, 1].
-- insertion(2): placeLast(2): 7 > 1 → swap → [4, 1, 7]; placeLast(1): 4 > 1 → swap → [1, 4, 7].
-- insertion(3): i == n, stop.
+- insertion(1): 7 > 4 → swap → [4, 7, 1].
+- insertion(2): 7 > 1 → swap → [4, 1, 7]; 4 > 1 → swap → [1, 4, 7].
+- insertion(3): i = n → stop.
 
 Answer: **[1, 4, 7]**.

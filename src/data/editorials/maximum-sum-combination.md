@@ -2,31 +2,33 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> maxSumCombinations(vector<int>& nums1, vector<int>& nums2, int k)`.
 
-## The problem
+## What you need to do
 
-A combination is nums1[i] + nums2[j], with one element from each array. Return the **k largest** combinations, largest first. Pairs at different positions count separately, even when their sums are equal.
+A combination is one number from nums1 plus one number from nums2. Return the **k biggest** combinations, biggest first. Pairs at different positions count separately, even if their sums are equal.
 
-Example: nums1 = [7, 3], nums2 = [1, 6], k = 2 → **[13, 9]** (7 + 6 and 3 + 6).
+## Example
 
-## Brute force
+nums1 = [7, 3], nums2 = [1, 6], k = 2 → **[13, 9]** (7 + 6 and 3 + 6).
 
-Compute all n × m sums, sort them in descending order, and take k.
+## How to solve it, step by step
 
-- Time: O(nm log(nm)). With n = m = 10⁵ that is 10¹⁰ pairs, impossible.
+1. **The slow idea:** make every sum and sort. With 100 000 numbers in each array, that is 10¹⁰ sums: impossible.
 
-## The better idea: a heap over a sorted grid
+2. **Sort both arrays from big to small.** Picture a grid where cell (i, j) holds a[i] + b[j].
 
-Sort both arrays in **descending** order. Picture a grid where cell (i, j) holds a[i] + b[j]:
+   **Why:** the biggest sum is now at (0, 0), and sums only get smaller as you go right or down.
 
-- The largest sum is at (0, 0).
-- Sums only get smaller going right or down, because both arrays are sorted descending.
+3. **The next biggest sum is always right next to (right of, or below) a cell you already took.**
 
-So the next-largest sum is always a right or down neighbour of a cell already taken. That is the same idea as Dijkstra or a k-way merge:
+   **Why:** any other cell has a bigger neighbour above or to its left that has not been taken yet.
 
-1. Put (0, 0) in a **max-heap**.
-2. Pop the largest. Add its sum to the answer. Push (i + 1, j) and (i, j + 1).
-3. Keep a **seen** set: (i + 1, j + 1) can be reached from two cells, and it must enter the heap only once.
-4. Repeat k times.
+4. **So use a max-heap of "frontier" cells.** Start with (0, 0). Pop the biggest, add it to the answer, then push its right and down neighbours.
+
+5. **Keep a "seen" set of cells.**
+
+   **Why:** cell (i + 1, j + 1) can be reached from two cells, but it must enter the heap only once.
+
+6. **Stop after k pops.**
 
 ## Code (C++)
 
@@ -56,20 +58,17 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Sorting: O(n log n + m log m).
-- The heap loop: k pops and at most 2k pushes → O(k log k).
-- Space: O(k) for the heap and the seen set.
+Sorting: O(n log n + m log m). Then k pops and at most 2k pushes: O(k log k). Memory: O(k).
 
-## Edge cases
+## Watch out for
 
-- `seen.insert(...).second` is true only when the pair is new. That one line both checks and marks.
-- Equal sums from different pairs are all returned. The seen set works on **positions**, not on sums.
+- `seen.insert(...).second` is true only when the cell is new: one line both checks and marks it.
+- Equal sums from different cells all count; "seen" tracks positions, not sums.
 
-## Dry run (a = [7, 3], b = [6, 1], k = 2)
+## Walk through (a = [7, 3], b = [6, 1], k = 2)
 
-- Pop (0, 0) = 13 → out [13]. Push (1, 0) = 9 and (0, 1) = 8.
-- Pop 9 → out [13, 9]. Done.
+Take (0, 0) = 13 → [13]. Push (1, 0) = 9 and (0, 1) = 8. Take 9 → [13, 9]. Done.
 
-Answer: **[13, 9]**. (Tested on 3 000 random arrays against computing and sorting every sum.)
+Answer: **[13, 9]**. (Tested on 3 000 random arrays against making and sorting every sum.)

@@ -2,24 +2,28 @@
 
 > Solve it on [LeetCode 1331 · Rank Transform of an Array](https://leetcode.com/problems/rank-transform-of-an-array/).
 
-## The problem
+## What you need to do
 
-Replace every element with its **rank**: 1 for the smallest value, then 2, 3, … Equal values get the **same** rank, and ranks have no gaps.
+Replace every number with its **rank**: 1 for the smallest value, 2 for the next, and so on. Equal numbers get the **same** rank, and there are no gaps.
 
-Examples: [40, 10, 20, 30] → **[4, 1, 2, 3]**. [100, 100, 100] → **[1, 1, 1]**. [37, 12, 28, 9, 100, 56, 80, 5, 12] → **[5, 3, 4, 2, 8, 6, 7, 1, 3]**.
+## Examples
 
-## Brute force
+- [40, 10, 20, 30] → **[4, 1, 2, 3]**
+- [100, 100, 100] → **[1, 1, 1]**
 
-For each element, count the **distinct** values smaller than it, then add 1.
+## How to solve it, step by step
 
-- Time: O(n²).
+1. **Copy the array, sort the copy, and remove repeats** (`unique` + `erase`).
 
-## The better idea: sort the distinct values
+   **Why:** in the sorted list of different values, a value's position tells you how many smaller values there are.
 
-1. Copy the array, sort it, and remove duplicates (`unique` + `erase`).
-2. Each value's rank is its position in this sorted list + 1. Find it with binary search (`lower_bound`).
+2. **A number's rank is its position in that list, plus 1.** Find the position with binary search (`lower_bound`).
 
-You can also store value → rank in a hash map. The idea is the same.
+   **Why:** positions start at 0, ranks start at 1.
+
+3. **Write the rank back for every number.**
+
+(A hash map from value to rank works the same way.)
 
 ## Code (C++)
 
@@ -38,23 +42,19 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n log n).
-- Space: O(n).
+Sorting is O(n log n); each binary search is O(log n). Memory: O(n) for the copy.
 
-## Edge cases
+## Watch out for
 
-- Empty array → empty answer.
-- Duplicates must be removed **before** ranking. Otherwise [10, 10, 20] would give 20 the rank 3 instead of 2.
+- Remove repeats **before** ranking. Otherwise [10, 10, 20] gives 20 the rank 3 instead of 2.
+- An empty array gives an empty answer.
 
 ## Why is it on the Heaps line?
 
-You can also rank values by popping them from a min-heap in order and raising the rank only when the value changes. Sorting does the same job more simply.
+You could also pop the values from a min-heap in order, raising the rank only when the value changes. Sorting does the same thing more simply.
 
-## Dry run ([40, 10, 20, 30])
+## Walk through ([40, 10, 20, 30])
 
-- Sorted distinct values: [10, 20, 30, 40].
-- 40 → index 3 → rank 4. 10 → 1. 20 → 2. 30 → 3.
-
-Answer: **[4, 1, 2, 3]**.
+Sorted, different values: [10, 20, 30, 40]. 40 → position 3 → rank 4; 10 → 1; 20 → 2; 30 → 3. Answer: **[4, 1, 2, 3]**.

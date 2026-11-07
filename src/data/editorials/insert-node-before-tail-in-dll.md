@@ -2,24 +2,28 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `ListNode* insertBeforeTail(ListNode* head, int X)`.
 
-## The problem
+## What you need to do
 
-Insert a new node with value X **just before the last node** of a doubly linked list (1 to 100 nodes). Return the head.
+Insert a new node with value X **just before the last node** (1 to 100 nodes), and return the head.
 
-Examples: [1, 2, 4], X = 3 → **[1, 2, 3, 4]**. [4], X = 6 → **[6, 4]** (the head changes).
+## Examples
 
-## The idea
+- [1, 2, 4], X = 3 → **[1, 2, 3, 4]**
+- [4], X = 6 → **[6, 4]** (the head changes)
 
-Find the tail. The new node goes between `tail->prev` (call it `before`) and `tail`. A new node in the middle needs **four** links:
+## How to solve it, step by step
 
-1. new->prev = before
-2. new->next = tail
-3. before->next = new
-4. tail->prev = new
+1. **If there is only one node, the new node goes in front and becomes the head.** Link new → old head, and old head → back to new.
 
-The constructor `ListNode(X, before, tail)` sets links 1 and 2. Then set 3 and 4.
+   **Why:** with one node, the tail is the head, and there is no node before it.
 
-**Special case:** with one node, the tail **is** the head, and there is no `before`. The new node becomes the new head, in front of it.
+2. **Otherwise walk to the tail. Call the node before it `before`.**
+
+3. **Make the new node pointing back to `before` and forward to the tail.** (The constructor `ListNode(X, before, tail)` does this.)
+
+4. **Point `before->next` and `tail->prev` at the new node.**
+
+   **Why:** a node in the middle needs four links: two of its own, and one from each neighbour.
 
 ## Code (C++)
 
@@ -43,19 +47,15 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n) to find the tail.
-- Space: O(1).
+One walk to the end: O(n) time, O(1) memory.
 
-## Edge cases
+## Watch out for
 
-- One node: forgetting `head->prev = node` leaves the old head pointing back at nothing, and the prev links break.
-- Set all four links. Tests that walk the prev pointers catch a missing one. (Ours do.)
+- In the one-node case, do not forget `head->prev = new node`, or the back links break.
+- Set all four links. Tests that walk backwards catch a missing one.
 
-## Dry run ([1, 2, 4], X = 3)
+## Walk through ([1, 2, 4], X = 3)
 
-- tail = 4, before = 2.
-- New node 3 (prev = 2, next = 4). Then 2->next = 3 and 4->prev = 3.
-
-Answer: **[1, 2, 3, 4]**.
+The tail is 4; before it is 2. New node 3 points back to 2 and forward to 4. 2's next and 4's prev now point to 3. Answer: **[1, 2, 3, 4]**.

@@ -2,28 +2,35 @@
 
 > Solve it on [LeetCode 22 · Generate Parentheses](https://leetcode.com/problems/generate-parentheses/).
 
-## The problem
+## What you need to do
 
-Given n pairs of parentheses, return **every** well-formed combination. n ≤ 8.
+Given n pairs of brackets, list **every** correctly matched arrangement.
 
-Example: n = 3 → **["((()))","(()())","(())()","()(())","()()()"]**.
+## Example
 
-## Brute force
+n = 3 → **["((()))", "(()())", "(())()", "()(())", "()()()"]**.
 
-Generate all 2²ⁿ strings of '(' and ')', and keep the valid ones.
+## How to solve it, step by step
 
-- Time: O(2²ⁿ · n). For n = 8, that is 65 536 strings, so it passes, but almost all of the work is wasted on invalid strings.
+1. **Build the string one bracket at a time.** Keep two counts: `open` (how many `(` used) and `close` (how many `)` used).
 
-## The better idea: only build valid strings
+   **Why:** these two numbers are all you need to know which bracket is allowed next.
 
-Build the string one character at a time, and only add a character that can still lead to a valid string:
+2. **Add `(` if you have not used all n yet** (`open < n`).
 
-- **Add '('** if fewer than n have been used (`open < n`).
-- **Add ')'** only if it closes something (`close < open`). This guarantees no prefix ever has more ')' than '('.
+   **Why:** you have exactly n of them to place.
 
-When the length reaches 2n, the string is valid. Record it.
+3. **Add `)` only if there is an open bracket to close** (`close < open`).
 
-Both rules together mean every branch of the recursion ends in a valid answer: no dead ends.
+   **Why:** a `)` with nothing to close can never be fixed later.
+
+4. **When the string has 2n brackets, save it.**
+
+   **Why:** both rules held the whole way, so every finished string is valid. There are no dead ends.
+
+5. **Add a bracket, recurse, then remove it again (`push_back`, then `pop_back`).**
+
+   **Why:** this "backtracking" reuses one string instead of copying it at every step.
 
 ## Code (C++)
 
@@ -52,19 +59,17 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- The number of answers is the n-th **Catalan number**, about 4ⁿ / (n^1.5 √π). Each costs O(n) to copy.
-- Time: O(4ⁿ / √n). Space: O(n) recursion depth, plus the output.
+The number of answers is the n-th Catalan number (42 for n = 5, 1430 for n = 8). The total work is about O(4ⁿ / √n). Recursion depth: 2n.
 
-## Edge cases
+## Watch out for
 
-- n = 1 → ["()"].
-- `push_back` + `pop_back` (backtracking) reuses one string instead of copying it at every step.
+- The test is `close < open`, not `close < n`. With `close < n`, strings like "())(" get through.
 
-## Dry run (n = 2)
+## Walk through (n = 2)
 
 - "(" → "((" → "(()" → "(())" ✓.
 - Back to "(" → "()" → "()(" → "()()" ✓.
 
-Answer: **["(())", "()()"]**. (Tested: for n = 1…8, the count equals the Catalan number, with all strings distinct and valid.)
+Answer: **["(())", "()()"]**. (Tested for n = 1…8: the count matches the Catalan number, and every string is valid and different.)

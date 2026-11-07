@@ -2,25 +2,27 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> sortKSortedArray(vector<int>& arr, int k)`.
 
-## The problem
+## What you need to do
 
-Every element of arr (n ≤ 10⁵) is **at most k positions** away from where it belongs in sorted order. Sort it, and use that property instead of a plain full sort.
+Every number is **at most k places away** from where it belongs. Sort the array, and use that fact to be faster than a normal sort.
 
-Example: [3, 1, 2, 5, 4, 7, 6], k = 2 → **[1, 2, 3, 4, 5, 6, 7]**.
+## Example
 
-## Brute force
+[3, 1, 2, 5, 4, 7, 6], k = 2 → **[1, 2, 3, 4, 5, 6, 7]**.
 
-`sort(arr)`: O(n log n). Correct, but it ignores k. The problem asks for better when k is small.
+## How to solve it, step by step
 
-## The key observation
+1. **The number that belongs first must be within the first k + 1 places.**
 
-The smallest element overall must sit somewhere in the first **k + 1** positions, because it is at most k away from position 0. More generally, the element for output position i is among arr[i … i + k].
+   **Why:** it is at most k places away from position 0.
 
-So keep a **min-heap with k + 1 elements**: the window of candidates.
+2. **The same is true at every step:** the next number of the sorted answer is always among the next k + 1 numbers you have not placed yet.
 
-1. Push elements one by one.
-2. Once the heap holds more than k elements, its minimum must be the next element of the sorted output. Pop it and append it.
-3. At the end, pop everything left. It comes out in order.
+3. **So keep those k + 1 candidates in a min-heap.** Add numbers one by one; once the heap holds more than k, take out its smallest and append it to the answer.
+
+   **Why:** a min-heap gives you the smallest candidate quickly, and it never needs to hold more than k + 1 numbers.
+
+4. **At the end, take out everything left.** It comes out in order.
 
 ## Code (C++)
 
@@ -43,24 +45,23 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n log k). Each push and pop works on a heap of at most k + 1 elements.
-- Space: O(k) for the heap, plus the output.
+Each number goes in and out of a heap of size k + 1: O(n log k). For small k, that beats a normal sort's O(n log n). Memory: O(k).
 
-## Edge cases
+## Watch out for
 
-- k = 0: the array is already sorted, and the heap passes every element straight through.
-- `greater<int>` makes `priority_queue` a **min**-heap. By default it is a max-heap.
+- `priority_queue` is a **max**-heap by default. `greater<int>` makes it a min-heap.
+- k = 0 means the array is already sorted; the heap just passes numbers straight through.
 
-## Dry run ([3, 1, 2, 5, 4], k = 2)
+## Walk through ([3, 1, 2, 5, 4], k = 2)
 
-| push | heap | pop → out |
+| add | heap | take out → answer |
 |---|---|---|
-| 3 | {3} | — |
-| 1 | {1, 3} | — |
+| 3 | {3} | – |
+| 1 | {1, 3} | – |
 | 2 | {1, 2, 3} | 1 → [1] |
 | 5 | {2, 3, 5} | 2 → [1, 2] |
 | 4 | {3, 4, 5} | 3 → [1, 2, 3] |
 
-Drain: 4, 5. Answer: **[1, 2, 3, 4, 5]**.
+Then 4 and 5 come out. Answer: **[1, 2, 3, 4, 5]**.

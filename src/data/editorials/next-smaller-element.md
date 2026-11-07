@@ -2,29 +2,36 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `vector<int> nextSmallerElements(const vector<int>& arr)`.
 
-## The problem
+## What you need to do
 
-For each element, find the **first element to its right that is strictly smaller**. If there is none, use −1. n ≤ 10⁵.
+For each number, find the **first number to its right that is strictly smaller**. If there is none, write −1.
 
-Examples: [4, 8, 5, 2, 25] → **[2, 5, 2, −1, −1]**. [10, 9, 8, 7] → **[9, 8, 7, −1]**.
+## Examples
 
-## Brute force
+- [4, 8, 5, 2, 25] → **[2, 5, 2, −1, −1]**
+- [10, 9, 8, 7] → **[9, 8, 7, −1]**
 
-For each i, scan right until you meet something smaller.
+## How to solve it, step by step
 
-- Time: O(n²), about 10¹⁰ for n = 10⁵. Too slow.
+1. **The slow idea:** for each number, scan to the right. O(n²): too slow for 100 000 numbers.
 
-## The better idea: a monotonic stack
+2. **Walk from right to left, keeping a stack of "candidates"**: numbers to the right that might still be someone's answer.
 
-Walk from **right to left** and keep a stack of "candidates": values to the right that could still be someone's next smaller element.
+   **Why:** going right to left means everything to the right has already been seen.
 
-For arr[i]:
+3. **For each number x, first pop every candidate that is ≥ x.**
 
-1. **Pop** every value ≥ arr[i]. They can never be the answer for arr[i], since they are not smaller. They also cannot be the answer for anything further left, because arr[i] is closer and at least as small.
-2. Whatever is on top now is the nearest smaller value to the right. If the stack is empty, the answer is −1.
-3. **Push** arr[i]. It is now a candidate for the elements to its left.
+   **Why:** they are not smaller than x, so they cannot be x's answer. They also cannot be the answer for anything further left, because x is closer and at least as small. So they are useless from now on.
 
-The stack always increases from bottom to top. That is why it is called a monotonic stack.
+4. **Now the top of the stack (if any) is x's answer; if the stack is empty, the answer is −1.**
+
+   **Why:** after popping, the top is the nearest number to the right that is smaller than x.
+
+5. **Push x.**
+
+   **Why:** x is now a candidate for the numbers to its left.
+
+The stack always increases from bottom to top, which is why this is called a **monotonic stack**.
 
 ## Code (C++)
 
@@ -45,24 +52,22 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(n). Every value is pushed once and popped at most once, so the while loop runs at most n times in total.
-- Space: O(n) for the stack.
+Every number is pushed once and popped at most once: O(n) time in total. Memory: O(n) for the stack.
 
-## Edge cases
+## Watch out for
 
-- Equal values: "smaller" means **strictly** smaller, so pop on `>=`. In [3, 3, 1], the first 3's answer is 1, not 3.
-- Negative values are fine. −1 is only the "none" marker, and the answer for an element is always an actual array value.
+- "Smaller" means **strictly** smaller, so pop on `>=`. In [3, 3, 1], the first 3's answer is 1, not 3.
 
-## Dry run ([4, 8, 5, 2, 25])
+## Walk through ([4, 8, 5, 2, 25])
 
-| i | arr[i] | pops | answer | stack after |
-|---|---|---|---|---|
-| 4 | 25 | — | −1 | [25] |
-| 3 | 2 | 25 | −1 | [2] |
-| 2 | 5 | — | 2 | [2, 5] |
-| 1 | 8 | — | 5 | [2, 5, 8] |
-| 0 | 4 | 8, 5 | 2 | [2, 4] |
+| number | pops | answer | stack after |
+|---|---|---|---|
+| 25 | – | −1 | [25] |
+| 2 | 25 | −1 | [2] |
+| 5 | – | 2 | [2, 5] |
+| 8 | – | 5 | [2, 5, 8] |
+| 4 | 8, 5 | 2 | [2, 4] |
 
-Answer: **[2, 5, 2, −1, −1]**.
+Read the answers back in the original order: **[2, 5, 2, −1, −1]**.

@@ -2,28 +2,37 @@
 
 > Solve it on [LeetCode 282 · Expression Add Operators](https://leetcode.com/problems/expression-add-operators/).
 
-## The problem
+## What you need to do
 
-Given a digit string num (length ≤ 10) and a target, insert '+', '−' or '*' between digits, or nothing (which joins digits into a longer number). Return every expression that evaluates to target, with normal precedence: * before + and −. Numbers may not have leading zeros ("05" is not allowed, "0" is).
+Given a string of digits and a target, put `+`, `-`, `*` or nothing between the digits (nothing joins digits into a bigger number). Return every expression that equals the target, with normal maths rules (`*` before `+` and `-`). Numbers may not start with 0, except "0" itself.
 
-Examples: "123", 6 → `["1*2*3","1+2+3"]`. "105", 5 → `["1*0+5","10-5"]`. "3456237490", 9191 → **[]**.
+## Examples
 
-## The idea: backtracking over the next number
+- "123", 6 → `["1*2*3", "1+2+3"]`
+- "105", 5 → `["1*0+5", "10-5"]`
+- "3456237490", 9191 → **[]**
 
-At position i, choose where the **next number** ends (j = i … n−1). That number is num[i..j]. Then choose the operator in front of it.
+## How to solve it, step by step
 
-The hard part is `*`, because it binds tighter. Track two values while building:
+1. **At each position, choose where the next number ends,** and which operator goes in front of it.
 
-- `value`: what the expression so far evaluates to.
-- `last`: the last **term** that was added. It is +x for '+', −x for '−', or the running product for '*'.
+   **Why:** this covers both "join digits" and "put an operator here".
 
-Then:
+2. **Keep two values as you build: `value` (what the expression equals so far) and `last` (the last term you added).**
 
-- '+' x → value + x, last = x.
-- '−' x → value − x, last = −x.
-- '*' x → **value − last + last × x**, last = last × x. Remove the last term, and add it back multiplied by x.
+   **Why:** `*` binds tighter than `+` and `-`, so it changes the last term, not the whole total. You need to know what that term was.
 
-Example: "2+3*4". After "2+3", value = 5, last = 3. Then "*4" → 5 − 3 + 3 × 4 = 14 ✓.
+3. **Adding and subtracting are easy.** For `+ x`: value + x, and last = x. For `- x`: value − x, and last = −x.
+
+4. **Multiplying is the tricky one.** For `* x`: value − last + last × x, and last = last × x.
+
+   **Why:** take the last term back out, multiply it by x, and put it back in. Example: after "2+3", value = 5 and last = 3; then "*4" gives 5 − 3 + 3 × 4 = 14, which is right.
+
+5. **Do not let a number start with 0,** unless it is just "0".
+
+   **Why:** "05" is not allowed. Once the next number starts with '0', stop after that single digit.
+
+6. **When you reach the end and value equals the target, save the expression.**
 
 ## Code (C++)
 
@@ -66,21 +75,19 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(4ⁿ · n). Each gap between digits has 4 choices (+, −, *, join), and building each expression costs O(n).
-- Space: O(n) recursion depth, plus the output.
+Each gap between digits has 4 choices, and building an expression costs O(n): O(4ⁿ · n). With at most 10 digits that is fine.
 
-## Edge cases
+## Watch out for
 
-- `long long` is required. A 10-digit number like 9999999999 does not fit in `int`.
-- Leading zeros: once num[i] is '0', "0" alone is allowed, but nothing longer. The `break` handles that.
-- `expr.resize(len)` undoes each choice before trying the next one.
+- Use `long long`: a 10-digit number like 9999999999 does not fit in an `int`.
+- Undo each choice (shorten the expression string back) before trying the next one.
 
-## Dry run ("105", 5)
+## Walk through ("105", 5)
 
-- First number "1": then "0" → "1+0", "1-0", "1*0" … then "5": "1*0+5" = 0 + 5 = 5 ✓.
-- First number "10": then "5": "10-5" = 5 ✓. "10+5" = 15, "10*5" = 50.
-- First number "105" = 105 ✗.
+- "1", "0", "5": "1*0+5" = 0 + 5 = 5 ✓.
+- "10", "5": "10-5" = 5 ✓ ("10+5" = 15, "10*5" = 50 ✗).
+- "105" alone = 105 ✗.
 
-Answer: `["1*0+5", "10-5"]`. (Tested on 400 random inputs against trying every operator combination and evaluating it.)
+Answer: `["1*0+5", "10-5"]`. (Tested on 400 random inputs against trying every combination.)

@@ -2,18 +2,30 @@
 
 > Solve it on takeUforward's free practice page (the Problem link above). The function is `ListNode* deleteKthNode(ListNode* &head, int k)`.
 
-## The problem
+## What you need to do
 
-Delete the k-th node (1-based, 1 ≤ k ≤ n) of a singly linked list and return the head.
+Remove the k-th node (counting from 1) and return the head.
 
-Examples: [3, 4, 5], k = 2 → **[3, 5]**. [1, 2, 3], k = 1 → **[2, 3]** (the head changes).
+## Examples
 
-## The idea
+- [3, 4, 5], k = 2 → **[3, 5]**
+- [1, 2, 3], k = 1 → **[2, 3]** (the head changes)
 
-To remove a node, re-link the node **before** it: `prev->next = prev->next->next`.
+## How to solve it, step by step
 
-- **k = 1**: there is no node before the head, so the new head is `head->next`.
-- **k ≥ 2**: walk k − 2 steps from the head to reach node k − 1, then skip over node k.
+1. **To remove a node, re-link the node before it** so it skips over: `prev->next = prev->next->next`.
+
+   **Why:** nothing points to the removed node any more, so it is out of the list.
+
+2. **If k = 1, there is no node before the head. The new head is `head->next`.**
+
+   **Why:** removing the first node means the second one becomes the first.
+
+3. **Otherwise walk k − 2 steps from the head.** That puts you on node k − 1, the one before the node to remove.
+
+   **Why:** you start on node 1, so k − 2 steps reach node k − 1.
+
+4. **Skip over node k and delete it.**
 
 ## Code (C++)
 
@@ -37,19 +49,15 @@ public:
 };
 ```
 
-## Complexity
+## How fast is it?
 
-- Time: O(k).
-- Space: O(1).
+At most k steps: O(k) time, O(1) memory.
 
-## Edge cases
+## Watch out for
 
-- k = 1 with a one-node list → the head becomes nullptr. The first branch handles that.
-- k = n (the tail): prev is the second-last node and `gone->next` is nullptr, so prev becomes the new tail. No special code is needed.
+- Removing the last node (k = n) needs no special code: the node before it simply points to `nullptr`.
+- k = 1 on a one-node list gives an empty list.
 
-## Dry run ([3, 4, 5], k = 2)
+## Walk through ([3, 4, 5], k = 2)
 
-- k ≠ 1. The loop runs 0 times, so prev = 3.
-- gone = 4. Set 3->next = 5 and delete 4.
-
-Answer: **[3, 5]**.
+k is not 1. Walk 0 steps: prev = 3. Skip 4 (3's next becomes 5) and delete 4. Answer: **[3, 5]**.
