@@ -204,7 +204,17 @@ Deno.serve(async (req) => {
     .select('user_id,display_name,weekly_budget,timezone,email_morning,email_evening,email_weekly')
   if (error) return new Response(error.message, { status: 500 })
 
+  // A test run ({"test": true} in the body) sends one "morning" email to
+  // everyone now, whatever the hour, without marking the day as sent.
+  let test = false
+  try {
+    test = (await req.json())?.test === true
+  } catch {
+    /* no body */
+  }
+
   const sent: string[] = []
+  const skipped: string[] = []
   for (const s of people ?? []) {
     const tz = s.timezone || 'Asia/Kolkata'
     let now
@@ -213,8 +223,9 @@ Deno.serve(async (req) => {
     } catch {
       continue
     }
-    const kind =
-      now.weekday === 'Sun' && now.hour === 19 && s.email_weekly
+    const kind = test
+      ? 'morning'
+      : now.weekday === 'Sun' && now.hour === 19 && s.email_weekly
         ? 'weekly'
         : now.hour === 8 && s.email_morning
           ? 'morning'
@@ -237,8 +248,8 @@ Deno.serve(async (req) => {
     let subject = ''
     let html = ''
     if (kind === 'morning') {
-      if (!p.redo.length && !p.fresh.length) continue
-      subject = `Today: ${p.redo.length} ${p.redo.length === 1 ? 'review' : 'reviews'}, ${p.fresh.length} new`
+      if (!p.redo.length && !p.fresh.length && !test) continue
+      subject = `${test ? '[Test] ' : ''}Today: ${p.redo.length} ${p.redo.length === 1 ? 'review' : 'reviews'}, ${p.fresh.length} new`
       html = page(`Good morning, ${first}. Your board is ready.`, boardBody(p))
     } else if (kind === 'evening') {
       const rodeToday = (atts.data as Attempt[]).some((a) => dayIn(tz, a.created_at) === now.day)
@@ -272,16 +283,19 @@ Deno.serve(async (req) => {
     }
 
     // Claim the slot first, so a retry or a second run never sends twice.
-    const claim = await db.from('email_log').insert({ user_id: s.user_id, kind, day: now.day })
-    if (claim.error) continue
+    if (!test) {
+      const claim = await db.from('email_log').insert({ user_id: s.user_id, kind, day: now.day })
+      if (claim.error) continue
+    }
     try {
       await mail.sendMail({ from: `Terminus <${user}>`, to: email, subject, html })
-      sent.push(`${kind}:${s.user_id}`)
+      sent.push(`${kind}:${email}`)
     } catch (e) {
-      await db.from('email_log').delete().match({ user_id: s.user_id, kind, day: now.day })
+      if (!test) await db.from('email_log').delete().match({ user_id: s.user_id, kind, day: now.day })
+      skipped.push(`${email}: ${String(e).slice(0, 200)}`)
       console.error('send failed', s.user_id, String(e))
     }
   }
 
-  return new Response(JSON.stringify({ sent }), { headers: { 'Content-Type': 'application/json' } })
+  return new Response(JSON.stringify({ test, sent, failed: skipped }), { headers: { 'Content-Type': 'application/json' } })
 })
