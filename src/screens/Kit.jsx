@@ -3,6 +3,37 @@ import { KIT } from '../kit/content'
 
 const KEY = 'terminus.kit'
 
+// Math in prose: "2·10^9" -> 2 × 10 with a raised 9. A caret with spaces
+// around it ("a ^ b") is XOR and stays as written.
+const POWER = /([0-9A-Za-z)]+)\^(\([^)\s]+\)|[0-9A-Za-z+-]+)/g
+
+function MathText({ text }) {
+  const out = []
+  let last = 0
+  const t = text.replace(/\s*·\s*/g, ' × ').replace(/log2\(/g, 'log₂(')
+  for (const m of t.matchAll(POWER)) {
+    out.push(t.slice(last, m.index), m[1])
+    const exp = m[2].startsWith('(') ? m[2].slice(1, -1) : m[2]
+    out.push(<sup key={m.index}>{exp}</sup>)
+    last = m.index + m[0].length
+  }
+  out.push(t.slice(last))
+  return out
+}
+
+// Prose with `inline code` and math.
+function Rich({ text }) {
+  return text.split('`').map((part, i) =>
+    i % 2 ? (
+      <code key={i} className="inline-code">
+        {part}
+      </code>
+    ) : (
+      <MathText key={i} text={part} />
+    ),
+  )
+}
+
 function initial() {
   try {
     const v = localStorage.getItem(KEY)
@@ -39,11 +70,17 @@ export default function Kit() {
       </nav>
 
       <article className="kit-body">
-        <p className="kit-intro">{chapter.intro}</p>
+        <p className="kit-intro">
+          <Rich text={chapter.intro} />
+        </p>
         {chapter.blocks.map((b) => (
           <section key={b.h} className="kit-block">
             <h2>{b.h}</h2>
-            {b.p && <p>{b.p}</p>}
+            {b.p && (
+              <p>
+                <Rich text={b.p} />
+              </p>
+            )}
             {b.table && (
               <div className="table-wrap">
                 <table>
@@ -59,7 +96,7 @@ export default function Kit() {
                       <tr key={r[0]}>
                         {r.map((c, i) => (
                           <td key={i} className={i === 0 && chapter.id === 'bits' ? 'mono' : undefined}>
-                            {c}
+                            {i === 0 && chapter.id === 'bits' ? c : <Rich text={c} />}
                           </td>
                         ))}
                       </tr>

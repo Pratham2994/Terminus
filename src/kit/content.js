@@ -214,7 +214,7 @@ vector<int> f(26, 0); f[ch - 'a']++;`,
   {
     id: 'bits',
     title: 'Bits',
-    intro: 'Bit i of x is (x >> i) & 1. Use 1LL << i when i can reach 31 or more.',
+    intro: 'Bit i of x is `(x >> i) & 1`. Use `1LL << i` when i can reach 31 or more.',
     blocks: [
       {
         h: 'The tricks',
@@ -236,7 +236,7 @@ vector<int> f(26, 0); f[ch - 'a']++;`,
       },
       {
         h: 'XOR facts',
-        p: 'a ^ a = 0, a ^ 0 = a, and order does not matter. XOR of all elements cancels pairs, so the single one is left.',
+        p: '`a ^ a = 0`, `a ^ 0 = a`, and order does not matter. XOR of all elements cancels pairs, so the single one is left.',
         code: `int single = 0;
 for (int x : a) single ^= x;
 
@@ -269,11 +269,11 @@ while (x) { x &= x - 1; cnt++; }  // O(set bits)`,
   {
     id: 'math',
     title: 'Math',
-    intro: 'Overflow is the most common silent bug. If a product can pass about 2·10^9, use long long.',
+    intro: 'Overflow is the most common silent bug. If a product can pass about 2·10^9, use `long long`.',
     blocks: [
       {
         h: 'Overflow',
-        p: 'int holds up to about 2.1·10^9. long long holds up to about 9.2·10^18. Cast before you multiply, not after.',
+        p: '`int` holds up to about 2.1·10^9. `long long` holds up to about 9.2·10^18. Cast before you multiply, not after.',
         code: `int a = 100000, b = 100000;
 ll bad  = a * b;          // overflows first
 ll good = 1LL * a * b;    // 10^10, correct

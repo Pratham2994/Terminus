@@ -1376,6 +1376,22 @@ code,
   gap: 2rem;
 }
 
+.inline-code {
+  padding: 0.05em 0.4em 0;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  background: var(--ink-1);
+  color: var(--paper);
+  font-size: 0.88em;
+  white-space: nowrap;
+}
+
+.kit sup {
+  font-size: 0.68em;
+  line-height: 0;
+  vertical-align: 0.55em;
+}
+
 .kit-intro {
   max-width: 62ch;
   font-size: 1.08rem;
