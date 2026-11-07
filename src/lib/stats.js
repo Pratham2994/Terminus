@@ -39,6 +39,8 @@ export function computeStats({ progress, attempts, today = dayString() }) {
   let newMinutes = 0
   let newTimed = 0
   for (const a of attempts) {
+    // A reset station keeps its notes, but its sessions no longer count.
+    if (progress.get(a.item_key)?.status !== 'done') continue
     const d = localDay(a.created_at)
     perDay.set(d, (perDay.get(d) || 0) + 1)
     const item = ITEM_BY_KEY.get(a.item_key)

@@ -69,7 +69,7 @@ function Kpi({ label, value, of, note, bar, hot }) {
       </span>
       {bar !== undefined ? (
         <span className="kpi-bar" aria-hidden="true">
-          <i style={{ width: `${bar}%` }} />
+          {bar > 0 && <i style={{ width: `${bar}%` }} />}
         </span>
       ) : (
         <span className="kpi-note">{note}</span>
